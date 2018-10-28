@@ -11,7 +11,7 @@ export default class Program {
     readonly code: string
   ) {}
 
-  public state = ProgramState.default(this)
+  public state = ProgramState.default
 
   public get isEmpty(): boolean {
     return this.steps.filter(step => step.actionPerformed).length === 0
@@ -21,7 +21,7 @@ export default class Program {
   // Reset
 
   public reset() {
-    this.state = ProgramState.default(this)
+    this.state = ProgramState.default
   }
 
   //------

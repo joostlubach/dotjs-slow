@@ -48,7 +48,7 @@ export class SimulatorStore extends EventEmitter {
   }
 
   @computed
-  public get state(): ProgramState | null {
+  public get state(): ProgramState {
     if (this.currentStep != null) {
       return this.currentStep.endState
     } else if (
@@ -58,7 +58,7 @@ export class SimulatorStore extends EventEmitter {
     ) {
       return this.simulator.program.steps[0].startState
     } else {
-      return null
+      return ProgramState.default
     }
   }
 

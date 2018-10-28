@@ -6,4 +6,5 @@ export {default as Scenario} from './Scenario'
 export {default as Simulator} from './Simulator'
 // /index
 
+export * from './ProgramState'
 export * from './types'
