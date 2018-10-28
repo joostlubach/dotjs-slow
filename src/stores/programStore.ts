@@ -4,7 +4,7 @@ import {Program, ProgramBuilder, CodeError, Scenario} from '../program'
 import simulatorStore from './simulatorStore'
 
 interface Code {
-  customer: string
+  etienne: string
   server:   string
   chef:     string
 }
@@ -15,7 +15,7 @@ export class ProgramStore extends EventEmitter {
   public scenario: Scenario | null = null
 
   @observable
-  public customerCode: string = ''
+  public etienneCode: string = ''
 
   @observable
   public serverCode: string = ''
@@ -35,7 +35,7 @@ export class ProgramStore extends EventEmitter {
   @action
   public loadScenario(scenario: Scenario) {
     this.scenario = scenario
-    this.customerCode = scenario.code.customer
+    this.etienneCode = scenario.code.etienne
     this.serverCode = scenario.code.server
     this.chefCode = scenario.code.chef
 
@@ -48,7 +48,7 @@ export class ProgramStore extends EventEmitter {
   @action
   public runAndSimulate(firstStepOnly: boolean = false) {
     // Create a new program.
-    const program = this.program = new Program(this.customerCode)
+    const program = this.program = new Program(this.etienneCode)
 
     // Run the program (record it). Stop if there's any compilation or runtime error.
     const success = this.runProgram(program)

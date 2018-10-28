@@ -46,9 +46,9 @@ export default class App extends React.Component<Props> {
       <div classNames={$.code}>
         <CodePanel
           classNames={$.codePanel}
-          image='customer-head'
-          title={i18n.t('customer')}
-          tintColor={colors.customer}
+          image='etienne-head'
+          title={i18n.t('etienne')}
+          tintColor={colors.etienne}
         />
       </div>        
     )
@@ -65,9 +65,9 @@ const $ = jss({
   },
 
   panel: {
+    overflow: 'auto',
     '& > *': {
       ...layout.overlay,
-      overflow: 'auto'
     }
   },
 

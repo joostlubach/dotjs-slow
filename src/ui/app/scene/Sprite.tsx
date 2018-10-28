@@ -4,12 +4,12 @@ import {SVG} from '@ui/components'
 import {SVGName} from '@ui/components/SVG'
 
 export interface Props {
-  image:       SVGName
-  size:        Size
+  image:   SVGName
+  size:    Size
 
-  x:       number
-  y:       number
-  animate: boolean
+  x:         number
+  y:         number
+  sceneSize: Size
 
   dance?: boolean
   
@@ -18,16 +18,31 @@ export interface Props {
 
 export default class Sprite extends React.Component<Props> {
 
+  private animateNext: boolean = false
+
+  public componentWillReceiveProps(props: Props) {
+    if (props.sceneSize.width !== this.props.sceneSize.width || props.sceneSize.height !== this.props.sceneSize.height) {
+      this.animateNext = false
+    } else {
+      this.animateNext = true
+    }
+  }
+
   public render() {
-    const {image, size, x, y, animate, dance} = this.props
+    const {image, size, sceneSize, dance = true} = this.props
+
+    let {x, y} = this.props
+    if (x < 0) { x += sceneSize.width - size.width }
+    if (y < 0) { y += sceneSize.height - size.height }
+
     const style: React.CSSProperties = {
       transform:         `translate(${x}px, ${y}px)`,
-      transitionDuration: animate ? `${layout.durations.medium}ms` : '0ms'
+      transitionDuration: this.animateNext ? `${layout.durations.medium}ms` : '0ms'
     }
 
     return (
       <div classNames={[$.sprite, this.props.classNames]} style={style}>
-        <SVG name={image} size={size} classNames={$.dance}/>
+        <SVG name={image} size={size} classNames={dance && $.dance}/>
       </div>
     )
   }

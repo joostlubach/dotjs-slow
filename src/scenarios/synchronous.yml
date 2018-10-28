@@ -1,8 +1,8 @@
 name: Synchronous
 
 code:
-  customer: |-
-    customer.onHungry = function () {
+  etienne: |-
+    etienne.onHungry = function () {
       const server = waitInLine()
 
       const hamburger = server.order([

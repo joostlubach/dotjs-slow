@@ -4,27 +4,33 @@ import {jss, colors} from '@ui/styles'
 import {SpritePosition} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
-import {programStore, simulatorStore} from '@src/stores'
+import Stove from './Stove'
+import {simulatorStore} from '@src/stores'
 import {SVG} from '@ui/components'
+import BarStools from './BarStools'
+import Tables from './Tables'
+import sizeMe, {SizeMeProps} from 'react-sizeme';
 
 export interface Props {
   classNames?: React.ClassNamesProp
 }
 
+type AllProps = Props & SizeMeProps
+
 @observer
-export default class Scene extends React.Component<Props> {
+class Scene extends React.Component<AllProps> {
 
   public state = {
-    customerPosition: {x: 20, y: 20}
+    etiennePosition: {x: 20, y: 20}
   }
 
   public render() {
     return (
-      <div classNames={[$.scene, this.props.classNames]} onClick={() => { this.setState({customerPosition: {x: 20, y: 400}}) }}>
+      <div classNames={[$.scene, this.props.classNames]}>
         {this.renderKitchen()}
         {this.renderBar()}
         {this.renderTables()}
-        {this.renderSprite(sprites.Customer, simulatorStore.state.spritePositions.customer)}
+        {this.renderSprite(sprites.Etienne, simulatorStore.state.spritePositions.etienne)}
       </div>
     )
   }
@@ -34,6 +40,7 @@ export default class Scene extends React.Component<Props> {
       <div classNames={$.kitchen}>
         {this.renderSprite(sprites.Server, simulatorStore.state.spritePositions.server)}
         {this.renderSprite(sprites.Chef, simulatorStore.state.spritePositions.chef)}
+        <Stove classNames={$.stove}/>
       </div>
     )
   }
@@ -43,6 +50,7 @@ export default class Scene extends React.Component<Props> {
       <div classNames={$.bar}>
         <div classNames={$.barSurface}/>
         <div classNames={$.barFront}/>
+        <BarStools classNames={$.barStools}/>
         <SVG name='order-here' size={orderHereSize} classNames={$.orderHere}/>
       </div>
     )
@@ -50,20 +58,16 @@ export default class Scene extends React.Component<Props> {
 
   private renderTables() {
     return (
-      <div classNames={$.tables}/>
-    )
+      <Tables classNames={$.tables}/>
+      )
   }
 
   private renderSprite(Sprite: SpriteComponent, position: SpritePosition) {
     return (
-      <Sprite {...position} animated={true}/>
+      <Sprite {...position} sceneSize={this.props.size as Size} animated={true}/>
     )
   }
 
-}
-
-function Kitchen() {
-  return <div classNames={$.kitchenFloor}/>
 }
 
 const orderHereSize = {
@@ -71,8 +75,13 @@ const orderHereSize = {
   height: 172
 }
 
+const stoveWidth = 140
+
 const $ = jss({
   scene: {
+    minWidth:  640,
+    minHeight: 750,
+
     background: {
       color: colors.lightBlue,
       image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
@@ -80,13 +89,23 @@ const $ = jss({
   },
 
   kitchen: {
-    height: 280,
+    position: 'relative',
+    height:   280,
 
     background: {
-      image:  'url(/images/kitchen-floor.png)',
-      repeat: 'repeat',
-      size:   [48, 48]
+      image:    'url(/images/kitchen-floor.png)',
+      repeat:   'repeat',
+      position: 'center center',
+      size:     [48, 48]
     }
+  },
+
+  stove: {
+    position: 'absolute',
+    top:      0,
+    bottom:   0,
+    right:    0,
+    width:    stoveWidth
   },
 
   bar: {
@@ -102,19 +121,36 @@ const $ = jss({
   barSurface: {
     height: 80,
     background: {
-      image:  'url(/images/bar-surface.png)',
-      repeat: 'repeat',
-      size:   [40, 80]
+      image:    'url(/images/bar-surface.png)',
+      repeat:   'repeat',
+      position: 'center center',
+      size:     [40, 80]
     }
   },
 
   barFront: {
     height: 60,
     background: {
-      image:  'url(/images/bar-front.png)',
-      repeat: 'repeat',
-      size:   [49, 56]
+      image:    'url(/images/bar-front.png)',
+      repeat:   'repeat',
+      position: 'center center',
+      size:     [49, 56]
     }
+  },
+
+  barStools: {
+    position: 'absolute',
+    bottom:   -20,
+    left:     280,
+    right:    0
+  },
+
+  tables: {
+    position: 'absolute',
+    top:      420,
+    bottom:   40,
+    left:     280,
+    right:    40
   },
 
   orderHere: {
@@ -124,3 +160,5 @@ const $ = jss({
     ...orderHereSize
   }
 })
+
+export default sizeMe({monitorWidth: true, monitorHeight: true})(Scene)

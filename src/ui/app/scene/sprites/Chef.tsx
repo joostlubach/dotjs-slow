@@ -1,15 +1,16 @@
 import * as React from 'react'
 import Sprite from '../Sprite'
 import {jss, colors} from '@ui/styles'
+import {SpriteProps} from '.'
 
-export interface Props {
-  x: number
-  y: number
-}
-
-export default function Chef(props: Props) {
+export default function Chef(props: SpriteProps) {
   return (
-    <Sprite image='chef' size={size} animate={true} {...props} classNames={$.chef}/>
+    <Sprite
+      image='chef'
+      size={size}
+      classNames={$.chef}
+      {...props}
+    />
   )
 }
 

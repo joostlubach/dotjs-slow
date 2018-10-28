@@ -13,7 +13,7 @@ export default class Scenario {
   }
 
   public code!: {
-    customer: string
+    etienne: string
     server:   string
     chef:     string
   }

@@ -19,6 +19,7 @@
     "react": "^16.6.0",
     "react-dev-utils": "^5.0.2",
     "react-dom": "^16.6.0",
+    "react-responsive": "^6.0.0",
     "react-sizeme": "^2.5.2",
     "whatwg-fetch": "2.0.3"
   },

@@ -117,6 +117,10 @@ export default class Panels extends React.Component<Props, State> {
     const classNames = [
       $.panel,
       $[`panel_${side}`],
+    ]
+    const contentClassNames = [
+      $.panelContent,
+      $[`panelContent_${side}`],
       isFunction(panelClassNames) ? panelClassNames(side) : panelClassNames
     ]
 
@@ -126,7 +130,9 @@ export default class Panels extends React.Component<Props, State> {
         classNames={classNames}
         style={style}
       >
-        {this.props[side]}
+        <div classNames={contentClassNames}>
+          {this.props[side]}
+        </div>
         {this.renderSplitter(side)}
       </div>
     )
@@ -220,6 +226,10 @@ const $ = jss({
 
   panel: {
     position: 'absolute'
+  },
+
+  panelContent: {
+    ...layout.overlay,
   },
 
   panel_left: {

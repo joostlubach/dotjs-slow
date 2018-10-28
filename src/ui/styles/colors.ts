@@ -25,7 +25,7 @@ export const border = {
 }
 
 export const primary = red
-export const customer = brown
+export const etienne = brown
 export const server = green
 export const chef = blue
 

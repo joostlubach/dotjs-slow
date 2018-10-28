@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="140px" height="331px" viewBox="0 0 140 331" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>stove</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <linearGradient x1="12.1233259%" y1="6.47347384%" x2="79.0597098%" y2="78.462936%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.5" offset="0%"/>
+            <stop stop-color="#000000" stop-opacity="0.5" offset="100%"/>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="140" height="331"/>
+        <linearGradient x1="0%" y1="50%" x2="100%" y2="50%" id="linearGradient-3">
+            <stop stop-color="#000000" stop-opacity="0.5" offset="0%"/>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="stove">
+            <g id="Group-2">
+                <g id="Rectangle-5">
+                    <use xlink:href="#path-2"/>
+                    <use fill-opacity="0.5" xlink:href="#path-2"/>
+                </g>
+                <rect id="Rectangle-6" x="0" y="0" width="10" height="329"/>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,7 +1,7 @@
 import Program from './Program'
 import {cloneDeep} from 'lodash'
 
-export type Sprite = 'customer' | 'server' | 'chef'
+export type Sprite = 'etienne' | 'server' | 'chef'
 export interface SpritePosition {
   x: number
   y: number
@@ -16,9 +16,9 @@ export default class ProgramState {
   public static get default() {
     return new ProgramState({
       spritePositions: {
-        customer: {x: 20, y: 600},
-        server:   {x: 20, y: 100},
-        chef:     {x: 480, y: 100}
+        etienne: {x: 20,  y: -20},
+        server:  {x: 20,  y: 100},
+        chef:    {x: -150, y: 100}
       }
     })
   }

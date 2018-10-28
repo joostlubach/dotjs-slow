@@ -6,8 +6,9 @@ const FS = require('fs-extra')
 
 function stripFill($) {
 	$('[fill]').each(function () {
+		const id = $(this).attr('id') || ''
 		let shouldSkip =
-			$(this).attr('id').startsWith('!') ||
+			id.startsWith('!') ||
 			$(this).closest('[id^="!"]').length > 0
 
 		if (!shouldSkip) {
