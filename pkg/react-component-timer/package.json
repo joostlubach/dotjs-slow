@@ -1,0 +1,11 @@
+{
+  "name": "react-component-timer",
+  "version": "0.0.1",
+  "description": "Self-disposing timer (setTimeout, setInterval, etc.) for React components",
+  "author": "Joost Lubach",
+  "license": "MIT",
+  "private": true,
+  "peerDependencies": {
+    "react": "^16.5.2"
+  }
+}

@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
+const YAML = require('js-yaml')
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths')];
@@ -60,6 +61,13 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 // injected into the application via DefinePlugin in Webpack configuration.
 const REACT_APP = /^REACT_APP_/i;
 
+function readVersion() {
+  const content = fs.readFileSync(paths.appPackageJson)
+  const packageInfo = YAML.load(content)
+
+  return packageInfo.version
+}
+
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
     .filter(key => REACT_APP.test(key))
@@ -77,6 +85,8 @@ function getClientEnvironment(publicUrl) {
         // This should only be used as an escape hatch. Normally you would put
         // images into the `src` and `import` them in code to get their paths.
         PUBLIC_URL: publicUrl,
+        // The current version, for cache purposes.
+        VERSION: readVersion()
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin

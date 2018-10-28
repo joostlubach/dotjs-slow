@@ -1,31 +1,40 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "build/dist",
+    "rootDir": ".",
+    "outDir":  "dist",
+
     "module": "esnext",
-    "target": "es5",
-    "lib": ["es6", "dom"],
+    "target": "es2015",
+    "lib":    ["es2017", "dom"],
     "sourceMap": true,
+
     "allowJs": true,
     "jsx": "react",
+    "noEmit": true,
+
+    "strict": true,
+    "allowUnreachableCode": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+
     "moduleResolution": "node",
-    "rootDir": "src",
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noImplicitAny": true,
-    "importHelpers": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*":  ["src/ui/*"],
+      "@src/*": ["src/*"],
+      "@res/*": ["res/*"],
+      "*": [
+        "pkg/*"
+      ]
+    }
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts"
+  "include": [
+    "types/*",
+    "res/**/*.ts",
+    "res/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "pkg/**/*.ts",
+    "pkg/**/*.tsx",
   ]
 }

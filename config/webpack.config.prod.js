@@ -8,7 +8,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -58,7 +57,7 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: [require.resolve('./polyfills'), paths.appIndexJs],
+  entry: [require.resolve('./polyfills'), paths.appEntry],
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -80,7 +79,7 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    modules: ['node_modules', paths.appNodeModules].concat(
+    modules: ['node_modules', paths.appPkg, paths.appNodeModules].concat(
       // It is guaranteed to exist because we tweak it in `env.js`
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
@@ -91,22 +90,16 @@ module.exports = {
     // `web` extension prefixes have been added for better support
     // for React Native Web.
     extensions: [
-      '.mjs',
-      '.web.ts',
       '.ts',
-      '.web.tsx',
       '.tsx',
-      '.web.js',
       '.js',
       '.json',
-      '.web.jsx',
       '.jsx',
     ],
     alias: {
-      
-      // Support React Native Web
-      // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-      'react-native': 'react-native-web',
+      '@src': paths.appSrc,
+      '@ui':  path.join(paths.appSrc, 'ui'),
+      '@res': paths.appRes
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -114,8 +107,7 @@ module.exports = {
       // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-      new TsconfigPathsPlugin({ configFile: paths.appTsProdConfig }),
+      new TsconfigPathsPlugin({ configFile: paths.appTsConfig }),
     ],
   },
   module: {
@@ -128,7 +120,8 @@ module.exports = {
         test: /\.(js|jsx|mjs)$/,
         loader: require.resolve('source-map-loader'),
         enforce: 'pre',
-        include: paths.appSrc,
+        include: [paths.appSrc, paths.appPkg, paths.appRes],
+        exclude: [/node_modules/]
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -146,25 +139,42 @@ module.exports = {
             },
           },
           {
+            test: [/\.svg$/],
+            loader: require.resolve('svg-loader'),
+          },
+          {
+            test:    /\.ya?ml$/,
+            loader:  [require.resolve('json-loader'), require.resolve('yaml-loader')],
+            include: [paths.appSrc, paths.appPkg],
+            exclude: [/node_modules/]
+          },
+          {
             test: /\.(js|jsx|mjs)$/,
-            include: paths.appSrc,
-            loader: require.resolve('babel-loader'),
-            options: {
-              
-              compact: true,
-            },
+            include: [paths.appSrc, paths.appPkg, paths.appRes],
+            exclude: [/node_modules/],
+            use: [
+              {
+                loader: require.resolve('babel-loader'),
+                options: {
+                  compact: true
+                }
+              }
+            ]
           },
           // Compile .tsx?
           {
             test: /\.(ts|tsx)$/,
-            include: paths.appSrc,
+            include: [paths.appSrc, paths.appPkg, paths.appRes],
             use: [
+              {
+                loader: require.resolve('babel-loader'),
+              },
               {
                 loader: require.resolve('ts-loader'),
                 options: {
                   // disable type checker - we will use it in fork plugin
                   transpileOnly: true,
-                  configFile: paths.appTsProdConfig,
+                  configFile: paths.appTsProdConfig
                 },
               },
             ],
@@ -199,26 +209,6 @@ module.exports = {
                         importLoaders: 1,
                         minimize: true,
                         sourceMap: shouldUseSourceMap,
-                      },
-                    },
-                    {
-                      loader: require.resolve('postcss-loader'),
-                      options: {
-                        // Necessary for external CSS imports to work
-                        // https://github.com/facebookincubator/create-react-app/issues/2677
-                        ident: 'postcss',
-                        plugins: () => [
-                          require('postcss-flexbugs-fixes'),
-                          autoprefixer({
-                            browsers: [
-                              '>1%',
-                              'last 4 versions',
-                              'Firefox ESR',
-                              'not ie < 9', // React doesn't support IE8 anyway
-                            ],
-                            flexbox: 'no-2009',
-                          }),
-                        ],
                       },
                     },
                   ],
@@ -296,9 +286,6 @@ module.exports = {
           // Pending further investigation:
           // https://github.com/mishoo/UglifyJS2/issues/2011
           comparisons: false,
-          // Don't inline functions with arguments, to avoid name collisions:
-          // https://github.com/mishoo/UglifyJS2/issues/2842
-          inline: 1,
         },
         mangle: {
           safari10: true,
@@ -317,7 +304,7 @@ module.exports = {
       // Enable file caching
       cache: true,
       sourceMap: shouldUseSourceMap,
-    }), // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
+    }),    // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename,
     }),
@@ -362,13 +349,7 @@ module.exports = {
     // solution that requires the user to opt into importing specific locales.
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // Perform type checking and linting in a separate process to speed up compilation
-    new ForkTsCheckerWebpackPlugin({
-      async: false,
-      tsconfig: paths.appTsProdConfig,
-      tslint: paths.appTsLint,
-    }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
