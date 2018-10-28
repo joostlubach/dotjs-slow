@@ -34,9 +34,9 @@ export const icon = {
 }
 
 export const barHeight = {
-  normal: 56,
-  large:  64,
-  huge:   80
+  normal: 48,
+  large:  56,
+  huge:   64
 }
 
 export const z = {
@@ -113,55 +113,6 @@ export function breakpoint(config: BreakpointConfig) {
   return (styles: AnyObject) => ({
     [`@media screen and ${breakpointSpec(config)}`]: styles
   })
-}
-
-export const screenWidths = {
-  mobileSmall: 360,
-  mobileLarge: 600,
-  tabletSmall: 960,
-  tabletLarge: 1224,
-  desktop:     1224,
-}
-
-export const screenMargin = {
-  mobileSmall: padding.s,
-  mobileLarge: padding.s,
-  tabletSmall: padding.m,
-  tabletLarge: padding.m,
-  swiper:      40,
-  desktop:     padding.xl
-}
-
-export const mobileSmall = breakpoint({maxWidth: screenWidths.mobileSmall})
-export const mobileLarge = breakpoint({maxWidth: screenWidths.mobileLarge})
-export const tabletSmall = breakpoint({maxWidth: screenWidths.tabletSmall})
-export const tabletLarge = breakpoint({maxWidth: screenWidths.tabletLarge})
-export const desktop     = breakpoint({minWidth: screenWidths.tabletLarge})
-
-export function responsive(spec: (size: ScreenSize) => AnyObject) {
-  return {
-    ...desktop(spec('desktop')),
-    ...tabletLarge(spec('tabletLarge')),
-    ...tabletSmall(spec('tabletSmall')),
-    ...mobileLarge(spec('mobileLarge')),
-    ...mobileSmall(spec('mobileSmall')),
-  }
-}
-
-export function sizeForScreenWidth(width: number): ScreenSize {
-  if (width < screenWidths.mobileSmall) {
-    return 'mobileSmall'
-  }
-  if (width < screenWidths.mobileLarge) {
-    return 'mobileLarge'
-  }
-  if (width < screenWidths.tabletSmall) {
-    return 'tabletSmall'
-  }
-  if (width < screenWidths.tabletLarge) {
-    return 'tabletLarge'
-  }
-  return 'desktop'
 }
 
 export function breakpointSpec(config: BreakpointConfig) {

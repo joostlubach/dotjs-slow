@@ -1,0 +1,7 @@
+@font-face {
+	font-family: "Skater Girls Rock";
+	font-weight: normal;
+  src:
+    url("/fonts/Skater Girls Rock.woff") format('woff'),
+    url("/fonts/Skater Girls Rock.ttf") format('truetype');
+}

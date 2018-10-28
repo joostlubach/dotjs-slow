@@ -6,7 +6,7 @@ const resDir    = Path.join(rootDir, 'res')
 module.exports = {
 
 	svg: {
-		sketch:            Path.join(resDir, 'gain.sketch'),
+		sketch:            Path.join(resDir, 'slow-burgers.sketch'),
 		manifestFile:      Path.join(resDir, 'svgs/index.ts'),
 		manifestImagePath: basename => `./${basename}`,
 		out:               Path.join(resDir, 'svgs')

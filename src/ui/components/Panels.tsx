@@ -11,7 +11,7 @@ export interface Props {
   bottom?: React.ReactNode
 
   main:      React.ReactNode
-  splitter?: React.ReactNode
+  splitter?: React.ReactNode | ((side: Side) => React.ReactNode)
 
   splitterSize:     number
   initialSizes?:    Sizes
@@ -20,7 +20,8 @@ export interface Props {
   onPanelResize?:   (sizes: Sizes) => void
 
   classNames?:         React.ClassNamesProp
-  splitterClassNames?: React.ClassNamesProp
+  panelClassNames?:    React.ClassNamesProp | ((side: Side) => React.ClassNamesProp)
+  splitterClassNames?: React.ClassNamesProp | ((side: Side) => React.ClassNamesProp)
 }
 
 export const defaults = {
@@ -69,20 +70,18 @@ export default class Panels extends React.Component<Props, State> {
   }
 
   public render() {
-    const {left, right, top, bottom, main} = this.props
-
     return (
       <div classNames={$.panels}>
-        {this.renderMain(main)}
-        {left && this.renderPanel(Side.left, left)}
-        {right && this.renderPanel(Side.right, right)}
-        {top && this.renderPanel(Side.top, top)}
-        {bottom && this.renderPanel(Side.bottom, bottom)}
+        {this.renderMain()}
+        {this.props.left && this.renderPanel(Side.left)}
+        {this.props.right && this.renderPanel(Side.right)}
+        {this.props.top && this.renderPanel(Side.top)}
+        {this.props.bottom && this.renderPanel(Side.bottom)}
       </div>
     )
   }
 
-  private renderMain(element: React.ReactNode) {
+  private renderMain() {
     const style: React.CSSProperties = {}
     for (const side of Object.keys(Side)) {
       if (this.props[side] != null) {
@@ -92,13 +91,13 @@ export default class Panels extends React.Component<Props, State> {
 
     return (
       <div classNames={$.main} style={style}>
-        {element}
+        {this.props.main}
       </div>
     )
   }
 
-  private renderPanel(side: Side, element: React.ReactNode) {
-    const {splitterSize, horizontalFirst} = this.props
+  private renderPanel(side: Side) {
+    const {splitterSize, horizontalFirst, panelClassNames} = this.props
 
     const style: React.CSSProperties = {}
     if (side === Side.left || side === Side.right) {
@@ -115,13 +114,19 @@ export default class Panels extends React.Component<Props, State> {
       style.height = (this.state.sizes[side] || 0) - splitterSize
     }
 
+    const classNames = [
+      $.panel,
+      $[`panel_${side}`],
+      isFunction(panelClassNames) ? panelClassNames(side) : panelClassNames
+    ]
+
     return (
       <div
-        ref={el => { this.panels.set(side, el) }}
-        classNames={cn($.panel, $[`panel_${side}`])}
+        ref={this.panelRef(side)}
+        classNames={classNames}
         style={style}
       >
-        {element}
+        {this.props[side]}
         {this.renderSplitter(side)}
       </div>
     )
@@ -214,7 +219,7 @@ const $ = jss({
   },
 
   panel: {
-    position: 'absolute'
+    position: 'absolute',
   },
 
   panel_left: {

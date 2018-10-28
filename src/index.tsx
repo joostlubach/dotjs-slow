@@ -4,6 +4,7 @@ import {render} from 'react-dom'
 import {jss, colors, fonts, layout} from '@ui/styles'
 import App from '@ui/app/App'
 import './ui/reset.css'
+import './ui/fonts.css'
 
 const version = process.env.VERSION as string
 

@@ -5,7 +5,16 @@ const config = require('./config')
 const FS = require('fs-extra')
 
 function stripFill($) {
-	$('[fill]:not([id^="!"])').removeAttr('fill')
+	$('[fill]').each(function () {
+		let shouldSkip =
+			$(this).attr('id').startsWith('!') ||
+			$(this).closest('[id^="!"]').length > 0
+
+		if (!shouldSkip) {
+			$(this).removeAttr('fill')
+		}
+	})
+
 	$('[id^="!"]').each(function () {
 		const id = $(this).attr('id')
 		$(this).attr('id', id.replace(/^![-\s]+/, ''))
