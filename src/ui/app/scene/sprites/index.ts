@@ -7,4 +7,7 @@ export interface SpriteProps {
 }
 
 // @index
+export {default as Chef} from './Chef'
 export {default as Customer} from './Customer'
+export {default as Server} from './Server'
+// /index

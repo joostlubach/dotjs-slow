@@ -16,9 +16,9 @@ export default class ProgramState {
   public static get default() {
     return new ProgramState({
       spritePositions: {
-        customer: {x: 0, y: 0},
-        server:   {x: 0, y: 0},
-        chef:     {x: 0, y: 0}
+        customer: {x: 20, y: 600},
+        server:   {x: 20, y: 100},
+        chef:     {x: 480, y: 100}
       }
     })
   }

@@ -32,8 +32,8 @@ export default class Scene extends React.Component<Props> {
   private renderKitchen() {
     return (
       <div classNames={$.kitchen}>
-        {/* {this.renderSprite(sprites.Server, simulatorStore.state.spritePositions.server)}
-        {this.renderSprite(sprites.Chef, simulatorStore.state.spritePositions.chef)} */}
+        {this.renderSprite(sprites.Server, simulatorStore.state.spritePositions.server)}
+        {this.renderSprite(sprites.Chef, simulatorStore.state.spritePositions.chef)}
       </div>
     )
   }
@@ -42,7 +42,8 @@ export default class Scene extends React.Component<Props> {
     return (
       <div classNames={$.bar}>
         <div classNames={$.barSurface}/>
-        {/* <SVG name='order-here' classNames={$.orderHere}/> */}
+        <div classNames={$.barFront}/>
+        <SVG name='order-here' size={orderHereSize} classNames={$.orderHere}/>
       </div>
     )
   }
@@ -65,6 +66,11 @@ function Kitchen() {
   return <div classNames={$.kitchenFloor}/>
 }
 
+const orderHereSize = {
+  width:  109,
+  height: 172
+}
+
 const $ = jss({
   scene: {
     background: {
@@ -73,7 +79,48 @@ const $ = jss({
     }
   },
 
-  kitchenFloor: {
+  kitchen: {
+    height: 280,
 
+    background: {
+      image:  'url(/images/kitchen-floor.png)',
+      repeat: 'repeat',
+      size:   [48, 48]
+    }
+  },
+
+  bar: {
+    position: 'absolute',
+    left:     0,
+    right:    0,
+    top:      220,
+    height:   140,
+
+    boxShadow: [5, -5, 20, 0, colors.shadow.alpha(0.2)]
+  },
+
+  barSurface: {
+    height: 80,
+    background: {
+      image:  'url(/images/bar-surface.png)',
+      repeat: 'repeat',
+      size:   [40, 80]
+    }
+  },
+
+  barFront: {
+    height: 60,
+    background: {
+      image:  'url(/images/bar-front.png)',
+      repeat: 'repeat',
+      size:   [49, 56]
+    }
+  },
+
+  orderHere: {
+    position: 'absolute',
+    left:     180,
+    top:      -135,
+    ...orderHereSize
   }
 })

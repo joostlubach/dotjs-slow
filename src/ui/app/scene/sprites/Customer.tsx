@@ -13,6 +13,6 @@ export default function Customer(props: Props) {
 }
 
 export const size = {
-  width:  145,
+  width:  207,
   height: 299
 }
