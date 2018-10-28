@@ -3,7 +3,7 @@ import {observable, autorun, action} from 'mobx'
 import {Program, ProgramBuilder, CodeError} from '../program'
 import simulatorStore from './simulatorStore'
 
-export default class ProgramStore extends EventEmitter {
+export class ProgramStore extends EventEmitter {
 
   constructor() {
     super()
@@ -80,3 +80,5 @@ export default class ProgramStore extends EventEmitter {
   }
 
 }
+
+export default new ProgramStore()

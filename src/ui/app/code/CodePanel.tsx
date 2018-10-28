@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {jss, colors, layout} from '@ui/styles'
 import {SVG, VerticalLabel} from '@ui/components'
+import CodeEditor from './CodeEditor'
 import {SVGName} from '@ui/components/SVG'
 import Color from 'color'
 
@@ -18,7 +19,7 @@ export default class CodePanel extends React.Component<Props> {
     return (
       <div classNames={[$.codePanel, this.props.classNames]}>
         {this.renderLeftBar()}
-        {this.renderBody()}
+        {this.renderCodeEditor()}
       </div>
     )
   }
@@ -35,11 +36,11 @@ export default class CodePanel extends React.Component<Props> {
     )
   }
 
-  private renderBody() {
+  private renderCodeEditor() {
     return (
-      <div classNames={$.body}>
-        Code
-      </div>
+      <CodeEditor
+        classNames={$.codeEditor}
+      />
     )
   }
 
@@ -59,8 +60,7 @@ const $ = jss({
     width:      layout.barHeight.normal
   },
 
-  body: {
-    flex: [1, 0, 0],
-    ...layout.flex.center
+  codeEditor: {
+    flex: [1, 0, 0]
   }
 })

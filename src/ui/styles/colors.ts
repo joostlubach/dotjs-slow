@@ -1,8 +1,8 @@
 import Color from 'color'
 
+export const transparent = new Color('transparent')
 export const white = new Color('white')
 export const black = new Color('black')
-
 export const red = new Color('#D22424')
 export const brown = new Color('#AE7320')
 export const green = new Color('#2F992E')
@@ -31,6 +31,9 @@ export const chef = blue
 
 export const placeholder = fg.dim
 export const shadow = black
+export const focus = blue
+
+export const error = red
 
 export function foreground(color: Color) {
   return {
