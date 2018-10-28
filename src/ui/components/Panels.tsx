@@ -215,11 +215,11 @@ const $ = jss({
   },
 
   main: {
-    ...layout.overlay,
+    ...layout.overlay
   },
 
   panel: {
-    position: 'absolute',
+    position: 'absolute'
   },
 
   panel_left: {

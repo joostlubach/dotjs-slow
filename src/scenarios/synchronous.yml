@@ -1,0 +1,17 @@
+name: Synchronous
+
+code:
+  customer: |-
+    customer.onHungry = function () {
+      const server = waitInLine()
+
+      const hamburger = server.order([
+        'cheese',
+        'tomato',
+        'bacon'
+      ])
+      this.eat(hamburger)  
+    }
+
+  server:
+  chef:

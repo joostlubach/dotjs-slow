@@ -14,12 +14,10 @@ export default class ProgramBuilder {
 
   public readonly errors: CodeError[]  = []
 
-  private runtime: Runtime | null = null
-
   private evaluatedNodes: number = 0
 
-  public build(code: string): boolean {
-    const ast = this.compile(code)
+  public build(): boolean {
+    const ast = this.compile(this.program.code)
     if (ast == null) { return false }
 
     return this.run(ast)
@@ -44,7 +42,7 @@ export default class ProgramBuilder {
   }
 
   public run(ast: nodes.Node) {
-    const runtime = this.runtime = new Runtime({
+    const runtime = new Runtime({
       source: this.program.code,
       callbacks: {
         node: (node: nodes.Node) => {
@@ -138,7 +136,7 @@ function markRecordableNodes(ast: nodes.Node) {
 }
 
 export class InfiniteLoopException extends Error {
-  message = "Your program contains an infinite loop"
+  public message = "Your program contains an infinite loop"
 }
 
 export class CompileError extends Error implements CodeError {
@@ -148,10 +146,10 @@ export class CompileError extends Error implements CodeError {
     this.loc = loc
   }
 
-  static fromSyntaxError(error: any) {
+  public static fromSyntaxError(error: any) {
     return new this(error.message, null, {start: error.loc, end: error.loc})
   }
 
-  node: nodes.Node | null
-  loc:  SourceLocation
+  public node: nodes.Node | null
+  public loc:  SourceLocation
 }

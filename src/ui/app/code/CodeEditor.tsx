@@ -57,7 +57,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       <CodeMirror
         classNames={[$.codeEditor, hasErrors && $.withErrors, classNames]}
         mode='javascript'
-        value={programStore.code}
+        value={programStore.customerCode}
         onChange={this.onEditorChange}
 
         onCodeMirrorSetUp={cm => { this.setState({codeMirror: cm}) }}
@@ -165,7 +165,7 @@ export default class CodeEditor extends React.Component<Props, State> {
   // Events
 
   private onEditorChange = (value: string, change: EditorChange, doc: CMDoc) => {
-    programStore.code = value
+    programStore.customerCode = value
     programStore.errors = []
 
     simulatorStore.reset()

@@ -9,7 +9,7 @@ export interface Props {
 export default class Scene extends React.Component<Props> {
 
   public state = {
-    customerPosition: {x: 0, y: 0}
+    customerPosition: {x: 20, y: 20}
   }
 
   public render() {

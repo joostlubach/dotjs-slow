@@ -2,10 +2,13 @@ import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, colors, layout} from '@ui/styles'
 import {Panels} from '@ui/components'
-import {viewStateStore} from '@src/stores'
+import {viewStateStore, programStore} from '@src/stores'
+import Music from './Music'
 import Scene from './scene/Scene'
 import CodePanel from './code/CodePanel'
 import i18n from 'i18next'
+
+import scenarios from '@src/scenarios'
 
 export interface Props {
   classNames?: React.ClassNamesProp
@@ -14,20 +17,27 @@ export interface Props {
 @observer
 export default class App extends React.Component<Props> {
 
+  public componentWillMount() {
+    programStore.loadScenario(scenarios.synchronous)
+  }
+
   public render() {
     return (
-      <Panels
-        classNames={[$.app, this.props.classNames]}
-        main={this.renderCode()}
-        right={<Scene/>}
-        splitterSize={12}
-        initialSizes={viewStateStore.panelSizes}
-        minimumSizes={{left: 480}}
-        onPanelResize={sizes => { viewStateStore.panelSizes = sizes }}
+      <>
+        <Panels
+          classNames={[$.app, this.props.classNames]}
+          main={this.renderCode()}
+          right={<Scene/>}
+          splitterSize={12}
+          initialSizes={viewStateStore.panelSizes}
+          minimumSizes={{left: 480}}
+          onPanelResize={sizes => { viewStateStore.panelSizes = sizes }}
 
-        splitterClassNames={$.splitter}
-        panelClassNames={$.panel}
-      />
+          splitterClassNames={$.splitter}
+          panelClassNames={$.panel}
+        />
+        <Music/>
+      </>
     )
   }
 
@@ -56,13 +66,15 @@ const $ = jss({
 
   panel: {
     '& > *': {
-      ...layout.overlay
+      ...layout.overlay,
+      overflow: 'auto'
     }
   },
 
   code: {
     ...layout.overlay,
-    ...layout.flex.row
+    ...layout.flex.row,
+    overflow: 'auto'
   },
 
   codePanel: {

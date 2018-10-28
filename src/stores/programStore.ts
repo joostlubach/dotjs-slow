@@ -1,18 +1,27 @@
 import EventEmitter from 'events'
 import {observable, autorun, action} from 'mobx'
-import {Program, ProgramBuilder, CodeError} from '../program'
+import {Program, ProgramBuilder, CodeError, Scenario} from '../program'
 import simulatorStore from './simulatorStore'
+
+interface Code {
+  customer: string
+  server:   string
+  chef:     string
+}
 
 export class ProgramStore extends EventEmitter {
 
-  constructor() {
-    super()
-    // TODO
-    // autorun(() => { this.saveCode() })
-  }
+  @observable
+  public scenario: Scenario | null = null
 
   @observable
-  public code: string = ''
+  public customerCode: string = ''
+
+  @observable
+  public serverCode: string = ''
+
+  @observable
+  public chefCode: string = ''
 
   @observable
   public program: Program | null = null
@@ -23,27 +32,23 @@ export class ProgramStore extends EventEmitter {
   @observable
   public hasInfiniteLoop: boolean = false
 
-  // private loadCode(scenario: string) {
-  //   const codes = JSON.parse(window.localStorage.codes || '{}')
-  //   this.code = codes[scenario.name]
-  //   if (this.code == null) {
-  //     this.code = scenario.initialCode
-  //   }
+  @action
+  public loadScenario(scenario: Scenario) {
+    this.scenario = scenario
+    this.customerCode = scenario.code.customer
+    this.serverCode = scenario.code.server
+    this.chefCode = scenario.code.chef
 
-  //   simulatorStore.reset()
-  //   this.errors = []
-  //   this.program = null
-  //   this.hasInfiniteLoop = false
-  // }
-
-  // private saveCode() {
-
-  // }
+    simulatorStore.reset()
+    this.errors = []
+    this.program = null
+    this.hasInfiniteLoop = false
+  }
 
   @action
   public runAndSimulate(firstStepOnly: boolean = false) {
     // Create a new program.
-    const program = this.program = new Program(this.code)
+    const program = this.program = new Program(this.customerCode)
 
     // Run the program (record it). Stop if there's any compilation or runtime error.
     const success = this.runProgram(program)
@@ -64,7 +69,7 @@ export class ProgramStore extends EventEmitter {
     const builder = new ProgramBuilder(program)
 
     try {
-      const success = builder.build(this.code)
+      const success = builder.build()
       this.hasInfiniteLoop = false
       this.errors = builder.errors
 
