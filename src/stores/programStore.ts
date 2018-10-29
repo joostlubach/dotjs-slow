@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
-import {observable, autorun, action} from 'mobx'
-import {Program, ProgramBuilder, CodeError, Scenario} from '../program'
+import {observable, action} from 'mobx'
+import {Program, ProgramRecorder, CodeError, Scenario, Simulation} from '../program'
 import simulatorStore from './simulatorStore'
 
 interface Code {
@@ -24,9 +24,6 @@ export class ProgramStore extends EventEmitter {
   public chefCode: string = ''
 
   @observable
-  public program: Program | null = null
-
-  @observable
   public errors: CodeError[] = []
 
   @observable
@@ -41,43 +38,42 @@ export class ProgramStore extends EventEmitter {
 
     simulatorStore.reset()
     this.errors = []
-    this.program = null
     this.hasInfiniteLoop = false
   }
 
   @action
   public runAndSimulate(firstStepOnly: boolean = false) {
     // Create a new program.
-    const program = this.program = new Program(this.etienneCode)
+    const program = new Program(this.etienneCode)
 
-    // Run the program (record it). Stop if there's any compilation or runtime error.
-    const success = this.runProgram(program)
-    if (!success) { return }
+    // Record the program. Stop if there's any compilation or runtime error.
+    const simulation = this.recordProgram(program)
+    if (simulation == null) { return }
 
     // Prepare for simulation.
     simulatorStore.reset()
 
     // Run a simulation, displaying all steps.
-    simulatorStore.simulate(this.program!, firstStepOnly)
+    simulatorStore.simulate(simulation, firstStepOnly)
   }
 
   @action
-  private runProgram(program: Program) {
-    if (simulatorStore.active) { return false }
+  private recordProgram(program: Program): Simulation | null {
+    if (simulatorStore.active) { return null }
 
     // Use the students code to build the program.
-    const builder = new ProgramBuilder(program)
+    const recorder = new ProgramRecorder(program)
 
     try {
-      const success = builder.build()
+      const success = recorder.record()
       this.hasInfiniteLoop = false
-      this.errors = builder.errors
+      this.errors = program.errors
 
-      return success
+      return success ? recorder.simulation : null
     } catch (error) {
       if (error.name === 'InfiniteLoopException') {
         this.hasInfiniteLoop = true
-        return false
+        return null
       } else {
         throw error
       }

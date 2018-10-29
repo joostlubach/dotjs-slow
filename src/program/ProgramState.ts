@@ -2,9 +2,13 @@ import Program from './Program'
 import {cloneDeep} from 'lodash'
 
 export type Sprite = 'etienne' | 'server' | 'chef'
-export interface SpritePosition {
-  x: number
-  y: number
+export enum SpritePosition {
+  counterLeft,  // Starting point of server
+  counterRight, // Server next to chef
+  kitchen,      // Chef
+  entrance,     // Starting point of Etienne
+  counterFront, // Where Etienne places order
+  atTable       // Etienne waiting at a table
 }
 
 export default class ProgramState {
@@ -16,9 +20,9 @@ export default class ProgramState {
   public static get default() {
     return new ProgramState({
       spritePositions: {
-        etienne: {x: 20,  y: -20},
-        server:  {x: 20,  y: 100},
-        chef:    {x: -150, y: 100}
+        etienne: SpritePosition.entrance,
+        server:  SpritePosition.counterLeft,
+        chef:    SpritePosition.kitchen
       }
     })
   }

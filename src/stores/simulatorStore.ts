@@ -1,13 +1,9 @@
-import EventEmitter from 'events'
 import {observable, computed, action, autorun} from 'mobx'
-import {Simulator} from '@src/program'
-import {Program, ProgramState, ProgramScoring, Step} from '@src/program'
+import {Simulator, Simulation, Step, ProgramState} from '@src/program'
 
-export class SimulatorStore extends EventEmitter {
+export class SimulatorStore {
 
   constructor() {
-    super()
-
     autorun(() => {
       localStorage.verbose = JSON.stringify(this.verbose)
       if (this.simulator != null) {
@@ -54,9 +50,9 @@ export class SimulatorStore extends EventEmitter {
     } else if (
       this.simulator != null &&
       this.currentStepIndex != null && this.currentStepIndex < 0 &&
-      this.simulator.program.steps.length > 0
+      this.simulator.simulation.steps.length > 0
     ) {
-      return this.simulator.program.steps[0].startState
+      return this.simulator.simulation.steps[0].startState
     } else {
       return ProgramState.default
     }
@@ -101,12 +97,12 @@ export class SimulatorStore extends EventEmitter {
     this.running     = false
   }
 
-  /** Starts simulating a program. If a current simulation was in progress, it is terminated. */
+  /** Starts simulating a simulation. If a current simulation was in progress, it is terminated. */
   @action
-  public simulate(program: Program, firstStepOnly: boolean = false) {
+  public simulate(simulation: Simulation, firstStepOnly: boolean = false) {
     this.reset()
 
-    this.simulator = new Simulator(program)
+    this.simulator = new Simulator(simulation)
     this.simulator.fps = this.fps
     this.simulator.verbose = this.verbose
 
@@ -165,10 +161,9 @@ export class SimulatorStore extends EventEmitter {
   }
 
   @action
-  private onSimulatorDone = (scoring: ProgramScoring) => {
+  private onSimulatorDone = () => {
     this.done = true
     this.cleanUp()
-    this.emit('done', scoring)
   }
 
 }

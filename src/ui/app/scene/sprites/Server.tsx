@@ -15,7 +15,7 @@ export default function Server(props: SpriteProps) {
 }
 
 export const size = {
-  width:  145,
+  width:  168,
   height: 222
 }
 

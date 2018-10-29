@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
-import {Program, Step} from '.'
+import Simulation from './Simulation'
+import {Step} from '.'
 
 export interface Options {
   fps?:     number
@@ -9,12 +10,12 @@ export interface Options {
 export default class Simulator extends EventEmitter {
 
   constructor(
-    public readonly program: Program,
+    public readonly simulation: Simulation,
     options: Options = {}
   ) {
     super()
 
-    this.program = program
+    this.simulation = simulation
     Object.assign(this, options)
   }
 
@@ -32,7 +33,7 @@ export default class Simulator extends EventEmitter {
   }
 
   public get atEnd(): boolean {
-    return this.currentStepIndex === this.program.steps.length - 1
+    return this.currentStepIndex === this.simulation.steps.length - 1
   }
 
   //------
@@ -60,13 +61,13 @@ export default class Simulator extends EventEmitter {
   }
 
   public goTo(index: number) {
-    if (index < 0 || index >= this.program.steps.length) { return }
+    if (index < 0 || index >= this.simulation.steps.length) { return }
     this.displayStep(index, 0)
   }
 
   public displayStep(index: number, direction: number, callback: (() => void) | null = null) {
-    const step = this.program.steps[index]
-    if (index >= this.program.steps.length) {
+    const step = this.simulation.steps[index]
+    if (index >= this.simulation.steps.length) {
       this.emitDone()
       return
     }
@@ -74,7 +75,7 @@ export default class Simulator extends EventEmitter {
     this.currentStepIndex = index
 
     if (!this.verbose && direction !== 0 && step && !step.actionPerformed) {
-      // We're skipping steps that have not executed any program actions.
+      // We're skipping steps that have not executed any simulation actions.
       this.displayStep(index + direction, direction, callback)
     } else {
       this.emitStep(index, step)

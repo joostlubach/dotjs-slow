@@ -25,7 +25,7 @@ export default class Tables extends React.Component<Props> {
 
   private renderStools(rows: number, columns: number) {
     return times(rows, row => (
-      <div key={row} classNames={$.row}>
+      <div key={row} classNames={$.row} style={{transform: `translateX(${(rows - row) * 40}px)`}}>
         {times(columns, column => (
           <SVG key={column} classNames={$.table} name='table' size={tableSize}/>
         ))}

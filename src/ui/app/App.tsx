@@ -65,7 +65,7 @@ const $ = jss({
   },
 
   panel: {
-    overflow: 'auto',
+    overflow: 'hidden',
     '& > *': {
       ...layout.overlay,
     }

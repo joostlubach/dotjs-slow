@@ -20,10 +20,6 @@ type AllProps = Props & SizeMeProps
 @observer
 class Scene extends React.Component<AllProps> {
 
-  public state = {
-    etiennePosition: {x: 20, y: 20}
-  }
-
   public render() {
     return (
       <div classNames={[$.scene, this.props.classNames]}>
@@ -63,8 +59,9 @@ class Scene extends React.Component<AllProps> {
   }
 
   private renderSprite(Sprite: SpriteComponent, position: SpritePosition) {
+    const {x, y} = wellKnownPositions[position]
     return (
-      <Sprite {...position} sceneSize={this.props.size as Size} animated={true}/>
+      <Sprite x={x} y={y} sceneSize={this.props.size as Size} animated={true}/>
     )
   }
 
@@ -76,6 +73,15 @@ const orderHereSize = {
 }
 
 const stoveWidth = 140
+
+const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
+  [SpritePosition.counterLeft]:  {x: 20, y: 80},
+  [SpritePosition.counterRight]: {x: -180, y: 80},
+  [SpritePosition.kitchen]:      {x: -150, y: 80},
+  [SpritePosition.entrance]:     {x: 20, y: -20},
+  [SpritePosition.counterFront]: {x: 20, y: 220},
+  [SpritePosition.atTable]:      {x: 60, y: 360},
+}
 
 const $ = jss({
   scene: {
@@ -103,7 +109,7 @@ const $ = jss({
   stove: {
     position: 'absolute',
     top:      0,
-    bottom:   0,
+    bottom:   60,
     right:    0,
     width:    stoveWidth
   },
@@ -150,7 +156,7 @@ const $ = jss({
     top:      420,
     bottom:   40,
     left:     280,
-    right:    40
+    right:    80
   },
 
   orderHere: {
