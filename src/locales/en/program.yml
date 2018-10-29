@@ -1,0 +1,10 @@
+translation:
+  infinite_loop: |-
+    An infinite loop is a situation where your program keeps running
+    indefinitely.
+
+    This often happens when using a `for` or `while` loop. If you're using a loop, make sure that your
+    loop has a *stopping* condition, meaning that the `condition` in `while (condition) {...}` or
+    `for (...; condition; ...) {...}` should at some point become `false`.
+
+    Another possibility is that you call some function which calls itself.

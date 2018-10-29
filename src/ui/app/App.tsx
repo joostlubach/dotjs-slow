@@ -6,13 +6,12 @@ import {viewStateStore, programStore} from '@src/stores'
 import Music from './Music'
 import Scene from './scene/Scene'
 import CodePanel from './code/CodePanel'
+import TopBar from './TopBar'
 import i18n from 'i18next'
 
 import scenarios from '@src/scenarios'
 
-export interface Props {
-  classNames?: React.ClassNamesProp
-}
+export interface Props {}
 
 @observer
 export default class App extends React.Component<Props> {
@@ -23,10 +22,11 @@ export default class App extends React.Component<Props> {
 
   public render() {
     return (
-      <>
+      <div classNames={$.app}>
+        <TopBar classNames={$.topBar}/>
         <Panels
-          classNames={[$.app, this.props.classNames]}
-          main={this.renderCode()}
+          classNames={$.panels}
+          main={this.renderMain()}
           right={<Scene/>}
           splitterSize={12}
           initialSizes={viewStateStore.panelSizes}
@@ -37,11 +37,19 @@ export default class App extends React.Component<Props> {
           panelClassNames={$.panel}
         />
         <Music/>
-      </>
+      </div>
     )
   }
 
-  private renderCode() {
+  private renderMain() {
+    return (
+      <div classNames={$.main}>
+        {this.renderCodePanels()}
+      </div>        
+    )
+  }
+
+  private renderCodePanels() {
     return (
       <div classNames={$.code}>
         <CodePanel
@@ -50,7 +58,7 @@ export default class App extends React.Component<Props> {
           title={i18n.t('etienne')}
           tintColor={colors.etienne}
         />
-      </div>        
+      </div>
     )
   }
 
@@ -58,6 +66,19 @@ export default class App extends React.Component<Props> {
 
 const $ = jss({
   app: {
+    ...layout.overlay,
+    ...layout.flex.column,    
+  },
+
+  topBar: {
+    position: 'relative',
+    zIndex:   10,
+  },
+
+  panels: {
+    position: 'relative',
+    zIndex:   5,
+    flex:     [1, 0, 0]
   },
 
   splitter: {

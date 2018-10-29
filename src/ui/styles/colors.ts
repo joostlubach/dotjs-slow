@@ -3,6 +3,7 @@ import Color from 'color'
 export const transparent = new Color('transparent')
 export const white = new Color('white')
 export const black = new Color('black')
+export const gray  = new Color('#646464')
 export const red = new Color('#D22424')
 export const brown = new Color('#AE7320')
 export const green = new Color('#2F992E')
@@ -11,6 +12,7 @@ export const lightBlue = new Color('#6694CA')
 
 export const bg = {
   normal: black,
+  topBar: gray
 }
 
 export const fg = {

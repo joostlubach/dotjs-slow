@@ -71,7 +71,7 @@ export default class Panels extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div classNames={$.panels}>
+      <div classNames={[$.panels, this.props.classNames]}>
         {this.renderMain()}
         {this.props.left && this.renderPanel(Side.left)}
         {this.props.right && this.renderPanel(Side.right)}
@@ -215,9 +215,7 @@ export default class Panels extends React.Component<Props, State> {
 }
 
 const $ = jss({
-
   panels: {
-    ...layout.overlay,
   },
 
   main: {

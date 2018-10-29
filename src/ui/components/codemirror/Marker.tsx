@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import CodeMirror from 'codemirror'
 import cn from 'classnames'
 import {withCodeMirror, ContextProps} from './context'
@@ -21,13 +20,14 @@ class Marker extends React.Component<AllProps> {
   private marker: CodeMirror.TextMarker | null = null
 
   private addMarker(props: Props = this.props) {
-    const {from, to, classNames, startClassName, endClassName, options} = props
-    const {codeMirror} = this.context
+    const {codeMirror} = this.props
+    if (codeMirror == null) { return }
 
-    this.marker = codeMirror.markText(from, to, {
+    const {from, to, classNames, startClassName, endClassName, options} = props
+    this.marker = codeMirror.getDoc().markText(from, to, {
       className:  cn(classNames),
-      startStyle: startClassName == null ? null : cn(startClassName),
-      endStyle:   endClassName == null ? null : cn(endClassName),
+      startStyle: startClassName == null ? undefined : cn(startClassName),
+      endStyle:   endClassName == null ? undefined : cn(endClassName),
       ...options
     })
   }

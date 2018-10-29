@@ -1,5 +1,6 @@
 import {observable, computed, action, autorun} from 'mobx'
 import {Simulator, Simulation, Step, ProgramState} from '@src/program'
+import programStore from './programStore'
 
 export class SimulatorStore {
 
@@ -99,21 +100,36 @@ export class SimulatorStore {
 
   /** Starts simulating a simulation. If a current simulation was in progress, it is terminated. */
   @action
-  public simulate(simulation: Simulation, firstStepOnly: boolean = false) {
+  private createSimulator() {
+    const simulation = programStore.buildSimulation()
+    if (simulation == null) { return null }
+
+    const simulator  = new Simulator(simulation)
+    this.simulator = simulator
+
     this.reset()
 
-    this.simulator = new Simulator(simulation)
-    this.simulator.fps = this.fps
-    this.simulator.verbose = this.verbose
+    simulator.fps = this.fps
+    simulator.verbose = this.verbose
 
-    this.simulator.on('step', this.onSimulatorStep)
-    this.simulator.on('done', this.onSimulatorDone)
+    simulator.on('step', this.onSimulatorStep)
+    simulator.on('done', this.onSimulatorDone)
 
-    if (firstStepOnly) {
-      this.forward()
+    return simulator
+  }
+
+  private ensureSimulator() {
+    if (this.simulator == null) {
+      return this.createSimulator()
     } else {
-      this.resume()
+      return null
     }
+
+  }
+
+  @action
+  public run() {
+    this.resume()
   }
 
   /** Pauses the current simulation. */
@@ -128,34 +144,44 @@ export class SimulatorStore {
   /** Resumes the current simulation. */
   @action
   public resume() {
-    if (this.running || this.simulator == null) { return }
+    if (this.running) { return }
+
+    const simulator = this.ensureSimulator()
+    if (simulator == null) { return }
 
     this.running = true
-    this.simulator.resume()
+    simulator.resume()
   }
 
   @action
   public forward() {
-    if (this.running || this.simulator == null) { return }
-    
+    if (this.running) { return }
+
+    const simulator = this.ensureSimulator()
+    if (simulator == null) { return }
+
     this.running = true
-    this.simulator.forward(() => {
+    simulator.forward(() => {
       this.running = false
     })
   }
 
   @action
   public backward() {
-    if (this.running || this.simulator == null) { return }
+    if (this.running) { return }
+
+    const simulator = this.ensureSimulator()
+    if (simulator == null) { return }
 
     this.running = true
-    this.simulator.backward(() => {
+    simulator.backward(() => {
       this.running = false
     })
   }
 
   @action
   private onSimulatorStep = (index: number, step: Step | null) => {
+    console.log(index)
     this.currentStepIndex = index
     this.currentStep = step
   }

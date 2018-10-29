@@ -3,7 +3,7 @@ name: Synchronous
 code:
   etienne: |-
     etienne.onHungry = function () {
-      const server = waitInLine()
+      const server = restaurant.waitInLine()
 
       const hamburger = server.order([
         'cheese',

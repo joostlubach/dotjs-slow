@@ -12,16 +12,16 @@ type AllProps = Props & ContextProps
 
 class LineClass extends React.Component<AllProps> {
 
-  private addLineClass(props: Props = this.props) {
-    const {line, where, classNames} = props
-    const {codeMirror} = this.context
+  private addLineClass() {
+    const {codeMirror, line, where = 'text', classNames} = this.props
+    if (codeMirror == null) { return }
 
     codeMirror.addLineClass(line, where, cn(classNames))
   }
 
-  private removeLineClass(props: Props = this.props) {
-    const {line, where, classNames} = props
-    const {codeMirror} = this.context
+  private removeLineClass() {
+    const {codeMirror, line, where = 'text', classNames} = this.props
+    if (codeMirror == null) { return }
 
     codeMirror.removeLineClass(line, where, cn(classNames))
   }
@@ -34,9 +34,9 @@ class LineClass extends React.Component<AllProps> {
     this.removeLineClass()
   }
 
-  public componentWillReceiveProps(props: Props) {
+  public componentDidUpdate() {
     this.removeLineClass()
-    this.addLineClass(props)
+    this.addLineClass()
   }
 
   public shouldComponentUpdate(props: Props) {

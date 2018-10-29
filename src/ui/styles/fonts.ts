@@ -18,7 +18,7 @@ export const large = {
 
 export const monospace = {
   family: monospaceFamily,
-  size:   22
+  size:   18
 }
 
 export const codeLineHeight = '24px'

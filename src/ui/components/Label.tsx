@@ -18,8 +18,8 @@ export interface Props {
 }
 
 interface MarkupPart {
-  tag:        string
   text:       string
+  classNames: string[]
 }
 
 export default class Label extends React.Component<Props> {
@@ -54,7 +54,7 @@ export default class Label extends React.Component<Props> {
 
     return (
       <>
-        {parts.map(({tag, text}, index) => React.createElement(tag, {key: index}, text))}
+        {parts.map(({classNames, text}, index) => React.createElement('span', {key: index, classNames}, text))}
       </>
     )
   }
@@ -101,6 +101,14 @@ const $ = jss({
     color: colors.fg.dim
   },
 
+  underline: {
+    textDecoration: 'underline'
+  },
+
+  monospace: {
+    font: fonts.monospace
+  },
+
   truncate: {
     whiteSpace:   'nowrap',
     overflow:     'hidden',
@@ -109,25 +117,69 @@ const $ = jss({
   }
 })
 
+interface ParserState {
+  pos:        number
+  classNames: Set<string>
+}
+
+interface Boundary {
+  index:     number
+  start:     number
+  end:       number
+  className: string
+}
+
+const matchers: Array<[string, string]> = [
+  ['**', $.bold],
+  ['++', $.underline],
+  ['`',  $.monospace]
+]
+
 function parseMarkup(text: string): MarkupPart[] {
-  const re = /\*.*?\*/
-  const parts = []
+  const state: ParserState  = {pos: 0, classNames: new Set()}
+  const parts: MarkupPart[] = []
 
-  let remaining = text
-  for (let match = remaining.match(re); match != null; match = remaining.match(re)) {
-    const {index} = match
-    if (index == null) { break }
+  const findNextBoundary = () => {
+    const remaining = text.slice(state.pos)
 
-    if (index > 0) {
-      parts.push({tag: 'span', text: remaining.slice(0, index)})
+    const occurrences = matchers
+      .map(([boundary, className], index): Boundary | null => {
+        const start = remaining.indexOf(boundary)
+        if (start === -1) { return null }
+
+        return {
+          index,
+          start: state.pos + start,
+          end:   state.pos + start + boundary.length,
+          className
+        }
+      }).filter(Boolean) as Boundary[]
+    if (occurrences.length === 0) { return null }
+
+    occurrences.sort((a, b) => a.start === b.start ? a.index - b.index : a.start - b.start)
+    return occurrences[0]
+  }
+  const toggleStyle = (className: string) => {
+    if (state.classNames.has(className)) {
+      state.classNames.delete(className)
+    } else {
+      state.classNames.add(className)
     }
-
-    parts.push({tag: 'em', text: match[0].slice(1, -1)})
-    remaining = remaining.slice(index + match[0].length)
   }
 
-  if (remaining.length > 0) {
-    parts.push({tag: 'span', text: remaining})
+  while (state.pos < text.length) {
+    const nextBoundary = findNextBoundary()
+    if (nextBoundary == null) {
+      parts.push({classNames: [...state.classNames], text: text.slice(state.pos)})
+      state.pos = text.length
+    } else {
+      if (nextBoundary.start > state.pos) {
+        parts.push({classNames: [...state.classNames], text: text.slice(state.pos, nextBoundary.start)})
+      }
+
+      toggleStyle(nextBoundary.className)
+      state.pos = nextBoundary.end
+    }
   }
 
   return parts

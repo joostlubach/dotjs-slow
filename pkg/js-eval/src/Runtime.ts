@@ -542,6 +542,7 @@ export default class Runtime {
       }
     } else if (left.type === 'MemberExpression') {
       const {object: receiver, property} = this.evaluateMemberExpression(left)
+
       try {
         receiver[property] = value
       } catch (error) {

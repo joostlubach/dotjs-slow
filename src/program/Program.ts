@@ -6,7 +6,6 @@ import * as walk from 'acorn/dist/walk'
 import {CodeError, Recordable, RecordableNode} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
-import Actor from './Actor'
 
 export default class Program {
 
@@ -31,9 +30,11 @@ export default class Program {
       })
       markRecordableNodes(ast)
       this.ast = ast
+      return true
     } catch (error) {
       if (error.name !== 'SyntaxError') { throw error }
       this.errors.push(CompileError.fromSyntaxError(error))
+      return false
     }
   }
 
@@ -49,20 +50,19 @@ export default class Program {
 
     try {
       const runtime = this.createRuntime(callbacks)
-      this.createActors()
-      runtime.context.assign(this.actors)
+
+      // Set everything up
+      this.prepare(runtime)
+
+      // Evaluate the program.
       runtime.evaluate(this.ast)
+
+      // "Commit" by invoking Etienne's onHungry handler.
+      this.commit(runtime)
+      
       return true
     } catch (error) {
-      if (isCodeError(error)) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(error) // tslint:disable-line no-console
-        }
-        this.errors.push(error)
-      } else {
-        throw error
-      }
-
+      this.handleError(error)
       return false
     }
   }
@@ -72,9 +72,32 @@ export default class Program {
       source: this.code,
       callbacks: {
         ...callbacks,
-        node: this.onNode.bind(null, callbacks.node)
+        node: node => this.onNode(node, callbacks.node)
       }
     })
+  }
+
+  private prepare(runtime: Runtime) {
+    this.createActors()
+    runtime.context.assign(this.actors)
+  }
+
+  private commit(runtime: Runtime) {
+    const {etienne} = this.actors
+    if (etienne.onHungry) {
+      etienne.onHungry()
+    }
+  }
+
+  private handleError(error: Error) {
+    if (isCodeError(error)) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(error) // tslint:disable-line no-console
+      }
+      this.errors.push(error)
+    } else {
+      throw error
+    }
   }
 
   private onNode = (node: Node, upstream?: Callbacks['node']) => {
@@ -92,9 +115,10 @@ export default class Program {
 
   private state: ProgramState = ProgramState.default
 
-  private actors: {[name: string]: Actor} = {}
+  private actors!: {[name in keyof ActorClasses]: InstanceType<ActorClasses[name]>}
 
   private createActors() {
+    this.actors = {} as {[name in keyof ActorClasses]: InstanceType<ActorClasses[name]>}
     for (const [name, Actor] of Object.entries(ActorClasses)) {
       this.actors[name] = new Actor(this.state)
     }

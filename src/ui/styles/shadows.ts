@@ -24,8 +24,9 @@ function shadowCreator(base: Overrides) {
   }
 }
 
-export const shallow = shadowCreator({y: 3, radius: 5, color: colors.shadow.alpha(0.04)})
-export const medium  = shadowCreator({y: 4, radius: 14, color: colors.shadow.alpha(0.03)})
-export const deep    = shadowCreator({y: 10, radius: 30, color: colors.shadow.alpha(0.05)})
+export const shallow = shadowCreator({y: 3, radius: 5, color: colors.shadow.alpha(0.4)})
+export const medium  = shadowCreator({y: 4, radius: 14, color: colors.shadow.alpha(0.3)})
+export const deep    = shadowCreator({y: 10, radius: 30, color: colors.shadow.alpha(0.5)})
 
 export const focus   = [0, 0, 0, 2, colors.focus]
+export const modal   = deep({color: colors.shadow.alpha(0.3)})

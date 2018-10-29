@@ -42,19 +42,19 @@ export class ProgramStore extends EventEmitter {
   }
 
   @action
-  public runAndSimulate(firstStepOnly: boolean = false) {
+  public buildSimulation() {
     // Create a new program.
     const program = new Program(this.etienneCode)
+    if (!program.compile()) {
+      this.errors = program.errors
+      return null
+    }
 
     // Record the program. Stop if there's any compilation or runtime error.
     const simulation = this.recordProgram(program)
     if (simulation == null) { return }
 
-    // Prepare for simulation.
-    simulatorStore.reset()
-
-    // Run a simulation, displaying all steps.
-    simulatorStore.simulate(simulation, firstStepOnly)
+    return simulation
   }
 
   @action

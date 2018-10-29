@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {observer} from 'mobx-react'
-import {CodeMirror, Marker, Gutter, GutterMarker, LineWidget, LineClass} from '@ui/components/codemirror'
+import {CodeMirror, Marker, Gutter, GutterMarker, LineWidget} from '@ui/components/codemirror'
 import {jss, jssKeyframes, colors, layout, fonts} from '@ui/styles'
 import {programStore, simulatorStore} from '@src/stores'
 import {CodeError} from '@src/program'
@@ -8,6 +8,7 @@ import {Position} from 'estree'
 import {Editor as CMEditor, EditorChange, Doc as CMDoc, Position as CMPosition} from 'codemirror'
 
 import 'codemirror/mode/javascript/javascript'
+import {Label} from '@ui/components'
 
 export interface Props {
   classNames?: React.ClassNamesProp
@@ -155,7 +156,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     return errors.map((error, index) => {
       return (
         <LineWidget key={`${line}-${index}`} line={line} classNames={$.errorLineWidget}>
-          <div>{error.message}</div>
+          <Label markup>{error.message}</Label>
         </LineWidget>
       )
     })

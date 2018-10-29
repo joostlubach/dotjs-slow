@@ -11,7 +11,7 @@ export interface Props {
   options?: AnyObject,
 
   classNames?: React.ClassNamesProp,
-  children?:  React.ReactNode
+  children?:   React.ReactNode
 }
 
 type AllProps = Props & ContextProps
@@ -24,14 +24,14 @@ class LineWidget extends React.Component<AllProps> {
   //------
   // Element
 
-  private create(props: Props = this.props) {
-    const {codeMirror} = this.context
-    const {line, options} = props
-
+  private create() {
+    const {codeMirror, line, options} = this.props
+    if (codeMirror == null) { return }
+    
     this.element = document.createElement('div')
     this.widget = codeMirror.addLineWidget(line, this.element, options)
 
-    this.rerender(props)
+    this.rerender()
   }
 
   private destroy() {
@@ -53,12 +53,12 @@ class LineWidget extends React.Component<AllProps> {
     this.destroy()
   }
 
-  public componentWillReceiveProps(props: Props) {
-    if (props.line !== this.props.line) {
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.line !== prevProps.line) {
       this.destroy()
-      this.create(props)
+      this.create()
     } else {
-      this.rerender(props)
+      this.rerender()
     }
   }
 
@@ -72,11 +72,11 @@ class LineWidget extends React.Component<AllProps> {
     return false
   }
 
-  private rerender(props: Props) {
+  private rerender() {
     const {element, widget} = this
     if (element == null || widget == null) { return }
 
-    renderSubtreeIntoContainer(this, this.renderWidget(props), element)
+    renderSubtreeIntoContainer(this, this.renderWidget(), element)
     try {
       widget.changed()
     } catch (_) {
@@ -92,8 +92,8 @@ class LineWidget extends React.Component<AllProps> {
     return null
   }
 
-  private renderWidget(props: Props) {
-    const {classNames, onTap, children} = props
+  private renderWidget() {
+    const {classNames, onTap, children} = this.props
     const Component = onTap != null ? Tappable : 'div'
     const tapProps = onTap != null ? {onTap} : {}
 
