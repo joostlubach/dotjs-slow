@@ -26,7 +26,7 @@ export default class CodePanels extends React.Component<Props, State> {
 
   public componentWillReact() {
     const step = simulatorStore.currentStep
-    const firstError = programStore.errors[0]
+    const firstError = programStore.errors.length > 0 ? programStore.errors[0] : null
     const codeLocation =
       firstError != null ? firstError.loc :
       step != null ? step.codeLocation :

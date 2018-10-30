@@ -54,4 +54,14 @@ export default class Scope {
     }
   }
 
+  public resolveReceiver(): any {
+    if (this.receiver != null) {
+      return this.receiver
+    } else if (this.parent != null) {
+      return this.parent.resolveReceiver()
+    } else {
+      return null
+    }
+  }
+
 }

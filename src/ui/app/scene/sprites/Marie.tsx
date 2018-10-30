@@ -8,6 +8,7 @@ import {SVGName} from '@ui/components/SVG'
 export default function Marie(props: SpriteProps) {
   const image = select<SVGName>(props.face, {
     blush:   'marie-blush',
+    angry:   'marie-angry',
     default: 'marie'
   })
 

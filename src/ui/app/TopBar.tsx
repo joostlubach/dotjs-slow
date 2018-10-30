@@ -258,7 +258,8 @@ const $ = jss({
       padding:      [layout.padding.inline.s, layout.padding.inline.m],
       paddingRight: layout.padding.inline.m + 20,
 
-      font: fonts.normal,
+      font:      fonts.normal,
+      transform: 'skew(-2deg)',
 
       background: {
         image:    'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAgCAYAAABpRpp6AAAABGdBTUEAALGPC/xhBQAAAVBJREFUWAntlTFIQlEUhjWUIogEhyAEoammwE2HcGmJpsY2aWt1C9pa3cRNcMhJaHITIlqaaoiGaKmWaKhBwYRM7TvoAREFn75XbzgHPu9/7z3n3MMP8gIBC3PAHDAHzAFzwBzoO1BieYa9/taV3w26nMOxK91Gmtyy70EbMiN3s2wTFL2D9BQjXI8YHR9AHhBOYNbYpbAB0qcOafAkInS9Bh06j15w+NIh+d+DHm+s2w7rHacvUXEBOnQFvThllyx53UHtI2t8yrq508TVAujQV+hVmBRBLnKg+Tfo6KRkL89Ph4a4R6+PeSzMWXkor4peHpP3Z0dHvPQD4t4rbIHGCqIG6mwRHdLL/1z3ebwJMtgnpGAN7kCHPUP7KpJM8wEy4BeI26I74MmHgb5zxyYdXkBdbaEPwNchf7xLeIIdX09qw5kD5oA5YA6YA75z4BeXDkVZW8aK0AAAAABJRU5ErkJggg==")',

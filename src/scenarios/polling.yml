@@ -8,14 +8,18 @@ codes:
 
       server.orderAsync('🍔', [
         '🧀',
+        '🧀',
         '🍅',
         '🥓'
       ])
 
       let hamburger
       while (hamburger == null) {
+        this.waitAtTable()
         hamburger = server.checkDone()
       }
+
+      this.eat(hamburger)
     }
 
   marie: |-

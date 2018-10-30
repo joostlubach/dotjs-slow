@@ -52,7 +52,8 @@ const $ = jss({
   },
 
   icon: {
-    filter: `drop-shadow(2px 2px 0 ${colors.shadow.alpha(0.5)})`,
+    filter:    `drop-shadow(2px 2px 0 ${colors.shadow.alpha(0.5)})`,
+    transform: 'skew(-2deg)',
 
     fill: colors.white,
     '&:hover': {

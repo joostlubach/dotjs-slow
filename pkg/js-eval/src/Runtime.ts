@@ -392,7 +392,7 @@ export default class Runtime {
   }
 
   private evaluate_ThisExpression(node: nodes.ThisExpression) {
-    return this.currentScope.receiver
+    return this.currentScope.resolveReceiver()
   }
 
   //------

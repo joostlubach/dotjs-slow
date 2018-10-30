@@ -27,8 +27,8 @@ class Scene extends React.Component<AllProps> {
         {this.renderSprite(sprites.Marie, simulatorStore.state.sprites.marie)}
         {this.renderSprite(sprites.Chef, simulatorStore.state.sprites.chef)}
         {this.renderBar()}
-        {this.renderTables()}
         {this.renderSprite(sprites.Etienne, simulatorStore.state.sprites.etienne)}
+        {this.renderTables()}
       </div>
     )
   }
@@ -90,7 +90,7 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.kitchen]:      {x: -150, y: 80},
   [SpritePosition.entrance]:     {x: 20, y: -20},
   [SpritePosition.counterFront]: {x: 20, y: 220},
-  [SpritePosition.atTable]:      {x: 60, y: 360},
+  [SpritePosition.atTable]:      {x: 420, y: 270},
 }
 
 const $ = jss({

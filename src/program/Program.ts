@@ -6,10 +6,16 @@ import * as walk from 'acorn/dist/walk'
 import {CodeError, Recordable, RecordableNode, Source} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
+import {flatten} from 'lodash'
 
 export interface Callbacks {
   node?:          (node: Node) => any
-  stateModified?: (prevState: ProgramState, nextState: ProgramState) => any
+  stateModified?: (prevState: ProgramState, nextState: ProgramState, added: boolean) => any
+}
+
+export interface Fork {
+  startStateIndex: number
+  workerFunction:  () => any
 }
 
 export default class Program {
@@ -58,7 +64,7 @@ export default class Program {
       type:       'Program',
       sourceType: 'script',
 
-      body: programNodes.map(node => node.body[0]),
+      body: flatten(programNodes.map(node => node.body)),
 
       loc: {
         start: {line: 1, column: 0},
@@ -100,6 +106,12 @@ export default class Program {
 
       // "Commit" by invoking Etienne's onHungry handler.
       this.commit(runtime)
+
+      // Execute all forks.
+      while (this.forks.length > 0) {
+        const fork = this.forks.pop()!
+        this.executeFork(fork)
+      }
       
       return true
     } catch (error) {
@@ -122,7 +134,11 @@ export default class Program {
   }
 
   private prepare(runtime: Runtime) {
+    this.states     = [ProgramState.default]
+    this.stateIndex = 0
+    this.forks      = []
     this.createActors()
+
     runtime.context.assign(this.actors)
     runtime.context.assign({console, Math})
   }
@@ -156,7 +172,8 @@ export default class Program {
   //------
   // Program state & actors
 
-  private state: ProgramState = ProgramState.default
+  private states: ProgramState[] = [ProgramState.default]
+  private stateIndex: number = 0
 
   private actors!: {[name in keyof ActorClasses]: InstanceType<ActorClasses[name]>}
 
@@ -173,18 +190,49 @@ export default class Program {
   }
 
   public getState() {
-    return this.state
+    return this.states[this.stateIndex]
   }
 
   public modifyState(callback: (state: ProgramState) => any) {
-    const prevState = this.state
+    const prevState = this.states[this.stateIndex]
 
-    this.state = this.state.clone()
-    callback(this.state)
+    let nextStates: ProgramState[]
+    let added: boolean
+    if (this.stateIndex < this.states.length - 1) {
+      // We're executing a fork and we can reuse an earlier state. Modify all future states but advance one.
+      this.stateIndex += 1
+      nextStates = this.states.slice(this.stateIndex)
+      added = false
+    } else {
+      // We're at the end, clone the previous state and add it to the list.
+      nextStates = [prevState.clone()]
+      this.states.push(...nextStates)
+      this.stateIndex = this.states.length - 1 
+      added = true
+    }
+
+    for (const state of nextStates) {
+      callback(state)
+    }
 
     if (this.currentCallbacks.stateModified) {
-      this.currentCallbacks.stateModified(prevState, this.state)
+      this.currentCallbacks.stateModified(prevState, nextStates[0], added)
     }    
+  }
+
+  //------
+  // Forks
+
+  private forks: Fork[] = []
+
+  public fork(workerFunction: () => any) {
+    const startStateIndex = this.stateIndex
+    this.forks.push({startStateIndex, workerFunction})
+  }
+
+  private executeFork(fork: Fork) {
+    this.stateIndex = fork.startStateIndex
+    fork.workerFunction()
   }
 
 }

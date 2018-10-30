@@ -15,63 +15,37 @@ export default class ProgramRecorder {
 
   public readonly simulation = new Simulation()
 
+  private currentNode: Node | null = null
+
   public record() {
-    this.startRecording()
-    const success = this.program.run({
+    this.prepareRecording()
+
+    return this.program.run({
       node:          this.onNode,
       stateModified: this.onStateModified
     })
-    this.stopRecording()
+  }
 
-    return success
+  private prepareRecording() {
+    this.simulation.reset()
+    this.currentNode = null
   }
 
   private onNode = (node: Node) => {
-    // console.log('record', node.type, node.loc)
     if ((node as RecordableNode).recordable) {
-      this.recordStep(node.loc || null)
+      this.currentNode = node
     }
   }
 
-  private onStateModified = (prevState: ProgramState, nextState: ProgramState) => {
-    // If the state is modified twice, we need to add a new step. This is the case if prevState is not the
-    // current step's start state.
-    if (this.recordingStep != null && prevState !== this.recordingStep.startState) {
-      this.recordingStep.endState = prevState
+  private onStateModified = (prevState: ProgramState, nextState: ProgramState, added: boolean) => {
+    if (!added) { return }
 
-      const step = {...this.recordingStep, startState: prevState, endState: nextState}
-      this.simulation.addStep(step)
-      this.recordingStep = step
+    const step: Step = {
+      codeLocation: this.currentNode != null && this.currentNode.loc || null,
+      startState:   prevState,
+      endState:     nextState
     }
-  }
-
-  //------
-  // Recording
-
-  private recordingStep: Step | null = null
-
-  private startRecording() {
-    this.simulation.reset()
-    this.recordingStep = null
-  }
-
-  private recordStep(codeLocation: SourceLocation | null): Step {
-    const state = this.program.getState()
-    if (this.recordingStep != null) {
-      this.recordingStep.endState = state
-    }
-
-    const step = {codeLocation, startState: state, endState: state}
     this.simulation.addStep(step)
-    this.recordingStep = step
-    return step
-  }
-
-  public stopRecording() {
-    if (this.recordingStep == null) { return }
-
-    this.recordingStep.endState = this.program.getState()
-    this.recordingStep = null
   }
 
 }

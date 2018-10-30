@@ -6,13 +6,15 @@ codes:
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      const hamburger = server.orderCallback('🍔', [
+      server.orderCallback('🍔', [
         '🧀',
         '🍅',
         '🥓'
       ], hamburger => {
         this.eat(hamburger)  
       })
+
+      this.waitAtTable()
     }
 
   marie: |-
