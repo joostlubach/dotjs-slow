@@ -10,6 +10,7 @@ export default function Marie(props: SpriteProps) {
       size={size}
       classNames={$.server}
       balloonOffset={{top: -30, left: 130}}
+      handOffset={{top: 62, left: 139}}
       {...props}
     />
   )

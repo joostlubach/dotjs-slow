@@ -4,6 +4,7 @@ export interface SpriteProps {
   x:         number
   y:         number
   speak?:    string | null
+  hold?:     string | null
   flipped?:  boolean
   dance?:    boolean
   sceneSize: Size

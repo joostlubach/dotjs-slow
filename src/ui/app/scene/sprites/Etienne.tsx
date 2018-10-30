@@ -8,6 +8,7 @@ export default function Etienne(props: SpriteProps) {
       image='etienne'
       size={size}
       balloonOffset={{top: -40, left: 100}}
+      handOffset={{top: 88, left: 66}}
       {...props}
     />
   )

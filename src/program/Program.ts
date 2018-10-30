@@ -117,6 +117,7 @@ export default class Program {
   private prepare(runtime: Runtime) {
     this.createActors()
     runtime.context.assign(this.actors)
+    runtime.context.assign({console, Math})
   }
 
   private commit(runtime: Runtime) {

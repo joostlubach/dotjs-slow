@@ -6,6 +6,7 @@ export type Sprite = 'etienne' | 'marie' | 'chef'
 export interface SpriteState {
   position: SpritePosition
   speak:    string | null
+  hold:     string | null
   flipped:  boolean
   dance:    boolean
 }
@@ -19,10 +20,19 @@ export enum SpritePosition {
   atTable       // Etienne waiting at a table
 }
 
+export interface StoveState {
+  panContent: string | null
+}
+
+const defaultStoveState = {
+  panContent: null
+}
+
 function defaultSpriteState(position: SpritePosition) {
   return {
     position,
     speak:   null,
+    hold:    null,
     flipped: false,
     dance:   true
   }
@@ -36,6 +46,7 @@ export default class ProgramState {
 
   public static get default() {
     return new ProgramState({
+      stove:   defaultStoveState,
       sprites: {
         etienne: defaultSpriteState(SpritePosition.entrance),
         marie:   defaultSpriteState(SpritePosition.counterLeft),
@@ -49,10 +60,7 @@ export default class ProgramState {
     return new ProgramState(values)
   }
 
+  public stove!: StoveState
   public sprites!: {[key in Sprite]: SpriteState} 
-
-  public prepare() {
-    // TODO
-  }
 
 }

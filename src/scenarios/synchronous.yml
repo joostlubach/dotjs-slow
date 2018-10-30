@@ -5,7 +5,7 @@ codes:
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      const hamburger = server.order('🍔', [
+      const hamburger = server.orderSync('🍔', [
         '🧀',
         '🍅',
         '🥓'
@@ -16,11 +16,19 @@ codes:
   marie: |-
     marie.onOrder = function (what, condiments) {
       if (what === '🍔') {
-        return chef.requestHamburger(condiments)
+        return chef.requestHamburgerSync(condiments)
       }
     }
 
   chef: |-
     chef.onRequestHamburger = function(condiments) {
-      return {type: '🍔', condiments}
+      const rawPatty = this.takePatty()
+      const patty = this.cook(rawPatty)
+
+      const bun = this.takeBun()
+      const extra = condiments.map(condiment =>
+        this.takeCondiment(condiment)
+      )
+      
+      return this.makeHamburger(patty, bun, extra)
     }

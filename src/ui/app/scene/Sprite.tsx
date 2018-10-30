@@ -12,10 +12,12 @@ export interface Props {
   sceneSize: Size
 
   speak?:   string | null
+  hold?:    string | null
   dance?:   boolean
   flipped?: boolean
 
-  balloonOffset: {left: number, top: number}
+  balloonOffset: React.CSSProperties
+  handOffset:    React.CSSProperties
   
   classNames?: React.ClassNamesProp
 }
@@ -49,6 +51,7 @@ export default class Sprite extends React.Component<Props> {
         <div classNames={dance && $.dance}>
           <SVG name={image} size={size}/>
           {this.renderSpeak()}
+          {this.renderHold()}
         </div>
       </div>
     )
@@ -74,6 +77,21 @@ export default class Sprite extends React.Component<Props> {
         <div style={labelStyle}>
           <Label>{speak}</Label>
         </div>
+      </div>
+    )
+  }
+
+  private renderHold() {
+    const {hold, handOffset} = this.props
+    if (hold == null) { return null }
+
+    const style: React.CSSProperties = {
+      ...handOffset
+    }
+
+    return (
+      <div classNames={$.hold} style={style}>
+        <Label classNames={$.holdLabel}>{hold}</Label>
       </div>
     )
   }
@@ -125,5 +143,16 @@ const $ = jss({
     position: 'absolute',
     bottom:   -6,
     left:     -18
+  },
+
+  hold: {
+    position:   'absolute',
+    height:     32
+  },
+
+  holdLabel: {
+    fontFamily:  'sans-serif',
+    fontSize:    28,
+    lineHeight:  '32px'
   }
 })

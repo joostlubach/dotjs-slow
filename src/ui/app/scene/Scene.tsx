@@ -68,6 +68,7 @@ class Scene extends React.Component<AllProps> {
         sceneSize={this.props.size as Size}
         flipped={state.flipped}
         speak={state.speak}
+        hold={state.hold}
         dance={state.dance}
       />
     )

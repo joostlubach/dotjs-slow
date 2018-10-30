@@ -10,6 +10,7 @@ export default function Chef(props: SpriteProps) {
       size={size}
       classNames={$.chef}
       balloonOffset={{top: -30, left: 90}}
+      handOffset={{top: 34, left: 112}}
       {...props}
     />
   )
