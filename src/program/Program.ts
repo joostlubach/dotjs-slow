@@ -7,6 +7,7 @@ import {CodeError, Recordable, RecordableNode, Source} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
 import {flatten} from 'lodash'
+import FakePromise from './FakePromise'
 
 export interface Callbacks {
   node?:          (node: Node) => any
@@ -125,7 +126,6 @@ export default class Program {
 
   private createRuntime(callbacks: Callbacks = {}) {
     return new Runtime({
-      source: this.codes.etienne,
       callbacks: {
         ...callbacks,
         node: node => this.onNode(node, callbacks.node)
@@ -140,7 +140,7 @@ export default class Program {
     this.createActors()
 
     runtime.context.assign(this.actors)
-    runtime.context.assign({console, Math})
+    runtime.context.assign({console, Math, Promise: FakePromise})
   }
 
   private commit(runtime: Runtime) {
@@ -153,10 +153,20 @@ export default class Program {
       if (process.env.NODE_ENV === 'development') {
         console.error(error) // tslint:disable-line no-console
       }
+      // const sourceCode = this.nodeSourceCode((error as any).node)
+      // error.message = `This ${error.message}`
       this.errors.push(error)
     } else {
       throw error
     }
+  }
+
+  private nodeSourceCode(node: Node & {start?: number, end?: number}): string | null {
+    const {loc} = node
+    if (loc == null || loc.source == null) { return null }
+
+    const code = (this.codes as any)[loc.source]
+    return code.slice(node.start, node.end)
   }
 
   private onNode = (node: Node, upstream?: Callbacks['node']) => {

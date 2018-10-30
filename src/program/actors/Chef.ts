@@ -1,5 +1,6 @@
 import Actor, {Variant} from '../Actor'
 import {SpritePosition} from '@src/program'
+import Promise from '../FakePromise'
 
 export default class Chef extends Actor {
 
@@ -43,6 +44,25 @@ export default class Chef extends Actor {
     })
 
     this.postRequestHamburgerAsync('callback')
+  }
+
+  public requestHamburgerPromise(condiments: string[]) {
+    this.preRequestHamburger(condiments, 'promise')
+
+    const promise = new Promise(resolve => {
+      this.program.fork(() => {
+        if (this.onRequestHamburger) {
+          this.onRequestHamburger(condiments)
+            .then((order: string) => {
+              this.postRequestHamburger('promise')
+              resolve(order)
+            })
+        }
+      })
+    })
+
+    this.postRequestHamburgerAsync('promise')
+    return promise
   }
 
   private preRequestHamburger(condiments: string[], variant: Variant) {
@@ -89,17 +109,31 @@ export default class Chef extends Actor {
         state.sprites.marie.face = 'happy'
         state.sprites.chef.speak = '👍'
       })
+    } else if (variant === 'promise') {
+      this.program.modifyState(state => {
+        state.sprites.marie.speak = null
+        state.sprites.chef.speak = '👍'
+      })
     }
   }
 
   private postRequestHamburgerAsync(variant: Variant) {
     this.program.modifyState(state => {
       state.sprites.chef.speak = '🕐'
+
+      if (variant === 'promise') {
+        state.sprites.chef.hold = 'pager'
+      }
     })
 
     this.program.modifyState(state => {
       state.sprites.marie.speak = '👍'
       state.sprites.chef.speak   = null
+
+      if (variant === 'promise') {
+        state.sprites.chef.hold = null
+        state.sprites.marie.hold = 'pager'
+      }
     })
   }
 
@@ -151,6 +185,10 @@ export default class Chef extends Actor {
         state.sprites.marie.hold = order
         state.sprites.marie.speak = null
         state.sprites.marie.position = SpritePosition.counterLeft
+      })
+    } else if (variant === 'promise') {
+      this.program.modifyState(state => {
+        state.sprites.etienne.hold = 'pager-active'
       })
     }
   }

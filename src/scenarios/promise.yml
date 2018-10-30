@@ -15,17 +15,19 @@ codes:
       promise.then(hamburger => {
         this.eat(hamburger)
       })
+
+      this.waitAtTable()
     }
 
   marie: |-
-    marie.onOrder = function (what, condiments, callback) {
+    marie.onOrder = function (what, condiments) {
       if (what === '🍔') {
         return chef.requestHamburgerPromise(condiments)
       }
     }
 
   chef: |-
-    chef.onRequestHamburger = function(condiments, callback) {
+    chef.onRequestHamburger = function(condiments) {
       return new Promise(resolve => {
         const rawPatty = this.takePatty()
         const patty = this.cook(rawPatty)

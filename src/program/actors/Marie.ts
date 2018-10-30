@@ -47,6 +47,21 @@ export default class Marie extends Actor {
     this.postOrderAsync('callback')
   }
 
+  public orderPromise(what: string, condiments: string[]) {
+    this.preOrder(what, condiments, 'promise')
+
+    this.checkCount = 0
+
+    let promise: Promise<string | null> = Promise.resolve(null)
+    if (this.onOrder) {
+      promise = this.onOrder(what, condiments)
+      promise.then(() => { this.postOrder('promise') })
+    }
+
+    this.postOrderAsync('promise')
+    return promise
+  }
+
   private preOrder(what: string, condiments: string[], variant: Variant) {
     // 1. Etienne orders
     this.program.modifyState(state => {
@@ -93,6 +108,11 @@ export default class Marie extends Actor {
         state.sprites.etienne.face = 'happy'
         state.sprites.marie.speak = '👍'
       })
+    } else if (variant === 'promise') {
+      this.program.modifyState(state => {
+        state.sprites.etienne.speak = null
+        state.sprites.marie.speak = '👍'
+      })
     }
   }
 
@@ -101,11 +121,20 @@ export default class Marie extends Actor {
       state.sprites.marie.flipped  = false
       state.sprites.marie.position = SpritePosition.counterLeft
       state.sprites.marie.speak    = '🕐'
+
+      if (variant === 'promise') {
+        state.sprites.marie.hold = 'pager'
+      }
     })
 
     this.program.modifyState(state => {
       state.sprites.etienne.speak = '👍'
       state.sprites.marie.speak   = null
+
+      if (variant === 'promise') {
+        state.sprites.marie.hold = null
+        state.sprites.etienne.hold = 'pager'
+      }
     })
   }
 
@@ -162,6 +191,12 @@ export default class Marie extends Actor {
         state.sprites.etienne.hold = order
         state.sprites.etienne.speak = null
       })
+    } else if (variant === 'promise') {
+      this.program.modifyState(state => {
+        state.sprites.etienne.hold = '🍔'
+        state.sprites.chef.hold = null
+      })
+
     }
   }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="102px" height="102px" viewBox="0 0 102 102" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>pager</title>
+    <desc>Created with sketchtool.</desc>
+    <defs/>
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="pager">
+            <g id="!pager">
+                <circle id="Oval-5-Copy-2" fill="#611C1C" cx="51" cy="51" r="51"/>
+                <circle id="Oval-5-Copy" fill="#EAE078" cx="51" cy="51" r="38"/>
+                <circle id="Oval-5" fill="#000000" cx="51" cy="51" r="35"/>
+                <circle id="Oval-6" fill="#A5A5A5" cx="21" cy="18" r="3"/>
+                <circle id="Oval-6-Copy-2" fill="#5F5F5F" cx="21" cy="18" r="2"/>
+                <circle id="Oval-6-Copy" fill="#A5A5A5" cx="82" cy="19" r="3"/>
+                <circle id="Oval-6-Copy-3" fill="#5F5F5F" cx="82" cy="19" r="2"/>
+            </g>
+        </g>
+    </g>
+</svg>

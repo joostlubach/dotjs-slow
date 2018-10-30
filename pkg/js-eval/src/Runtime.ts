@@ -19,12 +19,10 @@ export default class Runtime {
     this.context      = options.context || new Context()
     this.callbacks    = options.callbacks || {}
     this.scopeStack   = [this.context]
-    this.source       = options.source || null
   }
 
   public readonly context:      Context
   public readonly callbacks:    Callbacks
-  public readonly source:       string | null
 
   public evaluate(node: nodes.Node) {
     this.runCallbacks(node)
@@ -33,9 +31,7 @@ export default class Runtime {
     const evaluateFn = (this as any)[`evaluate_${type}`]
 
     if (evaluateFn == null) {
-      const source = this.nodeSource(node)
-      const desc = source == null ? 'This' : `\`${source.split(/\s/)[0]}\``
-      this.throw(UnsupportedException, `${desc} is not supported`, node)
+      this.throw(UnsupportedException, "is not supported", node)
     } else {
       return evaluateFn.call(this, node)
     }
@@ -335,6 +331,30 @@ export default class Runtime {
   }
 
   private evaluate_CallExpression(node: nodes.CallExpression) {
+    const call = this.resolveFunctionCall(node)
+    if (call == null) { return }
+
+    try {
+      const [callee, args, receiver] = call
+      return callee.apply(receiver, args)
+    } catch (error) {
+      this.rethrow(error, node)
+    }
+  }
+
+  private evaluate_NewExpression(node: nodes.NewExpression) {
+    const call = this.resolveFunctionCall(node)
+    if (call == null) { return }
+
+    try {
+      const [callee, args] = call
+      return Reflect.construct(callee, args)
+    } catch (error) {
+      this.rethrow(error, node)
+    }
+  }
+
+  private resolveFunctionCall(node: nodes.CallExpression | nodes.NewExpression): [AnyFunction, any[], any] | undefined {
     let receiver = null
     let callee
     try {
@@ -354,14 +374,12 @@ export default class Runtime {
     }
 
     if (callee == null || !isFunction(callee.apply)) {
-      const source = this.nodeSource(node.callee)
-      const desc = source == null ? 'This' : `\`${source}\``
-      this.throw(TypeError, `${desc} is not a function`, node.callee)
+      this.throw(TypeError, "is not a function", node.callee)
     }
 
     try {
       const args = node.arguments.map(arg => this.evaluate(arg))
-      return callee.apply(receiver, args)
+      return [callee, args, receiver]
     } catch (error) {
       this.rethrow(error, node)
     }
@@ -563,8 +581,7 @@ export default class Runtime {
   private evaluateMemberExpression(node: nodes.MemberExpression): {object: any, property: string, value: any} {
     const object   = this.evaluate(node.object)
     if (object == null) {
-      const source = this.nodeSource(node.object)
-      this.throw(ReferenceError, `\`${source}\` is null`, node.object)
+      this.throw(ReferenceError, "is null", node.object)
     }
 
     const property = node.computed
@@ -580,11 +597,6 @@ export default class Runtime {
 
   //------
   // Errors & utility
-
-  private nodeSource(node: nodes.Node & {start?: number, end?: number}): string | null {
-    if (this.source == null) { return null }
-    return this.source.slice(node.start, node.end)
-  }
 
   private throw(ErrorType: RuntimeErrorConstructor, message: string, node: nodes.Node): never {
     return this.rethrow(new ErrorType(message), node)

@@ -99,11 +99,22 @@ export default class Sprite extends React.Component<Props> {
 
     return (
       <div classNames={$.hold} style={style}>
-        <Label classNames={$.holdLabel}>{hold}</Label>
+        {hold === 'pager' ? (
+          <SVG name='pager' size={pagerSize}/>
+        ) : hold === 'pager-active' ? (
+          <SVG name='pager-active' size={pagerSize}/>
+        ) : (
+          <Label classNames={$.holdLabel}>{hold}</Label>
+        )}
       </div>
     )
   }
 
+}
+
+const pagerSize = {
+  width:  40,
+  height: 40
 }
 
 const movingAnimation = jssKeyframes('moving', {

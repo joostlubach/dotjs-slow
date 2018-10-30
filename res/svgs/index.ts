@@ -15,6 +15,8 @@ export default {
   "marie-head": require("./marie-head.svg"),
   "marie": require("./marie.svg"),
   "order-here": require("./order-here.svg"),
+  "pager-active": require("./pager-active.svg"),
+  "pager": require("./pager.svg"),
   "pan": require("./pan.svg"),
   "pause": require("./pause.svg"),
   "play": require("./play.svg"),
