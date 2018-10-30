@@ -31,20 +31,37 @@ export default class Chef extends Actor {
   }
 
   private preRequestHamburger(condiments: string[], variant: Variant) {
-    this.program.modifyState(state => {
-      state.sprites.marie.speak = null
-      state.sprites.chef.speak = '👍'
+    if (variant === 'sync') {
+      // 2a. If sync, Chef executes order but other actors will stop moving.
+      this.program.modifyState(state => {
+        state.sprites.marie.speak = null
+        state.sprites.chef.speak = '👍'
 
-      if (variant === 'sync') {
         state.sprites.etienne.moving = false
         state.sprites.marie.moving = false
         state.sprites.chef.moving = true
-      }
-    })
+      })
+    } else if (variant === 'callback') {
+      // 2b. If callback, Chef asks for number.
+      this.program.modifyState(state => {
+        state.sprites.marie.speak = null
+        state.sprites.chef.speak = '📱?'
+      })
 
-    this.program.modifyState(state => {
-      state.sprites.chef.speak = null
-    })
+      // Marie blushes
+      this.program.modifyState(state => {
+        state.sprites.marie.speak = '😊 06-87654321'
+        state.sprites.marie.face = 'blush'
+        state.sprites.chef.speak = null
+      })
+
+      // Chef replies
+      this.program.modifyState(state => {
+        state.sprites.marie.speak = null
+        state.sprites.marie.face = 'happy'
+        state.sprites.chef.speak = '👍'
+      })
+    }
   }
 
   private postRequestHamburger(hamburger: string, variant: Variant) {
@@ -62,6 +79,7 @@ export default class Chef extends Actor {
 
   public takePatty() {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = '🥩'
     })
     return {type: 'patty'}
@@ -69,6 +87,7 @@ export default class Chef extends Actor {
   
   public takeBun() {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = '🍞'
     })
     return {type: 'bun'}
@@ -76,6 +95,7 @@ export default class Chef extends Actor {
   
   public takeCondiment(condiment: string) {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = condiment
     })
     return {type: 'condiment', condiment}
@@ -83,6 +103,7 @@ export default class Chef extends Actor {
   
   public cook(patty: any) {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = null
       state.stove.panContent = '🥩'
     })
@@ -99,6 +120,7 @@ export default class Chef extends Actor {
   
   public makeHamburger(patty: any, bun: any, condiments: any[]) {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = '🍔'
     })
 

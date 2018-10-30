@@ -60,7 +60,7 @@ export default class Marie extends Actor {
 
       // Etienne blushes
       this.program.modifyState(state => {
-        state.sprites.etienne.speak = '😊, pour faire quoi?'
+        state.sprites.etienne.speak = '😊 06-12345678'
         state.sprites.etienne.face = 'blush'
         state.sprites.marie.speak = null
       })
@@ -69,7 +69,7 @@ export default class Marie extends Actor {
       this.program.modifyState(state => {
         state.sprites.etienne.speak = null
         state.sprites.etienne.face = 'happy'
-        state.sprites.marie.speak = '🍔'
+        state.sprites.marie.speak = '👍'
       })
     }
 

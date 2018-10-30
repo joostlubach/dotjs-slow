@@ -9,6 +9,7 @@ export default {
   "etienne": require("./etienne.svg"),
   "hob": require("./hob.svg"),
   "logo": require("./logo.svg"),
+  "marie-blush": require("./marie-blush.svg"),
   "marie-head": require("./marie-head.svg"),
   "marie": require("./marie.svg"),
   "order-here": require("./order-here.svg"),
