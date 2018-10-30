@@ -52,23 +52,23 @@ export default class Simulator extends EventEmitter {
   }
 
   public forward(callback?: () => void) {
-    this.displayStep(this.currentStepIndex + 1, 1, callback)
+    this.displayStep(this.currentStepIndex + 1, 1, callback || (() => null))
   }
 
   public backward(callback?: () => void) {
     if (this.currentStepIndex === -1) { return }
-    this.displayStep(this.currentStepIndex - 1, -1, callback)
+    this.displayStep(this.currentStepIndex - 1, -1, callback || (() => null))
   }
 
-  public goTo(index: number) {
+  public goTo(index: number, callback?: () => void) {
     if (index < 0 || index >= this.simulation.steps.length) { return }
-    this.displayStep(index, 0)
+    this.displayStep(index, 0, callback || (() => null))
   }
 
-  public displayStep(index: number, direction: number, callback: (() => void) | null = null) {
+  public displayStep(index: number, direction: number, callback: () => void) {
     const step = this.simulation.steps[index]
     if (index >= this.simulation.steps.length) {
-      this.emitDone()
+      this.emit('done')
       return
     }
 
@@ -78,30 +78,18 @@ export default class Simulator extends EventEmitter {
       // We're skipping steps that have not executed any simulation actions.
       this.displayStep(index + direction, direction, callback)
     } else {
-      this.emitStep(index, step)
+      this.emit('step', index, step)
 
       if (this.playbackTimeout != null) {
         window.clearTimeout(this.playbackTimeout)
       }
 
-      if (step != null) {
-        this.playbackTimeout = window.setTimeout(this.emitDone.bind(this), this.frameDuration)
-      } else if (callback) {
-        this.playbackTimeout = window.setTimeout(callback, this.frameDuration)
-      }
+      this.playbackTimeout = window.setTimeout(callback, this.frameDuration)
     }
   }
 
   private resumePlayback() {
     this.displayStep(this.currentStepIndex + 1, 1, this.resumePlayback.bind(this))
-  }
-
-  private emitStep(index: number, step: Step | null) {
-    this.emit('step', index, step)
-  }
-
-  private emitDone() {
-    this.emit('done')
   }
 
 }

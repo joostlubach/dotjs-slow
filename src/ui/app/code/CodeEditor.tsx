@@ -82,8 +82,8 @@ export default class CodeEditor extends React.Component<Props, State> {
   // Current line
 
   private renderCurrentStepMarker() {
-    const {currentStep, done} = simulatorStore
-    if (currentStep == null || done) { return null }
+    const {currentStep} = simulatorStore
+    if (currentStep == null) { return null }
 
     const {codeLocation} = currentStep
     if (codeLocation == null) { return null }

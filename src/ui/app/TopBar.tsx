@@ -34,8 +34,6 @@ export default class TopBar extends React.Component<Props> {
   }
 
   private renderRight() {
-    const {running, active, done} = simulatorStore
-
     return (
       <div classNames={$.right}>
         {this.renderPlayButton()}
@@ -50,8 +48,7 @@ export default class TopBar extends React.Component<Props> {
   private renderPlayButton() {
     if (simulatorStore.running) { return }
 
-    const enabled = !simulatorStore.running && !simulatorStore.atEnd
-
+    const enabled = !simulatorStore.atEnd
     return (
       <ToolbarButton
         icon='play'
@@ -97,7 +94,7 @@ export default class TopBar extends React.Component<Props> {
   }
 
   private renderRestartButton() {
-    const enabled = !simulatorStore.running && (simulatorStore.active || simulatorStore.done)
+    const enabled = !simulatorStore.running && simulatorStore.active
 
     return (
       <ToolbarButton

@@ -34,7 +34,7 @@ export class SimulatorStore {
 
   @computed
   public get atStart(): boolean {
-    if (this.simulator == null) { return false }
+    if (this.simulator == null) { return true }
     return this.simulator.atStart
   }
 
@@ -69,12 +69,8 @@ export class SimulatorStore {
     return this.currentStep != null
   }
 
-  /** Whether the current simulation is done. */
   @observable
-  public done: boolean = false
-
-  @observable
-  public verbose: boolean = JSON.parse(localStorage.verbose || 'false')
+  public verbose: boolean = JSON.parse(localStorage.verbose || 'true')
 
   @observable
   public fps: number = JSON.parse(localStorage.fps || '2')
@@ -82,8 +78,8 @@ export class SimulatorStore {
   /** Resets everything to default values. */
   @action
   public reset() {
+    console.log('reset')
     this.currentStep = null
-    this.done        = false
     this.cleanUp()
   }
 
@@ -94,8 +90,8 @@ export class SimulatorStore {
       this.simulator.removeAllListeners()
     }
 
-    this.simulator   = null
-    this.running     = false
+    this.simulator = null
+    this.running   = false
   }
 
   /** Starts simulating a simulation. If a current simulation was in progress, it is terminated. */
@@ -107,8 +103,6 @@ export class SimulatorStore {
     const simulator  = new Simulator(simulation)
     this.simulator = simulator
 
-    this.reset()
-
     simulator.fps = this.fps
     simulator.verbose = this.verbose
 
@@ -119,12 +113,11 @@ export class SimulatorStore {
   }
 
   private ensureSimulator() {
-    if (this.simulator == null) {
-      return this.createSimulator()
+    if (this.simulator != null) {
+      return this.simulator
     } else {
-      return null
+      return this.createSimulator()
     }
-
   }
 
   @action
@@ -181,15 +174,13 @@ export class SimulatorStore {
 
   @action
   private onSimulatorStep = (index: number, step: Step | null) => {
-    console.log(index)
     this.currentStepIndex = index
     this.currentStep = step
   }
 
   @action
   private onSimulatorDone = () => {
-    this.done = true
-    this.cleanUp()
+    this.running = false
   }
 
 }

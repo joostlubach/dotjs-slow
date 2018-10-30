@@ -51,16 +51,11 @@ export class ProgramStore extends EventEmitter {
     }
 
     // Record the program. Stop if there's any compilation or runtime error.
-    const simulation = this.recordProgram(program)
-    if (simulation == null) { return }
-
-    return simulation
+    return this.recordProgram(program)
   }
 
   @action
   private recordProgram(program: Program): Simulation | null {
-    if (simulatorStore.active) { return null }
-
     // Use the students code to build the program.
     const recorder = new ProgramRecorder(program)
 
