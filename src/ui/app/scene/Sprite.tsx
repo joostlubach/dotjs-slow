@@ -55,13 +55,25 @@ export default class Sprite extends React.Component<Props> {
   }
 
   private renderSpeak() {
-    const {speak, balloonOffset} = this.props
+    const {speak, balloonOffset, flipped} = this.props
     if (speak == null) { return null }
 
+    const style: React.CSSProperties = {
+      ...balloonOffset
+    }
+
+    const labelStyle: React.CSSProperties = {
+      transform:         `scaleX(${flipped ? -1 : 1})`,
+      transitionDuration: this.animateNext ? `${layout.durations.medium}ms` : '0ms',
+    }
+
     return (
-      <div classNames={$.balloon} style={balloonOffset}>
+      <div classNames={$.balloon} style={style}>
+        <div classNames={$.balloonBackground}/>
         <SVG classNames={$.balloonHook} name='balloon-hook' size={{width: 24, height: 16}} color={colors.white}/>
-        <Label>{speak}</Label>
+        <div style={labelStyle}>
+          <Label>{speak}</Label>
+        </div>
       </div>
     )
   }
@@ -94,12 +106,19 @@ const $ = jss({
     position: 'absolute',
     boxShadow: shadows.medium(),
 
-    background:   colors.white,
     ...colors.foreground(colors.black),
-    transform:    'skew(-2deg)',
 
     padding:      layout.padding.xs,
     whiteSpace:   'nowrap',
+
+    transition: layout.transition('transform'),
+    willChange: 'transform'
+  },
+
+  balloonBackground: {
+    ...layout.overlay,
+    background: colors.white,
+    transform:  'skew(-2deg)',
   },
 
   balloonHook: {
