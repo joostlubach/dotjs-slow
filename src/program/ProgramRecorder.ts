@@ -2,6 +2,7 @@ import Program from './Program'
 import {Node, SourceLocation} from 'estree'
 import {Step, RecordableNode} from './types'
 import Simulation from './Simulation';
+import ProgramState from './ProgramState';
 
 export default class ProgramRecorder {
 
@@ -17,7 +18,8 @@ export default class ProgramRecorder {
   public record() {
     this.startRecording()
     const success = this.program.run({
-      node: this.onNode
+      node:          this.onNode,
+      stateModified: this.onStateModified
     })
     this.stopRecording()
 
@@ -27,6 +29,18 @@ export default class ProgramRecorder {
   private onNode = (node: Node) => {
     if ((node as RecordableNode).recordable) {
       this.recordStep(node.loc || null)
+    }
+  }
+
+  private onStateModified = (prevState: ProgramState, nextState: ProgramState) => {
+    // If the state is modified twice, we need to add a new step. This is the case if prevState is not the
+    // current step's start state.
+    if (this.recordingStep != null && prevState !== this.recordingStep.startState) {
+      this.recordingStep.endState = prevState
+
+      const step = {...this.recordingStep, startState: prevState, endState: nextState}
+      this.simulation.addStep(step)
+      this.recordingStep = step
     }
   }
 

@@ -1,12 +1,17 @@
 import {parse} from 'acorn'
 import * as nodes from 'estree'
 import {Program as ESTreeProgram, Node, SourceLocation} from 'estree'
-import {Runtime, Callbacks} from 'js-eval'
+import {Runtime} from 'js-eval'
 import * as walk from 'acorn/dist/walk'
 import {CodeError, Recordable, RecordableNode} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
 import {cloneDeep} from 'lodash'
+
+export interface Callbacks {
+  node?:          (node: Node) => any
+  stateModified?: (prevState: ProgramState, nextState: ProgramState) => any
+}
 
 export default class Program {
 
@@ -43,11 +48,14 @@ export default class Program {
   // Evaluation
 
   private evaluatedNodes: number = 0
+  private currentCallbacks: Callbacks = {}
 
   public run(callbacks: Callbacks = {}) {
     if (this.ast == null) {
       throw new Error("Program not yet compiled")
     }
+
+    this.currentCallbacks = callbacks
 
     try {
       const runtime = this.createRuntime(callbacks)
@@ -65,6 +73,9 @@ export default class Program {
     } catch (error) {
       this.handleError(error)
       return false
+    } finally {
+      this.evaluatedNodes = 0
+      this.currentCallbacks = {}
     }
   }
 
@@ -130,8 +141,14 @@ export default class Program {
   }
 
   public modifyState(callback: (state: ProgramState) => any) {
-    this.state = cloneDeep(this.state)
+    const prevState = this.state
+
+    this.state = this.state.clone()
     callback(this.state)
+
+    if (this.currentCallbacks.stateModified) {
+      this.currentCallbacks.stateModified(prevState, this.state)
+    }    
   }
 
 }

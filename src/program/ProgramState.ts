@@ -35,9 +35,9 @@ export default class ProgramState {
   public static get default() {
     return new ProgramState({
       sprites: {
-        etienne: {...defaultSpriteState(SpritePosition.entrance), speak: "J'ai faim"},
-        marie:   {...defaultSpriteState(SpritePosition.counterLeft), speak: 'Bonjour'},
-        mrSlow:  {...defaultSpriteState(SpritePosition.kitchen), speak: 'Bonjour'}
+        etienne: defaultSpriteState(SpritePosition.entrance),
+        marie:   defaultSpriteState(SpritePosition.counterLeft),
+        mrSlow:  defaultSpriteState(SpritePosition.kitchen),
       }
     })
   }
