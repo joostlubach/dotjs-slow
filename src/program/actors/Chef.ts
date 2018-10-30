@@ -194,6 +194,9 @@ export default class Chef extends Actor {
       state.stove.panContent = '🥩'
     })
     this.program.modifyState(state => {
+      state.stove.panContent = '🥩'
+    })
+    this.program.modifyState(state => {
       state.stove.panContent = '🍖'
     })
     this.program.modifyState(state => {

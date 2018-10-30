@@ -196,27 +196,25 @@ export default class Program {
   public modifyState(callback: (state: ProgramState) => any) {
     const prevState = this.states[this.stateIndex]
 
-    let nextStates: ProgramState[]
+    let nextState: ProgramState
     let added: boolean
     if (this.stateIndex < this.states.length - 1) {
-      // We're executing a fork and we can reuse an earlier state. Modify all future states but advance one.
+      // We're executing a fork and we can reuse an earlier state. Just take the next one from the list.
       this.stateIndex += 1
-      nextStates = this.states.slice(this.stateIndex)
+      nextState = this.states[this.stateIndex]
       added = false
     } else {
       // We're at the end, clone the previous state and add it to the list.
-      nextStates = [prevState.clone()]
-      this.states.push(...nextStates)
+      nextState = prevState.clone()
+      this.states.push(nextState)
       this.stateIndex = this.states.length - 1 
       added = true
     }
 
-    for (const state of nextStates) {
-      callback(state)
-    }
+    callback(nextState)
 
     if (this.currentCallbacks.stateModified) {
-      this.currentCallbacks.stateModified(prevState, nextStates[0], added)
+      this.currentCallbacks.stateModified(prevState, nextState, added)
     }    
   }
 
