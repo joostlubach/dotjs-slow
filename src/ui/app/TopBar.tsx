@@ -1,7 +1,7 @@
 import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, layout, colors, shadows} from '../styles'
-import {ToolbarButton, Label, SVG} from '@ui/components'
+import {ToolbarButton, Label, SVG, Slider} from '@ui/components'
 import {simulatorStore} from '@src/stores'
 import ComponentTimer from 'react-component-timer'
 import i18n from 'i18next'
@@ -41,6 +41,7 @@ export default class TopBar extends React.Component<Props> {
         {this.renderBackwardButton()}
         {this.renderForwardButton()}
         {this.renderRestartButton()}
+        {this.renderFPSSlider()}
       </div>
     )
   }
@@ -105,29 +106,18 @@ export default class TopBar extends React.Component<Props> {
     )
   }
 
-  // private renderControls() {
-  //   return (
-  //     <div classNames={$.controls}>
-  //       {this.renderFPSSlider()}
-  //       {this.renderVerboseSwitch()}
-  //     </div>
-  //   )
-  // }
-
-  // private renderFPSSlider() {
-  //   return (
-  //     <div classNames={$.fpsSliderContainer}>
-  //       <Slider
-  //         classNames={$.fpsSlider}
-  //         values={[1, 2, 3, 5, 8, 13]}
-  //         value={simulatorStore.fps}
-  //         onChange={value => { simulatorStore.fps = value }}
-  //         showValues={false}
-  //       />
-  //       <div>Speed</div>
-  //     </div>
-  //   )
-  // }
+  private renderFPSSlider() {
+    return (
+      <div classNames={$.fpsSliderContainer}>
+        <Slider
+          classNames={$.fpsSlider}
+          values={[1, 2, 3, 5, 8, 13]}
+          value={simulatorStore.fps}
+          onChange={value => { simulatorStore.fps = value }}
+        />
+      </div>
+    )
+  }
 
   // private renderVerboseSwitch() {
   //   return (
@@ -219,5 +209,9 @@ const $ = jss({
 
   right: {
     extend: 'section'
+  },
+
+  fpsSlider: {
+    width: 80
   }
 })

@@ -30,20 +30,6 @@ export default class ProgramRecorder {
     }
   }
 
-
-  //------
-  // Actions
-
-  protected beforeAction() {
-    if (this.recordingStep != null) {
-      this.recordingStep.actionPerformed = true
-    }
-  }
-
-  protected afterAction() {
-    // TODO
-  }
-
   //------
   // Recording
 
@@ -55,50 +41,22 @@ export default class ProgramRecorder {
   }
 
   private recordStep(codeLocation: SourceLocation | null): Step {
-    const state = this.program.cloneState()
+    const state = this.program.getState()
     if (this.recordingStep != null) {
       this.recordingStep.endState = state
     }
 
-    const step = {codeLocation, startState: state, endState: state, actionPerformed: false}
+    const step = {codeLocation, startState: state, endState: state}
     this.simulation.addStep(step)
     this.recordingStep = step
-    return step
-  }
-
-  public splitStep() {
-    const {recordingStep} = this
-    if (recordingStep == null) { return }
-
-    const step = this.recordStep(recordingStep.codeLocation)
-    step.actionPerformed = recordingStep.actionPerformed
     return step
   }
 
   public stopRecording() {
     if (this.recordingStep == null) { return }
 
-    this.recordingStep.endState = this.program.cloneState()
+    this.recordingStep.endState = this.program.getState()
     this.recordingStep = null
   }
 
-}
-
-function action(target: Program, key: string, descriptor: PropertyDescriptor) {
-  return {
-    ...descriptor,
-    value: wrapAction(descriptor.value)
-  }
-}
-
-function wrapAction<F extends AnyFunction>(fn: F): F {
-  return function wrapped(this: Program) {
-    const program = this as any
-    program.beforeAction()
-    try {
-      return fn.apply(this, arguments)
-    } finally {
-      program.afterAction()
-    }
-  } as any
 }

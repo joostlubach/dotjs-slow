@@ -6,7 +6,7 @@ import simulatorStore from './simulatorStore'
 interface Code {
   etienne: string
   server:   string
-  chef:     string
+  mrSlow:     string
 }
 
 export class ProgramStore extends EventEmitter {
@@ -21,7 +21,7 @@ export class ProgramStore extends EventEmitter {
   public serverCode: string = ''
 
   @observable
-  public chefCode: string = ''
+  public mrSlowCode: string = ''
 
   @observable
   public errors: CodeError[] = []
@@ -34,7 +34,7 @@ export class ProgramStore extends EventEmitter {
     this.scenario = scenario
     this.etienneCode = scenario.code.etienne
     this.serverCode = scenario.code.server
-    this.chefCode = scenario.code.chef
+    this.mrSlowCode = scenario.code.mrSlow
 
     simulatorStore.reset()
     this.errors = []

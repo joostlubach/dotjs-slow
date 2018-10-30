@@ -15,7 +15,7 @@ export default class Scenario {
   public code!: {
     etienne: string
     server:   string
-    chef:     string
+    mrSlow:     string
   }
 
 }

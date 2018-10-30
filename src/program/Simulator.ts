@@ -66,15 +66,16 @@ export default class Simulator extends EventEmitter {
   }
 
   public displayStep(index: number, direction: number, callback: () => void) {
-    const step = this.simulation.steps[index]
     if (index >= this.simulation.steps.length) {
       this.emit('done')
       return
     }
 
+    const step = this.simulation.steps[index]
     this.currentStepIndex = index
 
-    if (!this.verbose && direction !== 0 && step && !step.actionPerformed) {
+    const stateModified = step != null && step.startState !== step.endState
+    if (!this.verbose && !stateModified) {
       // We're skipping steps that have not executed any simulation actions.
       this.displayStep(index + direction, direction, callback)
     } else {

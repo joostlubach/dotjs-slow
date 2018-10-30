@@ -30,3 +30,4 @@ export const deep    = shadowCreator({y: 10, radius: 30, color: colors.shadow.al
 
 export const focus   = [0, 0, 0, 2, colors.focus]
 export const modal   = deep({color: colors.shadow.alpha(0.3)})
+export const control = [2, 2, 0, 0, colors.shadow.alpha(0.5)]

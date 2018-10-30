@@ -2,10 +2,9 @@ import {SourceLocation, Node} from 'estree'
 import ProgramState from './ProgramState'
 
 export interface Step {
-  codeLocation:    SourceLocation | null
-  startState:      ProgramState
-  endState:        ProgramState
-  actionPerformed: boolean
+  codeLocation: SourceLocation | null
+  startState:   ProgramState
+  endState:     ProgramState
 }
 
 export interface ProgramScoring {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, colors} from '@ui/styles'
-import {SpritePosition} from '@src/program'
+import {SpritePosition, SpriteState} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
 import Stove from './Stove'
@@ -24,9 +24,11 @@ class Scene extends React.Component<AllProps> {
     return (
       <div classNames={[$.scene, this.props.classNames]}>
         {this.renderKitchen()}
+        {this.renderSprite(sprites.Marie, simulatorStore.state.sprites.marie)}
+        {this.renderSprite(sprites.MrSlow, simulatorStore.state.sprites.mrSlow)}
         {this.renderBar()}
         {this.renderTables()}
-        {this.renderSprite(sprites.Etienne, simulatorStore.state.spritePositions.etienne)}
+        {this.renderSprite(sprites.Etienne, simulatorStore.state.sprites.etienne)}
       </div>
     )
   }
@@ -34,8 +36,6 @@ class Scene extends React.Component<AllProps> {
   private renderKitchen() {
     return (
       <div classNames={$.kitchen}>
-        {this.renderSprite(sprites.Server, simulatorStore.state.spritePositions.server)}
-        {this.renderSprite(sprites.Chef, simulatorStore.state.spritePositions.chef)}
         <Stove classNames={$.stove}/>
       </div>
     )
@@ -58,10 +58,17 @@ class Scene extends React.Component<AllProps> {
       )
   }
 
-  private renderSprite(Sprite: SpriteComponent, position: SpritePosition) {
-    const {x, y} = wellKnownPositions[position]
+  private renderSprite(Sprite: SpriteComponent, state: SpriteState) {
+    const {x, y} = wellKnownPositions[state.position]
+
     return (
-      <Sprite x={x} y={y} sceneSize={this.props.size as Size} animated={true}/>
+      <Sprite
+        x={x}
+        y={y}
+        sceneSize={this.props.size as Size}
+        speak={state.speak}
+        dance={state.dance}
+      />
     )
   }
 
@@ -69,7 +76,7 @@ class Scene extends React.Component<AllProps> {
 
 const orderHereSize = {
   width:  109,
-  height: 172
+  height: 90
 }
 
 const stoveWidth = 140
@@ -162,7 +169,7 @@ const $ = jss({
   orderHere: {
     position: 'absolute',
     left:     180,
-    top:      -135,
+    top:      -orderHereSize.height / 2,
     ...orderHereSize
   }
 })

@@ -78,7 +78,6 @@ export class SimulatorStore {
   /** Resets everything to default values. */
   @action
   public reset() {
-    console.log('reset')
     this.currentStep = null
     this.cleanUp()
   }

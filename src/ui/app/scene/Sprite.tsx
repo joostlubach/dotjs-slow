@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {jss, layout, jssKeyframes} from '@ui/styles'
-import {SVG} from '@ui/components'
+import {jss, layout, jssKeyframes, colors, shadows} from '@ui/styles'
+import {SVG, Label} from '@ui/components'
 import {SVGName} from '@ui/components/SVG'
 
 export interface Props {
@@ -11,7 +11,10 @@ export interface Props {
   y:         number
   sceneSize: Size
 
+  speak?: string | null
   dance?: boolean
+
+  balloonOffset: {left: number, top: number}
   
   classNames?: React.ClassNamesProp
 }
@@ -42,7 +45,22 @@ export default class Sprite extends React.Component<Props> {
 
     return (
       <div classNames={[$.sprite, this.props.classNames]} style={style}>
-        <SVG name={image} size={size} classNames={dance && $.dance}/>
+        <div classNames={dance && $.dance}>
+          <SVG name={image} size={size}/>
+          {this.renderSpeak()}
+        </div>
+      </div>
+    )
+  }
+
+  private renderSpeak() {
+    const {speak, balloonOffset} = this.props
+    if (speak == null) { return null }
+
+    return (
+      <div classNames={$.balloon} style={balloonOffset}>
+        <SVG classNames={$.balloonHook} name='balloon-hook' size={{width: 24, height: 16}} color={colors.white}/>
+        <Label>{speak}</Label>
       </div>
     )
   }
@@ -69,5 +87,23 @@ const $ = jss({
   dance: {
     transformOrigin: '50% 100%',
     animation:       `${danceAnimation} 1.7s infinite`
+  },
+
+  balloon: {
+    position: 'absolute',
+    boxShadow: shadows.medium(),
+
+    background:   colors.white,
+    ...colors.foreground(colors.black),
+    transform:    'skew(-2deg)',
+
+    padding:      layout.padding.xs,
+    whiteSpace:   'nowrap',
+  },
+
+  balloonHook: {
+    position: 'absolute',
+    bottom:   -6,
+    left:     -18
   }
 })

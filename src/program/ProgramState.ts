@@ -1,14 +1,29 @@
 import Program from './Program'
 import {cloneDeep} from 'lodash'
 
-export type Sprite = 'etienne' | 'server' | 'chef'
+export type Sprite = 'etienne' | 'marie' | 'mrSlow'
+
+export interface SpriteState {
+  position: SpritePosition
+  speak:    string | null
+  dance:    boolean
+}
+
 export enum SpritePosition {
-  counterLeft,  // Starting point of server
-  counterRight, // Server next to chef
-  kitchen,      // Chef
+  counterLeft,  // Starting point of Marie
+  counterRight, // Marie next to mrSlow
+  kitchen,      // MrSlow
   entrance,     // Starting point of Etienne
   counterFront, // Where Etienne places order
   atTable       // Etienne waiting at a table
+}
+
+function defaultSpriteState(position: SpritePosition) {
+  return {
+    position,
+    speak: null,
+    dance: true
+  }
 }
 
 export default class ProgramState {
@@ -19,10 +34,10 @@ export default class ProgramState {
 
   public static get default() {
     return new ProgramState({
-      spritePositions: {
-        etienne: SpritePosition.entrance,
-        server:  SpritePosition.counterLeft,
-        chef:    SpritePosition.kitchen
+      sprites: {
+        etienne: {...defaultSpriteState(SpritePosition.entrance), speak: "J'ai faim"},
+        marie:   {...defaultSpriteState(SpritePosition.counterLeft), speak: 'Bonjour'},
+        mrSlow:  {...defaultSpriteState(SpritePosition.kitchen), speak: 'Bonjour'}
       }
     })
   }
@@ -32,7 +47,7 @@ export default class ProgramState {
     return new ProgramState(values)
   }
 
-  public spritePositions!: {[key in Sprite]: SpritePosition} 
+  public sprites!: {[key in Sprite]: SpriteState} 
 
   public prepare() {
     // TODO

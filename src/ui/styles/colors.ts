@@ -29,7 +29,7 @@ export const border = {
 export const primary = red
 export const etienne = brown
 export const server = green
-export const chef = blue
+export const mrSlow = blue
 
 export const placeholder = fg.dim
 export const shadow = black

@@ -3,24 +3,25 @@ import Sprite from '../Sprite'
 import {jss, colors} from '@ui/styles'
 import {SpriteProps} from '.'
 
-export default function Server(props: SpriteProps) {
+export default function MrSlow(props: SpriteProps) {
   return (
     <Sprite
-      image='server'
+      image='mr-slow'
       size={size}
-      classNames={$.server}
+      classNames={$.mrSlow}
+      balloonOffset={{top: -30, left: 90}}
       {...props}
     />
   )
 }
 
 export const size = {
-  width:  168,
-  height: 222
+  width:  145,
+  height: 184
 }
 
 const $ = jss({
-  server: {
+  mrSlow: {
     '& svg': {
       filter: `drop-shadow(5px -5px 20px ${colors.shadow.alpha(0.4)})`
     }

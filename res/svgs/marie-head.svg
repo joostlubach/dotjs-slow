@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32px" height="44px" viewBox="0 0 32 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
-    <title>server-head</title>
+    <title>marie-head</title>
     <desc>Created with sketchtool.</desc>
     <defs/>
     <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="server-head">
+        <g id="marie-head">
             <g id="!server-head">
                 <path d="M3.08017637,42.88 C2.0821586,35.2591963 1.17700486,27.6262882 0.365093697,19.9833579 C-0.0137863029,16.4191979 -0.360026303,12.7283179 0.757413697,9.32223788 C2.1647737,5.03615788 5.9196537,1.65951788 10.2767737,0.488957875 C14.6332537,-0.681602125 19.4671737,0.300797875 23.1631737,2.88767788 C24.5532537,3.86047788 25.7852537,5.03871788 27.0108537,6.21247788 C28.0271737,7.18527788 29.0582137,8.17727788 29.7449337,9.40543788 C30.6786937,11.0758379 30.8988537,13.0412779 31.0511737,14.9491179 C31.7898051,24.2338934 31.3483012,33.5621202 31.3083276,42.88 L3.08017639,42.88 Z" id="Combined-Shape" fill="#F2D091"/>
                 <polygon id="Fill-3064" fill="#CC9C81" points="12.8 42.90112 19.58528 42.90112 19.58528 33.92 12.8 33.92"/>

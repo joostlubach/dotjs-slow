@@ -1,9 +1,9 @@
-import ProgramState from './ProgramState'
+import Program from './Program'
 
 export default class Actor {
 
   public constructor(
-    public state: ProgramState
+    public program: Program
   ) {}
 
 }

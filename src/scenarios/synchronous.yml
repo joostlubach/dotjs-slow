@@ -5,13 +5,13 @@ code:
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      // const hamburger = server.order([
-      //   'cheese',
-      //   'tomato',
-      //   'bacon'
-      // ])
+      const hamburger = marie.order([
+        'cheese',
+        'tomato',
+        'bacon'
+      ])
       // this.eat(hamburger)  
     }
 
   server:
-  chef:
+  mrSlow:

@@ -4,7 +4,10 @@ import {SpritePosition} from '../ProgramState'
 export default class Restaurant extends Actor {
 
   public waitInLine() {
-    this.state.spritePositions.etienne = SpritePosition.counterFront
+    this.program.modifyState(state => {
+      state.sprites.etienne.position = SpritePosition.counterFront
+    })
+    
   }
 
 }

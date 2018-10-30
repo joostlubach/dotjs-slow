@@ -7,6 +7,7 @@ export default function Etienne(props: SpriteProps) {
     <Sprite
       image='etienne'
       size={size}
+      balloonOffset={{top: -40, left: 100}}
       {...props}
     />
   )

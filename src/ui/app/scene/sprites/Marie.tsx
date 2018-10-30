@@ -3,24 +3,25 @@ import Sprite from '../Sprite'
 import {jss, colors} from '@ui/styles'
 import {SpriteProps} from '.'
 
-export default function Chef(props: SpriteProps) {
+export default function Marie(props: SpriteProps) {
   return (
     <Sprite
-      image='chef'
+      image='marie'
       size={size}
-      classNames={$.chef}
+      classNames={$.server}
+      balloonOffset={{top: -30, left: 130}}
       {...props}
     />
   )
 }
 
 export const size = {
-  width:  145,
-  height: 184
+  width:  168,
+  height: 222
 }
 
 const $ = jss({
-  chef: {
+  server: {
     '& svg': {
       filter: `drop-shadow(5px -5px 20px ${colors.shadow.alpha(0.4)})`
     }

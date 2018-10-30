@@ -6,6 +6,7 @@ import * as walk from 'acorn/dist/walk'
 import {CodeError, Recordable, RecordableNode} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
+import {cloneDeep} from 'lodash'
 
 export default class Program {
 
@@ -120,12 +121,17 @@ export default class Program {
   private createActors() {
     this.actors = {} as {[name in keyof ActorClasses]: InstanceType<ActorClasses[name]>}
     for (const [name, Actor] of Object.entries(ActorClasses)) {
-      this.actors[name] = new Actor(this.state)
+      this.actors[name] = new Actor(this)
     }
   }
 
-  public cloneState(): ProgramState {
-    return this.state.clone()
+  public getState() {
+    return this.state
+  }
+
+  public modifyState(callback: (state: ProgramState) => any) {
+    this.state = cloneDeep(this.state)
+    callback(this.state)
   }
 
 }
