@@ -2,9 +2,12 @@ import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, layout, colors, shadows} from '../styles'
 import {ToolbarButton, Label, SVG, Slider} from '@ui/components'
-import {simulatorStore} from '@src/stores'
+import {simulatorStore, programStore} from '@src/stores'
 import ComponentTimer from 'react-component-timer'
 import i18n from 'i18next'
+import scenarios from '@src/scenarios'
+import {fonts} from '@ui/styles'
+import history from '@src/history'
 
 export interface Props {
   classNames?: React.ClassNamesProp
@@ -36,12 +39,32 @@ export default class TopBar extends React.Component<Props> {
   private renderRight() {
     return (
       <div classNames={$.right}>
+        {this.renderScenarioSelect()}
         {this.renderPlayButton()}
         {this.renderPauseButton()}
         {this.renderBackwardButton()}
         {this.renderForwardButton()}
         {this.renderRestartButton()}
         {this.renderFPSSlider()}
+      </div>
+    )
+  }
+
+  private renderScenarioSelect() {
+    const currentScenarioName = programStore.scenario ? programStore.scenario.name : ''
+
+    return (
+      <div classNames={$.scenarioSelector}>
+        <Label small>{i18n.t('select_scenario')}</Label>
+        <select value={currentScenarioName} onChange={this.onScenarioChange}>
+          {Object.keys(scenarios).map(name => (
+            <option
+              key={name}
+              value={name}
+              children={name}
+            />
+          ))}
+        </select>
       </div>
     )
   }
@@ -174,6 +197,11 @@ export default class TopBar extends React.Component<Props> {
     simulatorStore.reset()
   }
 
+  private onScenarioChange = (event: React.ChangeEvent<any>) => {
+    const name = event.target.value
+    history.push(`/${name}`)
+  }
+
 }
 
 const logoSize = {
@@ -213,5 +241,31 @@ const $ = jss({
 
   fpsSlider: {
     width: 80
+  },
+
+  scenarioSelector: {
+    ...layout.row(layout.padding.inline.m),
+
+    '& select': {
+      '-webkit-appearance': 'none',
+      
+      backgroundColor: colors.white,
+      border:          'none',
+      borderRadius:    0,
+      height:          32,
+      
+      boxShadow:     shadows.control,
+      padding:      [layout.padding.inline.s, layout.padding.inline.m],
+      paddingRight: layout.padding.inline.m + 20,
+
+      font: fonts.normal,
+
+      background: {
+        image:    'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAgCAYAAABpRpp6AAAABGdBTUEAALGPC/xhBQAAAVBJREFUWAntlTFIQlEUhjWUIogEhyAEoammwE2HcGmJpsY2aWt1C9pa3cRNcMhJaHITIlqaaoiGaKmWaKhBwYRM7TvoAREFn75XbzgHPu9/7z3n3MMP8gIBC3PAHDAHzAFzwBzoO1BieYa9/taV3w26nMOxK91Gmtyy70EbMiN3s2wTFL2D9BQjXI8YHR9AHhBOYNbYpbAB0qcOafAkInS9Bh06j15w+NIh+d+DHm+s2w7rHacvUXEBOnQFvThllyx53UHtI2t8yrq508TVAujQV+hVmBRBLnKg+Tfo6KRkL89Ph4a4R6+PeSzMWXkor4peHpP3Z0dHvPQD4t4rbIHGCqIG6mwRHdLL/1z3ebwJMtgnpGAN7kCHPUP7KpJM8wEy4BeI26I74MmHgb5zxyYdXkBdbaEPwNchf7xLeIIdX09qw5kD5oA5YA6YA75z4BeXDkVZW8aK0AAAAABJRU5ErkJggg==")',
+        repeat:   'no-repeat',
+        position: 'center right',
+        size:     [22, 16]
+      }
+    }
   }
 })

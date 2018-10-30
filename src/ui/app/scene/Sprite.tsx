@@ -1,7 +1,9 @@
 import * as React from 'react'
+import {observer} from 'mobx-react'
 import {jss, layout, jssKeyframes, colors, shadows} from '@ui/styles'
 import {SVG, Label} from '@ui/components'
 import {SVGName} from '@ui/components/SVG'
+import {musicStore} from '@src/stores'
 
 export interface Props {
   image:   SVGName
@@ -22,6 +24,7 @@ export interface Props {
   classNames?: React.ClassNamesProp
 }
 
+@observer
 export default class Sprite extends React.Component<Props> {
 
   private animateNext: boolean = false
@@ -36,6 +39,7 @@ export default class Sprite extends React.Component<Props> {
 
   public render() {
     const {image, size, sceneSize, flipped, moving = true} = this.props
+    const currentBPM = musicStore.currentBPM || 120
 
     let {x, y} = this.props
     if (x < 0) { x += sceneSize.width - size.width }
@@ -46,9 +50,13 @@ export default class Sprite extends React.Component<Props> {
       transitionDuration: this.animateNext ? `${layout.durations.medium}ms` : '0ms'
     }
 
+    const movingStyle: React.CSSProperties = {
+      animationDuration: `${60 / (currentBPM / 2)}s`
+    }
+
     return (
       <div classNames={[$.sprite, this.props.classNames]} style={style}>
-        <div classNames={moving && $.moving}>
+        <div classNames={moving && $.moving} style={movingStyle}>
           <SVG name={image} size={size}/>
           {this.renderSpeak()}
           {this.renderHold()}
@@ -117,7 +125,7 @@ const $ = jss({
 
   moving: {
     transformOrigin: '50% 100%',
-    animation:       `${movingAnimation} 1.7s infinite`
+    animation:       `${movingAnimation} infinite`
   },
 
   balloon: {

@@ -6,6 +6,7 @@ export type Sprite = 'etienne' | 'marie' | 'chef'
 export interface SpriteState {
   position: SpritePosition
   speak:    string | null
+  face:     string
   hold:     string | null
   flipped:  boolean
   moving:    boolean
@@ -32,6 +33,7 @@ function defaultSpriteState(position: SpritePosition) {
   return {
     position,
     speak:   null,
+    face:    'happy',
     hold:    null,
     flipped: false,
     moving:   true

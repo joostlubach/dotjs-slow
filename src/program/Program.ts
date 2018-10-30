@@ -144,7 +144,7 @@ export default class Program {
   }
 
   private onNode = (node: Node, upstream?: Callbacks['node']) => {
-    if (this.evaluatedNodes++ > 10000) {
+    if (this.evaluatedNodes++ > 5000) {
       throw new InfiniteLoopException()
     }
 

@@ -4,6 +4,7 @@ export default {
   "barstool": require("./barstool.svg"),
   "chef-head": require("./chef-head.svg"),
   "chef": require("./chef.svg"),
+  "etienne-blush": require("./etienne-blush.svg"),
   "etienne-head": require("./etienne-head.svg"),
   "etienne": require("./etienne.svg"),
   "hob": require("./hob.svg"),

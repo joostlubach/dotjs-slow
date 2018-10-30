@@ -1,29 +1,31 @@
-name: synchronous
-title: Synchronous
+name: callback
+title: Callback
 
 codes:
   etienne: |-
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      const hamburger = server.orderSync('🍔', [
+      const hamburger = server.orderCallback('🍔', [
         '🧀',
         '🍅',
         '🥓'
-      ])
-      this.eat(hamburger)  
+      ], hamburger => {
+        this.eat(hamburger)  
+      })
     }
 
   marie: |-
-    marie.onOrder = function (what, condiments) {
+    marie.onOrder = function (what, condiments, callback) {
       if (what === '🍔') {
-        const hamburger = chef.requestHamburgerSync(condiments)
-        return hamburger
+        chef.requestHamburgerCallback(condiments, hamburger => {
+          callback(hamburger)
+        })
       }
     }
 
   chef: |-
-    chef.onRequestHamburger = function(condiments) {
+    chef.onRequestHamburger = function(condiments, callback) {
       const rawPatty = this.takePatty()
       const patty = this.cook(rawPatty)
 
@@ -32,5 +34,5 @@ codes:
         this.takeCondiment(condiment)
       )
       
-      return this.makeHamburger(patty, bun, extra)
+      callback(this.makeHamburger(patty, bun, extra))
     }

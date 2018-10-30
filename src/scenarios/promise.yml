@@ -1,0 +1,40 @@
+name: promise
+title: Promise
+
+codes:
+  etienne: |-
+    etienne.onHungry = function () {
+      const server = restaurant.waitInLine()
+
+      const promise = server.orderPromise('🍔', [
+        '🧀',
+        '🍅',
+        '🥓'
+      ])
+
+      promise.then(hamburger => {
+        this.eat(hamburger)
+      })
+    }
+
+  marie: |-
+    marie.onOrder = function (what, condiments, callback) {
+      if (what === '🍔') {
+        return chef.requestHamburgerPromise(condiments)
+      }
+    }
+
+  chef: |-
+    chef.onRequestHamburger = function(condiments, callback) {
+      return new Promise(resolve => {
+        const rawPatty = this.takePatty()
+        const patty = this.cook(rawPatty)
+
+        const bun = this.takeBun()
+        const extra = condiments.map(condiment =>
+          this.takeCondiment(condiment)
+        )
+        
+        resolve(this.makeHamburger(patty, bun, extra))
+      })
+    }

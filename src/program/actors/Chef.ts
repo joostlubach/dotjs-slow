@@ -1,42 +1,41 @@
 import Actor from '../Actor'
-import {SpritePosition} from '../ProgramState'
+
+type Variant = 'sync' | 'callback'
 
 export default class Chef extends Actor {
 
   public onRequestHamburger?: (condiments: string[], callback?: (order: any) => any) => any
 
   public requestHamburgerSync(condiments: string[]) {
-    this.preRequestHamburger(condiments, false)
+    this.preRequestHamburger(condiments, 'sync')
 
     let retval: any
     if (this.onRequestHamburger) {
       retval = this.onRequestHamburger(condiments)
     }
 
-    this.postRequestHamburger(retval, false)
+    this.postRequestHamburger(retval, 'sync')
 
     return retval
   }
 
-  public requestHamburgerAsync(condiments: string[], callback?: (order: any) => any) {
-    this.preRequestHamburger(condiments, true)
+  public requestHamburgerCallback(condiments: string[], callback: (order: any) => any) {
+    this.preRequestHamburger(condiments, 'callback')
 
     if (this.onRequestHamburger) {
       this.onRequestHamburger(condiments, hamburger => {
-        this.postRequestHamburger(hamburger, true)
-        if (callback) {
-          callback(hamburger)
-        }
+        this.postRequestHamburger(hamburger, 'callback')
+        callback(hamburger)
       })
     }
   }
 
-  private preRequestHamburger(condiments: string[], async: boolean) {
+  private preRequestHamburger(condiments: string[], variant: Variant) {
     this.program.modifyState(state => {
       state.sprites.marie.speak = null
       state.sprites.chef.speak = '👍'
 
-      if (!async) {
+      if (variant === 'sync') {
         state.sprites.etienne.moving = false
         state.sprites.marie.moving = false
         state.sprites.chef.moving = true
@@ -48,12 +47,12 @@ export default class Chef extends Actor {
     })
   }
 
-  private postRequestHamburger(hamburger: string, async: boolean) {
+  private postRequestHamburger(hamburger: string, variant: Variant) {
     this.program.modifyState(state => {
       state.sprites.marie.hold = state.sprites.chef.hold
       state.sprites.chef.hold = null
 
-      if (!async) {
+      if (variant === 'sync') {
         state.sprites.etienne.moving = false
         state.sprites.chef.moving = false
         state.sprites.marie.moving = true  

@@ -1,7 +1,8 @@
 import {Scenario} from '../program'
 
 export default {
-  // @index: ${variable}: |new Scenario(require(${relpathwithext})),
-  synchronous: Scenario.load(require('./synchronous.yml'))
-  // /index
+  synchronous: Scenario.load(require('./synchronous.yml')),
+  polling:     Scenario.load(require('./polling.yml')),
+  callback:    Scenario.load(require('./callback.yml')),
+  promise:     Scenario.load(require('./promise.yml')),
 }

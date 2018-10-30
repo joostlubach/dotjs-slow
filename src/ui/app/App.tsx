@@ -9,16 +9,39 @@ import CodePanels from './code/CodePanels'
 import CodePanel from './code/CodePanel'
 import TopBar from './TopBar'
 import i18n from 'i18next'
-
+import history from '@src/history'
+import {Location, UnregisterCallback} from 'history'
 import scenarios from '@src/scenarios'
 
 export interface Props {}
 
 @observer
 export default class App extends React.Component<Props> {
+  
+  private unlistenHistory: UnregisterCallback | null = null
 
   public componentWillMount() {
-    programStore.loadScenario(scenarios.synchronous)
+    this.unlistenHistory = history.listen(this.onHistoryChange)
+    this.loadScenario()
+  }
+
+  public componentWillUnmount() {
+    if (this.unlistenHistory) {
+      this.unlistenHistory()
+    }
+  }
+
+  private onHistoryChange = (location: Location) => {
+    this.loadScenario()
+  }
+
+  private loadScenario() {
+    const scenario = location.pathname.slice(1)
+    if (scenario in scenarios) {
+      programStore.loadScenario(scenario as keyof typeof scenarios)
+    } else {
+      history.replace('/synchronous')
+    }
   }
 
   public render() {

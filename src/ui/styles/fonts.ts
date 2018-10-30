@@ -3,7 +3,7 @@ export const monospaceFamily = 'Roboto Mono, Courier New, monospace'
 
 export const small = {
   family: defaultFamily,
-  size:   16
+  size:   13
 }
 
 export const normal = {

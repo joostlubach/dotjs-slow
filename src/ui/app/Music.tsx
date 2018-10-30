@@ -1,38 +1,46 @@
 import * as React from 'react'
 import {jss} from '@ui/styles'
-import {programStore} from '@src/stores'
-import {Scenario} from '@src/program'
+import {musicStore, Track} from '@src/stores'
 import {observer} from 'mobx-react'
-
-const backgroundMusic = new Audio('/music/french.mp3')
-backgroundMusic.loop = true
-backgroundMusic.volume = 0.2
 
 @observer
 export default class Music extends React.Component {
 
-  private previousScenario: Scenario | null = null
-
   public componentDidMount() {
-    if (programStore.scenario != null) {
-      this.playBackgroundMusic()
+    if (musicStore.backgroundTrack != null) {
+      this.playTrack(musicStore.backgroundTrack)
     }
   }
 
   public componentWillReact() {
-    if (programStore.scenario != null && programStore.scenario !== this.previousScenario) {
-      this.playBackgroundMusic()
+    if (musicStore.backgroundTrack !== this.playingTrack) {
+      if (musicStore.backgroundTrack != null) {
+        this.stopTrack()
+        this.playTrack(musicStore.backgroundTrack)
+      } else {
+        this.stopTrack()
+      }
     }
-    this.previousScenario = programStore.scenario
   }
 
-  private playBackgroundMusic() {
-    backgroundMusic.currentTime = 0
-    backgroundMusic.play()
+  private playingTrack: Track | null = null
+
+  private playTrack(music: Track) {
+    music.audio.currentTime = 0
+    music.audio.play()
+    this.playingTrack = music
+  }
+
+  private stopTrack() {
+    if (this.playingTrack == null) { return }
+
+    this.playingTrack.audio.pause()
+    this.playingTrack.audio.currentTime = 0
+    this.playingTrack = null
   }
 
   public render() {
-    const _ = programStore.scenario
+    const _ = musicStore.backgroundTrack
     return null
   }
 

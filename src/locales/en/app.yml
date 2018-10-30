@@ -5,3 +5,5 @@ translation:
   etienne: Étienne
   marie:   Marie
   chef:    Chef
+
+  select_scenario: 'Scenario:'

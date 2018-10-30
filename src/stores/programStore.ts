@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import {observable, action} from 'mobx'
 import {Program, ProgramRecorder, CodeError, Scenario, Simulation, Source} from '../program'
 import simulatorStore from './simulatorStore'
+import scenarios from '@src/scenarios'
 
 export class ProgramStore extends EventEmitter {
 
@@ -12,7 +13,7 @@ export class ProgramStore extends EventEmitter {
   public codes: {[source in Source]: string} = {
     etienne: '',
     marie:   '',
-    chef:  ''
+    chef:    ''
   }
 
   @observable
@@ -22,7 +23,8 @@ export class ProgramStore extends EventEmitter {
   public hasInfiniteLoop: boolean = false
 
   @action
-  public loadScenario(scenario: Scenario) {
+  public loadScenario(name: keyof typeof scenarios) {
+    const scenario = scenarios[name]
     this.scenario = scenario
     this.codes = scenario.codes
 

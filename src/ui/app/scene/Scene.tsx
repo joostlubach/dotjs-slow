@@ -70,6 +70,7 @@ class Scene extends React.Component<AllProps> {
         speak={state.speak}
         hold={state.hold}
         moving={state.moving}
+        face={state.face}
       />
     )
   }

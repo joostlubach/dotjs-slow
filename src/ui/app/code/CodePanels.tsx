@@ -4,7 +4,7 @@ import {jss, layout} from '@ui/styles'
 import CodePanel, {Props as CodePanelProps} from './CodePanel'
 import {clamp} from 'lodash'
 import {Source} from '@src/program'
-import {simulatorStore} from '@src/stores'
+import {programStore, simulatorStore} from '@src/stores'
 
 export interface Props {
   classNames?: React.ClassNamesProp
@@ -26,9 +26,13 @@ export default class CodePanels extends React.Component<Props, State> {
 
   public componentWillReact() {
     const step = simulatorStore.currentStep
-    const codeLocation = step == null ? null : step.codeLocation
-    const source = codeLocation == null ? null : codeLocation.source
-    
+    const firstError = programStore.errors[0]
+    const codeLocation =
+      firstError != null ? firstError.loc :
+      step != null ? step.codeLocation :
+      null
+
+    const source = codeLocation == null ? null : codeLocation.source    
     if (source != null && source !== this.previousVisibleSource) {
       this.setState({visibleSource: source as Source})
       this.previousVisibleSource = source as Source
@@ -81,7 +85,7 @@ export default class CodePanels extends React.Component<Props, State> {
   }
 
   public render() {
-    const _ = simulatorStore.currentStep
+    const _ = [simulatorStore.currentStep, programStore.errors]
 
     return (
       <div classNames={[$.codePanels, this.props.classNames]}>

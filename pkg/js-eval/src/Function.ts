@@ -10,10 +10,15 @@ export default class Function {
     public readonly body: Node,
     public readonly expression: boolean,
     public readonly boundReceiver: any
-  ) {}
+  ) {
+    this.parentScope = runtime.currentScope
+  }
+
+  private parentScope: Scope
 
   public apply(receiver: object, args: any[]) {
-    return this.runtime.scoped(scope => {
+    const scope = new Scope(this.parentScope)
+    return this.runtime.withScope(scope, () => {
       this.assignArguments(scope, args)
       if (this.boundReceiver) {
         scope.receiver = this.boundReceiver

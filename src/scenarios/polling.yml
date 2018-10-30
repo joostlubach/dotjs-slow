@@ -1,29 +1,38 @@
-name: synchronous
-title: Synchronous
+name: polling
+title: Polling
 
 codes:
   etienne: |-
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      const hamburger = server.orderSync('🍔', [
+      server.orderAsync('🍔', [
         '🧀',
         '🍅',
         '🥓'
       ])
-      this.eat(hamburger)  
+
+      let hamburger
+      while (hamburger == null) {
+        hamburger = server.checkDone()
+      }
     }
 
   marie: |-
     marie.onOrder = function (what, condiments) {
       if (what === '🍔') {
-        const hamburger = chef.requestHamburgerSync(condiments)
-        return hamburger
+        chef.requestHamburgerAsync(condiments)
       }
+    }
+
+    marie.onCheckDone = function () {
+      return chef.checkDone()
     }
 
   chef: |-
     chef.onRequestHamburger = function(condiments) {
+      this.hamburger = null
+
       const rawPatty = this.takePatty()
       const patty = this.cook(rawPatty)
 
@@ -32,5 +41,9 @@ codes:
         this.takeCondiment(condiment)
       )
       
-      return this.makeHamburger(patty, bun, extra)
+      this.hamburger = this.makeHamburger(patty, bun, extra)
+    }
+
+    chef.onCheckDone = function () {
+      return this.hamburger
     }

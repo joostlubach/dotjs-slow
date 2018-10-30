@@ -18,12 +18,11 @@ export default class Runtime {
   constructor(options: RuntimeOptions = {}) {
     this.context      = options.context || new Context()
     this.callbacks    = options.callbacks || {}
-    this.currentScope = this.context
+    this.scopeStack   = [this.context]
     this.source       = options.source || null
   }
 
   public readonly context:      Context
-  public currentScope: Scope
   public readonly callbacks:    Callbacks
   public readonly source:       string | null
 
@@ -54,22 +53,33 @@ export default class Runtime {
   //------
   // Scopes
 
-  public pushScope() {
-    this.currentScope = new Scope(this.currentScope)
+  public scopeStack: Scope[]
+
+  public get currentScope() {
+    return this.scopeStack[this.scopeStack.length - 1]
   }
 
-  public popScope() {
-    if (this.currentScope.parent == null) {
+  private pushScope(scope: Scope) {
+    this.scopeStack.push(scope)
+  }
+
+  private popScope() {
+    if (this.scopeStack.length === 1) {
       throw new Error("Cannot pop root scope")
     }
-    this.currentScope = this.currentScope.parent
+    this.scopeStack.pop()
   }
 
   public scoped(fn: (scope: Scope) => void) {
-    this.pushScope()
+    this.withScope(new Scope(this.currentScope), () => {
+      fn(this.currentScope)
+    })
+  }
 
+  public withScope(scope: Scope, fn: () => any) {
     try {
-      return fn(this.currentScope)
+      this.pushScope(scope)
+      return fn()
     } finally {
       this.popScope()
     }
