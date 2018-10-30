@@ -8,7 +8,7 @@ export interface SpriteState {
   speak:    string | null
   hold:     string | null
   flipped:  boolean
-  dance:    boolean
+  moving:    boolean
 }
 
 export enum SpritePosition {
@@ -34,7 +34,7 @@ function defaultSpriteState(position: SpritePosition) {
     speak:   null,
     hold:    null,
     flipped: false,
-    dance:   true
+    moving:   true
   }
 }
 

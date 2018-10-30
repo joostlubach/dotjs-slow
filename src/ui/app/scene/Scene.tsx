@@ -36,7 +36,7 @@ class Scene extends React.Component<AllProps> {
   private renderKitchen() {
     return (
       <div classNames={$.kitchen}>
-        <Stove classNames={$.stove}/>
+        <Stove classNames={$.stove} panContent={simulatorStore.state.stove.panContent}/>
       </div>
     )
   }
@@ -69,7 +69,7 @@ class Scene extends React.Component<AllProps> {
         flipped={state.flipped}
         speak={state.speak}
         hold={state.hold}
-        dance={state.dance}
+        moving={state.moving}
       />
     )
   }

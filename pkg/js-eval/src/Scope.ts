@@ -1,4 +1,4 @@
-import {Variables} from './types'
+import {Variables, InterruptType} from './types'
 
 export default class Scope {
 
@@ -9,7 +9,9 @@ export default class Scope {
 
   public receiver:  any = null
   public retval:    any
-  public interrupt: boolean = false
+
+  /** Set when a return or break has been called. */
+  public interruptType: InterruptType | null = null
 
   public has(name: string): boolean {
     if (name in this.variables) { return true }

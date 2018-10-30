@@ -27,6 +27,7 @@ export default class ProgramRecorder {
   }
 
   private onNode = (node: Node) => {
+    // console.log('record', node.type, node.loc)
     if ((node as RecordableNode).recordable) {
       this.recordStep(node.loc || null)
     }

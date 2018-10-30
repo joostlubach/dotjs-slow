@@ -1,14 +1,17 @@
 import * as React from 'react'
 import {jss, colors, layout} from '@ui/styles'
-import {SVG} from '@ui/components'
+import {SVG, Label} from '@ui/components'
 
 export interface Props {
+  panContent?: string | null
   classNames?: React.ClassNamesProp
 }
 
 export default class Stove extends React.Component<Props> {
 
   public render() {
+    const {panContent} = this.props
+
     return (
       <div classNames={[$.stove, this.props.classNames]}>
         <div classNames={$.edge}/>
@@ -20,7 +23,20 @@ export default class Stove extends React.Component<Props> {
         </div>
         <div classNames={$.hob}>
           <SVG name='hob' size={hobSize}/>
+          {this.renderPan()}
         </div>
+      </div>
+    )
+  }
+
+  private renderPan() {
+    const {panContent} = this.props
+    if (panContent == null) { return null }
+
+    return (
+      <div classNames={$.pan}>
+        <SVG name='pan' size={panSize}/>
+        <Label classNames={$.panLabel}>{panContent}</Label>
       </div>
     )
   }
@@ -59,5 +75,27 @@ const $ = jss({
     width:    10,
     background: colors.horizontalGradient([colors.black.alpha(0.5), colors.black.alpha(0)])
   },
+
+  hob: {
+    position: 'relative',
+  },
+
+  pan: {
+    position: 'absolute',
+    top:      -16,
+    left:     -35,
+
+    ...panSize,
+  },
+
+  panLabel: {
+    position: 'absolute',
+    top:      24,
+    left:     58,
+
+    fontFamily:  'sans-serif',
+    fontSize:    28,
+    lineHeight:  '32px'
+  }
   
 })

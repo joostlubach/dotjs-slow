@@ -13,7 +13,7 @@ export default class Chef extends Actor {
       retval = this.onRequestHamburger(condiments)
     }
 
-    this.postRequestHamburger(retval)
+    this.postRequestHamburger(retval, false)
 
     return retval
   }
@@ -23,7 +23,7 @@ export default class Chef extends Actor {
 
     if (this.onRequestHamburger) {
       this.onRequestHamburger(condiments, hamburger => {
-        this.postRequestHamburger(hamburger)
+        this.postRequestHamburger(hamburger, true)
         if (callback) {
           callback(hamburger)
         }
@@ -37,9 +37,9 @@ export default class Chef extends Actor {
       state.sprites.chef.speak = '👍'
 
       if (!async) {
-        state.sprites.etienne.dance = false
-        state.sprites.marie.dance = false
-        state.sprites.chef.dance = true
+        state.sprites.etienne.moving = false
+        state.sprites.marie.moving = false
+        state.sprites.chef.moving = true
       }
     })
 
@@ -48,10 +48,16 @@ export default class Chef extends Actor {
     })
   }
 
-  private postRequestHamburger(hamburger: string) {
+  private postRequestHamburger(hamburger: string, async: boolean) {
     this.program.modifyState(state => {
+      state.sprites.marie.hold = state.sprites.chef.hold
       state.sprites.chef.hold = null
-      state.sprites.marie.hold = hamburger
+
+      if (!async) {
+        state.sprites.etienne.moving = false
+        state.sprites.chef.moving = false
+        state.sprites.marie.moving = true  
+      }
     })
   }
 

@@ -21,7 +21,12 @@ export default class Marie extends Actor {
     this.preOrder(what, condiments, true)
 
     if (this.onOrder) {
-      this.onOrder(what, condiments, callback)
+      this.onOrder(what, condiments, order => {
+        this.postOrder(order, true)
+        if (callback) {
+          callback(order)
+        }
+      })
     }
   }
 
@@ -39,9 +44,9 @@ export default class Marie extends Actor {
       state.sprites.marie.speak = '👍'
 
       if (!async) {
-        state.sprites.etienne.dance = false
-        state.sprites.chef.dance = false  
-        state.sprites.marie.dance = true
+        state.sprites.etienne.moving = false
+        state.sprites.chef.moving = false  
+        state.sprites.marie.moving = true
       }
     })
 
@@ -56,16 +61,22 @@ export default class Marie extends Actor {
     this.program.modifyState(state => {
       state.sprites.marie.flipped  = false
       state.sprites.marie.position = SpritePosition.counterLeft
-      state.sprites.marie.hold     = order
       state.sprites.marie.speak    = '😊'
-
-      if (!async) {
-        state.sprites.etienne.dance = false
-        state.sprites.chef.dance = false
-        state.sprites.marie.dance = true  
-      }
     })
 
+    this.program.modifyState(state => {
+      state.sprites.marie.speak = null
+      state.sprites.etienne.speak = '😊'
+
+      state.sprites.etienne.hold = state.sprites.marie.hold
+      state.sprites.marie.hold = null
+
+      if (!async) {
+        state.sprites.etienne.moving = true
+        state.sprites.chef.moving = false
+        state.sprites.marie.moving = false  
+      }
+    })
   }
 
 }

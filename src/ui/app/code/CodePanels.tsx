@@ -22,13 +22,16 @@ export default class CodePanels extends React.Component<Props, State> {
     visibleSource: 'etienne'
   }
 
+  private previousVisibleSource: Source | null = null
+
   public componentWillReact() {
     const step = simulatorStore.currentStep
     const codeLocation = step == null ? null : step.codeLocation
     const source = codeLocation == null ? null : codeLocation.source
-
-    if (source != null && source !== this.state.visibleSource) {
+    
+    if (source != null && source !== this.previousVisibleSource) {
       this.setState({visibleSource: source as Source})
+      this.previousVisibleSource = source as Source
     }
   }
 

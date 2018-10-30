@@ -27,9 +27,6 @@ export default class Runtime {
   public readonly callbacks:    Callbacks
   public readonly source:       string | null
 
-  /** Set when a return or break has been called. */
-  public interruptType: InterruptType | null = null
-
   public evaluate(node: nodes.Node) {
     this.runCallbacks(node)
 
@@ -88,11 +85,11 @@ export default class Runtime {
   }
 
   private evaluate_BlockStatement(node: nodes.BlockStatement) {
-    this.interruptType = null
+    this.currentScope.interruptType = null
 
     for (const bodyNode of hoist(node.body)) {
       this.evaluate(bodyNode)
-      if (this.interruptType != null) { break }
+      if (this.currentScope.interruptType != null) { break }
     }
   }
 
@@ -146,8 +143,8 @@ export default class Runtime {
 
       for (const stmt of cs.consequent) {
         this.evaluate(stmt)
-        if (this.interruptType != null) {
-          this.interruptType = null
+        if (this.currentScope.interruptType != null) {
+          this.currentScope.interruptType = null
           broken = true
           break
         }
@@ -183,7 +180,7 @@ export default class Runtime {
           this.evaluate(update)
         }
 
-        if (this.interruptType === 'break') {
+        if (this.currentScope.interruptType === 'break') {
           break
         }
       }
@@ -207,7 +204,7 @@ export default class Runtime {
           })
         })
 
-        if (this.interruptType === 'break') {
+        if (this.currentScope.interruptType === 'break') {
           break
         }
       }
@@ -233,7 +230,7 @@ export default class Runtime {
           })
         })
 
-        if (this.interruptType === InterruptType.Break) {
+        if (this.currentScope.interruptType === InterruptType.Break) {
           break
         }
       }
@@ -244,15 +241,15 @@ export default class Runtime {
 
   private evaluate_ReturnStatement(node: nodes.ReturnStatement) {
     this.currentScope.retval = node.argument == null ? null : this.evaluate(node.argument)
-    this.interruptType = InterruptType.Return
+    this.currentScope.interruptType = InterruptType.Return
   }
 
   private evaluate_BreakStatement(node: nodes.BreakStatement) {
-    this.interruptType = InterruptType.Break
+    this.currentScope.interruptType = InterruptType.Break
   }
 
   private evaluate_ContinueStatement(node: nodes.ContinueStatement) {
-    this.interruptType = InterruptType.Continue
+    this.currentScope.interruptType = InterruptType.Continue
   }
 
   private evaluate_ExpressionStatement(node: nodes.ExpressionStatement) {

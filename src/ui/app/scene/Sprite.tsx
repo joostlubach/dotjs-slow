@@ -13,7 +13,7 @@ export interface Props {
 
   speak?:   string | null
   hold?:    string | null
-  dance?:   boolean
+  moving?:   boolean
   flipped?: boolean
 
   balloonOffset: React.CSSProperties
@@ -35,7 +35,7 @@ export default class Sprite extends React.Component<Props> {
   }
 
   public render() {
-    const {image, size, sceneSize, flipped, dance = true} = this.props
+    const {image, size, sceneSize, flipped, moving = true} = this.props
 
     let {x, y} = this.props
     if (x < 0) { x += sceneSize.width - size.width }
@@ -48,7 +48,7 @@ export default class Sprite extends React.Component<Props> {
 
     return (
       <div classNames={[$.sprite, this.props.classNames]} style={style}>
-        <div classNames={dance && $.dance}>
+        <div classNames={moving && $.moving}>
           <SVG name={image} size={size}/>
           {this.renderSpeak()}
           {this.renderHold()}
@@ -98,7 +98,7 @@ export default class Sprite extends React.Component<Props> {
 
 }
 
-const danceAnimation = jssKeyframes('dance', {
+const movingAnimation = jssKeyframes('moving', {
   '0%':   {transform: 'skew(-0, 0)', animationTimingFunction: 'ease-out'},
   '20%':  {transform: 'skew(-2deg, 0) scaleY(1.02)', animationTimingFunction: 'ease-in'},
   '50%':  {transform: 'skew(0, 0) scaleY(1)', animationTimingFunction: 'ease-out'},
@@ -115,9 +115,9 @@ const $ = jss({
     willChange: 'transform'
   },
 
-  dance: {
+  moving: {
     transformOrigin: '50% 100%',
-    animation:       `${danceAnimation} 1.7s infinite`
+    animation:       `${movingAnimation} 1.7s infinite`
   },
 
   balloon: {

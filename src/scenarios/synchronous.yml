@@ -10,13 +10,14 @@ codes:
         '🍅',
         '🥓'
       ])
-      // this.eat(hamburger)  
+      this.eat(hamburger)  
     }
 
   marie: |-
     marie.onOrder = function (what, condiments) {
       if (what === '🍔') {
-        return chef.requestHamburgerSync(condiments)
+        const hamburger = chef.requestHamburgerSync(condiments)
+        return hamburger
       }
     }
 

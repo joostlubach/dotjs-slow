@@ -32,6 +32,13 @@ export default class Program {
       const ast = this.parseSources()
       markRecordableNodes(ast)
       this.ast = ast
+
+      // Make sure that the program body nodes are not recordable. Do make the program itself recordable.
+      for (const node of ast.body) {
+        (node as RecordableNode).recordable = false
+      }
+      (ast as RecordableNode).recordable = true
+
       return true
     } catch (error) {
       if (error.name !== 'SyntaxError') { throw error }
@@ -122,9 +129,7 @@ export default class Program {
 
   private commit(runtime: Runtime) {
     const {etienne} = this.actors
-    if (etienne.onHungry) {
-      etienne.onHungry()
-    }
+    etienne.hungry()
   }
 
   private handleError(error: Error) {
