@@ -7,9 +7,7 @@ export class SimulatorStore {
   constructor() {
     autorun(() => {
       localStorage.verbose = JSON.stringify(this.verbose)
-      if (this.simulator != null) {
-        this.simulator.verbose = this.verbose
-      }
+      this.reset()
     })
 
     autorun(() => {
@@ -26,7 +24,7 @@ export class SimulatorStore {
 
   /** The index of the most recently (or currently) executed step. */
   @observable
-  public currentStepIndex: number | null = null
+  public currentStepIndex: number = -1
 
   /** The most recently (or currently) executed step. */
   @observable
@@ -34,14 +32,13 @@ export class SimulatorStore {
 
   @computed
   public get atStart(): boolean {
-    if (this.simulator == null) { return true }
-    return this.simulator.atStart
+    return this.currentStepIndex === -1
   }
 
   @computed
   public get atEnd(): boolean {
     if (this.simulator == null) { return false }
-    return this.simulator.atEnd
+    return this.currentStepIndex === this.simulator.steps.length - 1
   }
 
   @computed
@@ -50,10 +47,10 @@ export class SimulatorStore {
       return this.currentStep.endState
     } else if (
       this.simulator != null &&
-      this.currentStepIndex != null && this.currentStepIndex < 0 &&
-      this.simulator.simulation.steps.length > 0
+      this.currentStepIndex < 0 &&
+      this.simulator.steps.length > 0
     ) {
-      return this.simulator.simulation.steps[0].startState
+      return this.simulator.steps[0].startState
     } else {
       return ProgramState.default
     }
@@ -99,11 +96,8 @@ export class SimulatorStore {
     const simulation = programStore.buildSimulation()
     if (simulation == null) { return null }
 
-    const simulator  = new Simulator(simulation)
+    const simulator  = new Simulator(simulation, {verbose: this.verbose, fps: this.fps})
     this.simulator = simulator
-
-    simulator.fps = this.fps
-    simulator.verbose = this.verbose
 
     simulator.on('step', this.onSimulatorStep)
     simulator.on('done', this.onSimulatorDone)
@@ -152,10 +146,7 @@ export class SimulatorStore {
     const simulator = this.ensureSimulator()
     if (simulator == null) { return }
 
-    this.running = true
-    simulator.forward(() => {
-      this.running = false
-    })
+    simulator.forward()
   }
 
   @action
@@ -165,10 +156,7 @@ export class SimulatorStore {
     const simulator = this.ensureSimulator()
     if (simulator == null) { return }
 
-    this.running = true
-    simulator.backward(() => {
-      this.running = false
-    })
+    simulator.backward()
   }
 
   @action

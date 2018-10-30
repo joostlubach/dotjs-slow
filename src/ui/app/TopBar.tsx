@@ -111,7 +111,7 @@ export default class TopBar extends React.Component<Props> {
       <div classNames={$.fpsSliderContainer}>
         <Slider
           classNames={$.fpsSlider}
-          values={[1, 2, 3, 5, 8, 13]}
+          values={[0.25, 0.5, 1, 2, 4]}
           value={simulatorStore.fps}
           onChange={value => { simulatorStore.fps = value }}
         />

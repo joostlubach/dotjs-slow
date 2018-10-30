@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
 import Simulation from './Simulation'
 import {Step} from '.'
+import {observable} from 'mobx'
 
 export interface Options {
   fps?:     number
@@ -15,13 +16,16 @@ export default class Simulator extends EventEmitter {
   ) {
     super()
 
-    this.simulation = simulation
+    this.steps = simulation.getSteps(options.verbose || false)
     Object.assign(this, options)
   }
 
+  public readonly steps: Step[]
+
+  @observable
   private currentStepIndex: number = -1
 
-  public verbose: boolean = false
+  public readonly verbose: boolean = false
   public fps:     number  = 2
 
   public get frameDuration(): number {
@@ -33,7 +37,7 @@ export default class Simulator extends EventEmitter {
   }
 
   public get atEnd(): boolean {
-    return this.currentStepIndex === this.simulation.steps.length - 1
+    return this.currentStepIndex === this.steps.length - 1
   }
 
   //------
@@ -51,40 +55,37 @@ export default class Simulator extends EventEmitter {
     this.displayStep(this.currentStepIndex + 1, 1, this.resumePlayback.bind(this))
   }
 
-  public forward(callback?: () => void) {
-    this.displayStep(this.currentStepIndex + 1, 1, callback || (() => null))
+  public forward() {
+    this.displayStep(this.currentStepIndex + 1, 1)
   }
 
-  public backward(callback?: () => void) {
+  public backward() {
     if (this.currentStepIndex === -1) { return }
-    this.displayStep(this.currentStepIndex - 1, -1, callback || (() => null))
+    this.displayStep(this.currentStepIndex - 1, -1)
   }
 
   public goTo(index: number, callback?: () => void) {
-    if (index < 0 || index >= this.simulation.steps.length) { return }
+    if (index < 0 || index >= this.steps.length) { return }
     this.displayStep(index, 0, callback || (() => null))
   }
 
-  public displayStep(index: number, direction: number, callback: () => void) {
-    if (index >= this.simulation.steps.length) {
+  public displayStep(index: number, direction: number, callback?: () => void) {
+    if (index < -1) { return }
+    if (index >= this.steps.length) {
       this.emit('done')
       return
     }
 
-    const step = this.simulation.steps[index]
+    const step = this.steps[index]
     this.currentStepIndex = index
 
-    const stateModified = step != null && step.startState !== step.endState
-    if (!this.verbose && !stateModified) {
-      // We're skipping steps that have not executed any simulation actions.
-      this.displayStep(index + direction, direction, callback)
-    } else {
-      this.emit('step', index, step)
+    this.emit('step', index, step)
 
-      if (this.playbackTimeout != null) {
-        window.clearTimeout(this.playbackTimeout)
-      }
+    if (this.playbackTimeout != null) {
+      window.clearTimeout(this.playbackTimeout)
+    }
 
+    if (callback) {
       this.playbackTimeout = window.setTimeout(callback, this.frameDuration)
     }
   }
