@@ -3,14 +3,15 @@ import {observer} from 'mobx-react'
 import {CodeMirror, Marker, Gutter, GutterMarker, LineWidget} from '@ui/components/codemirror'
 import {jss, jssKeyframes, colors, layout, fonts} from '@ui/styles'
 import {programStore, simulatorStore} from '@src/stores'
-import {CodeError} from '@src/program'
-import {Position} from 'estree'
+import {CodeError, Source} from '@src/program'
+import {Position, SourceLocation} from 'estree'
 import {Editor as CMEditor, EditorChange, Doc as CMDoc, Position as CMPosition} from 'codemirror'
 
 import 'codemirror/mode/javascript/javascript'
 import {Label} from '@ui/components'
 
 export interface Props {
+  source:      Source
   classNames?: React.ClassNamesProp
 }
 
@@ -47,18 +48,23 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
   }
 
+  private codeLocationWithinCurrentSource(location: SourceLocation | null) {
+    if (location == null) { return false }
+    return location.source === this.props.source
+  }
+
   //------
   // Rendering
 
   public render() {
-    const {classNames} = this.props
-    const hasErrors = programStore.errors.length > 0
+    const {classNames, source} = this.props
+    const hasErrors = this.getMyErrors().length > 0
 
     return (
       <CodeMirror
         classNames={[$.codeEditor, hasErrors && $.withErrors, classNames]}
         mode='javascript'
-        value={programStore.etienneCode}
+        value={programStore.codes[source]}
         onChange={this.onEditorChange}
 
         onCodeMirrorSetUp={cm => { this.setState({codeMirror: cm}) }}
@@ -83,7 +89,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   private renderCurrentStepMarker() {
     const {currentStep} = simulatorStore
-    if (currentStep == null) { return null }
+    if (currentStep == null || !this.codeLocationWithinCurrentSource(currentStep.codeLocation)) { return null }
 
     const {codeLocation} = currentStep
     if (codeLocation == null) { return null }
@@ -100,13 +106,21 @@ export default class CodeEditor extends React.Component<Props, State> {
   //------
   // Errors
 
+  private getMyErrors() {
+    return programStore.errors.filter(error => {
+      return this.codeLocationWithinCurrentSource(error.loc)
+    })
+  }
+
   private renderErrorMarkers() {
-    return programStore.errors.map((error, index) => {
+    return this.getMyErrors().map((error, index) => {
       return this.renderErrorMarker(error, index)
     })
   }
 
   private renderErrorMarker(error: CodeError, index: number) {
+    if (!this.codeLocationWithinCurrentSource(error.loc)) { return null }
+
     const loc = getErrorLocation(error)
     if (loc == null) { return null }
 
@@ -122,7 +136,9 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   private renderErrorGutterMarkers() {
     const lines = new Set()
-    for (const error of programStore.errors) {
+    for (const error of this.getMyErrors()) {
+      if (!this.codeLocationWithinCurrentSource(error.loc)) { continue }
+
       const loc = getErrorLocation(error)
       if (loc == null) { continue }
 
@@ -147,7 +163,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     const {focusedErrorLine: line} = this.state
     if (line == null) { return null }
 
-    const errors = programStore.errors.filter(err => {
+    const errors = this.getMyErrors().filter(err => {
       const loc = getErrorLocation(err)
       if (loc == null) { return false }
 
@@ -166,9 +182,10 @@ export default class CodeEditor extends React.Component<Props, State> {
   // Events
 
   private onEditorChange = (value: string, change: EditorChange, doc: CMDoc) => {
-    programStore.etienneCode = value
-    programStore.errors = []
+    programStore.codes[this.props.source] = value
 
+    const myErrors = this.getMyErrors()
+    programStore.errors = programStore.errors.filter(error => !myErrors.includes(error))
     simulatorStore.reset()
   }
 
@@ -204,6 +221,7 @@ const errorAnim = jssKeyframes('error', {
 const $ = jss({
   codeEditor: {
     ...layout.flex.column,
+    background: colors.black,
 
     '& .CodeMirror-gutter.errors': {
       width: 12

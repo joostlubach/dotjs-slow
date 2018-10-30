@@ -1,11 +1,11 @@
 name: Synchronous
 
-code:
+codes:
   etienne: |-
     etienne.onHungry = function () {
       const server = restaurant.waitInLine()
 
-      const hamburger = marie.order('🍔', [
+      const hamburger = server.order('🍔', [
         '🧀',
         '🍅',
         '🥓'
@@ -13,5 +13,14 @@ code:
       // this.eat(hamburger)  
     }
 
-  server:
-  mrSlow:
+  marie: |-
+    marie.onOrder = function (what, condiments) {
+      if (what === '🍔') {
+        return chef.requestHamburger(condiments)
+      }
+    }
+
+  chef: |-
+    chef.onRequestHamburger = function(condiments) {
+      return {type: '🍔', condiments}
+    }

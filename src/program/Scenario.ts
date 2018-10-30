@@ -5,17 +5,17 @@ export default class Scenario {
   ) {}
 
   public static load(yaml: any) {
-    const {name, code} = yaml
+    const {name, codes} = yaml
 
     const scenario = new Scenario(name)
-    scenario.code = code
+    scenario.codes = codes
     return scenario
   }
 
-  public code!: {
+  public codes!: {
     etienne: string
-    server:   string
-    mrSlow:     string
+    marie:   string
+    chef:  string
   }
 
 }

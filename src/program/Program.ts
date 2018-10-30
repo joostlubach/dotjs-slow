@@ -1,12 +1,11 @@
-import {parse} from 'acorn'
+import {parse as acornParse} from 'acorn'
 import * as nodes from 'estree'
 import {Program as ESTreeProgram, Node, SourceLocation} from 'estree'
 import {Runtime} from 'js-eval'
 import * as walk from 'acorn/dist/walk'
-import {CodeError, Recordable, RecordableNode} from './types'
+import {CodeError, Recordable, RecordableNode, Source} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
-import {cloneDeep} from 'lodash'
 
 export interface Callbacks {
   node?:          (node: Node) => any
@@ -16,7 +15,7 @@ export interface Callbacks {
 export default class Program {
 
   constructor(
-    public readonly code: string,
+    public readonly codes: {[source in Source]: string},
   ) {}
 
   public readonly errors: CodeError[]  = []
@@ -30,10 +29,7 @@ export default class Program {
     if (this.ast != null) { return }
 
     try {
-      const ast = parse(this.code, {
-        sourceType: 'script',
-        locations:  true
-      })
+      const ast = this.parseSources()
       markRecordableNodes(ast)
       this.ast = ast
       return true
@@ -42,6 +38,35 @@ export default class Program {
       this.errors.push(CompileError.fromSyntaxError(error))
       return false
     }
+  }
+
+  private parseSources(): ESTreeProgram {
+    const programNodes = Object.keys(this.codes).map(
+      source => this.parseSource(source)
+    )
+
+    // We now have three ProgramNodes with each a body child node.
+    // Convert to one ProgramNode with all bodies as child nodes.
+    return {
+      type:       'Program',
+      sourceType: 'script',
+
+      body: programNodes.map(node => node.body[0]),
+
+      loc: {
+        start: {line: 1, column: 0},
+        end:   {line: 1, column: 0},
+      }
+    }
+  }
+
+  private parseSource(source: Source) {
+    const code = this.codes[source]
+    return acornParse(code, {
+      sourceType: 'script',
+      sourceFile: source,
+      locations:  true
+    })    
   }
 
   //------
@@ -81,7 +106,7 @@ export default class Program {
 
   private createRuntime(callbacks: Callbacks = {}) {
     return new Runtime({
-      source: this.code,
+      source: this.codes.etienne,
       callbacks: {
         ...callbacks,
         node: node => this.onNode(node, callbacks.node)
@@ -134,6 +159,11 @@ export default class Program {
     for (const [name, Actor] of Object.entries(ActorClasses)) {
       this.actors[name] = new Actor(this)
     }
+  }
+
+  public getActor(name: keyof ActorClasses) {
+    if (this.actors == null) { return null }
+    return this.actors[name]
   }
 
   public getState() {

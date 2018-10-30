@@ -11,8 +11,9 @@ export interface Props {
   y:         number
   sceneSize: Size
 
-  speak?: string | null
-  dance?: boolean
+  speak?:   string | null
+  dance?:   boolean
+  flipped?: boolean
 
   balloonOffset: {left: number, top: number}
   
@@ -32,14 +33,14 @@ export default class Sprite extends React.Component<Props> {
   }
 
   public render() {
-    const {image, size, sceneSize, dance = true} = this.props
+    const {image, size, sceneSize, flipped, dance = true} = this.props
 
     let {x, y} = this.props
     if (x < 0) { x += sceneSize.width - size.width }
     if (y < 0) { y += sceneSize.height - size.height }
 
     const style: React.CSSProperties = {
-      transform:         `translate(${x}px, ${y}px)`,
+      transform:         `translate(${x}px, ${y}px) scaleX(${flipped ? -1 : 1})`,
       transitionDuration: this.animateNext ? `${layout.durations.medium}ms` : '0ms'
     }
 

@@ -5,6 +5,7 @@ import {Panels} from '@ui/components'
 import {viewStateStore, programStore} from '@src/stores'
 import Music from './Music'
 import Scene from './scene/Scene'
+import CodePanels from './code/CodePanels'
 import CodePanel from './code/CodePanel'
 import TopBar from './TopBar'
 import i18n from 'i18next'
@@ -51,14 +52,26 @@ export default class App extends React.Component<Props> {
 
   private renderCodePanels() {
     return (
-      <div classNames={$.code}>
+      <CodePanels classNames={$.code}>
         <CodePanel
-          classNames={$.codePanel}
+          source='etienne'
           image='etienne-head'
           title={i18n.t('etienne')}
           tintColor={colors.etienne}
         />
-      </div>
+        <CodePanel
+          source='marie'
+          image='marie-head'
+          title={i18n.t('marie')}
+          tintColor={colors.marie}
+        />
+        <CodePanel
+          source='chef'
+          image='chef-head'
+          title={i18n.t('chef')}
+          tintColor={colors.chef}
+        />
+      </CodePanels>
     )
   }
 
@@ -93,13 +106,7 @@ const $ = jss({
   },
 
   code: {
-    ...layout.overlay,
-    ...layout.flex.row,
-    overflow: 'auto'
-  },
-
-  codePanel: {
-    flex: 1
+    ...layout.overlay
   }
 
 })

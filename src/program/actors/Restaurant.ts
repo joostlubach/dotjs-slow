@@ -7,7 +7,7 @@ export default class Restaurant extends Actor {
     this.program.modifyState(state => {
       state.sprites.etienne.position = SpritePosition.counterFront
     })
-    
+    return this.program.getActor('marie')
   }
 
 }

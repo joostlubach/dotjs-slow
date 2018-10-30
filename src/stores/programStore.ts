@@ -1,13 +1,7 @@
 import EventEmitter from 'events'
 import {observable, action} from 'mobx'
-import {Program, ProgramRecorder, CodeError, Scenario, Simulation} from '../program'
+import {Program, ProgramRecorder, CodeError, Scenario, Simulation, Source} from '../program'
 import simulatorStore from './simulatorStore'
-
-interface Code {
-  etienne: string
-  server:   string
-  mrSlow:     string
-}
 
 export class ProgramStore extends EventEmitter {
 
@@ -15,13 +9,11 @@ export class ProgramStore extends EventEmitter {
   public scenario: Scenario | null = null
 
   @observable
-  public etienneCode: string = ''
-
-  @observable
-  public serverCode: string = ''
-
-  @observable
-  public mrSlowCode: string = ''
+  public codes: {[source in Source]: string} = {
+    etienne: '',
+    marie:   '',
+    chef:  ''
+  }
 
   @observable
   public errors: CodeError[] = []
@@ -32,9 +24,7 @@ export class ProgramStore extends EventEmitter {
   @action
   public loadScenario(scenario: Scenario) {
     this.scenario = scenario
-    this.etienneCode = scenario.code.etienne
-    this.serverCode = scenario.code.server
-    this.mrSlowCode = scenario.code.mrSlow
+    this.codes = scenario.codes
 
     simulatorStore.reset()
     this.errors = []
@@ -44,7 +34,7 @@ export class ProgramStore extends EventEmitter {
   @action
   public buildSimulation() {
     // Create a new program.
-    const program = new Program(this.etienneCode)
+    const program = new Program(this.codes)
     if (!program.compile()) {
       this.errors = program.errors
       return null

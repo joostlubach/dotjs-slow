@@ -25,7 +25,7 @@ class Scene extends React.Component<AllProps> {
       <div classNames={[$.scene, this.props.classNames]}>
         {this.renderKitchen()}
         {this.renderSprite(sprites.Marie, simulatorStore.state.sprites.marie)}
-        {this.renderSprite(sprites.MrSlow, simulatorStore.state.sprites.mrSlow)}
+        {this.renderSprite(sprites.Chef, simulatorStore.state.sprites.chef)}
         {this.renderBar()}
         {this.renderTables()}
         {this.renderSprite(sprites.Etienne, simulatorStore.state.sprites.etienne)}
@@ -66,6 +66,7 @@ class Scene extends React.Component<AllProps> {
         x={x}
         y={y}
         sceneSize={this.props.size as Size}
+        flipped={state.flipped}
         speak={state.speak}
         dance={state.dance}
       />
@@ -83,7 +84,7 @@ const stoveWidth = 140
 
 const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.counterLeft]:  {x: 20, y: 80},
-  [SpritePosition.counterRight]: {x: -180, y: 80},
+  [SpritePosition.counterRight]: {x: -280, y: 80},
   [SpritePosition.kitchen]:      {x: -150, y: 80},
   [SpritePosition.entrance]:     {x: 20, y: -20},
   [SpritePosition.counterFront]: {x: 20, y: 220},
