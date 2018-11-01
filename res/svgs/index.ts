@@ -10,6 +10,7 @@ export default {
   "etienne-head": require("./etienne-head.svg"),
   "etienne-outside": require("./etienne-outside.svg"),
   "etienne": require("./etienne.svg"),
+  "heart": require("./heart.svg"),
   "hob": require("./hob.svg"),
   "logo": require("./logo.svg"),
   "marie-angry": require("./marie-angry.svg"),

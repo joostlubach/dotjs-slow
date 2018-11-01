@@ -1,6 +1,9 @@
+import React from 'react'
+
 export type SpriteComponent = React.ComponentType<SpriteProps>
 
 export interface SpriteProps {
+  spriteRef: React.Ref<HTMLDivElement>
   x:         number
   y:         number
   speak?:    string | null

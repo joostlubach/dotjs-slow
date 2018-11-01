@@ -4,7 +4,7 @@ title: The End
 stage: exterior
 initial_positions:
   marie: ~
-  etienne: outside_left
+  etienne: outside_right:flipped
   chef: ~
 
 bootstrap: |-

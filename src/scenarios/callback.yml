@@ -5,7 +5,7 @@ stage: interior
 initial_positions:
   marie: counter_left
   etienne: entrance
-  chef: counter_right
+  chef: kitchen
 
 bootstrap: |-
   etienne.hungry()

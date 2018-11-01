@@ -14,7 +14,13 @@ export default class Scenario {
     const scenario = new Scenario(name)
     scenario.title = title
     scenario.stage = stage
-    scenario.initialPositions = mapValues(initialPositions, (val: string) => {
+    scenario.initialFlipped = {}
+    scenario.initialPositions = mapValues(initialPositions, (val: string, key: Character) => {
+      if (/^(.*):flipped$/.test(val)) {
+        val = RegExp.$1
+        scenario.initialFlipped[key] = true
+      }
+      
       return val == null ? null : SpritePosition[camelCase(val) as any]
     }) as any
     scenario.bootstrap = bootstrap
@@ -26,6 +32,7 @@ export default class Scenario {
 
   public bootstrap?: string
   public initialPositions!: Record<Character, SpritePosition | null>
+  public initialFlipped!:   Partial<Record<Character, boolean>>
 
   public stage!: Stage
 

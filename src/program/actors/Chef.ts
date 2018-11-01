@@ -291,7 +291,67 @@ export default class Chef extends Actor {
 
   public callForDate() {
     this.program.modifyState(state => {
+      state.sprites.etienne.speak = '?'
+      state.sprites.etienne.hold = '📱'
+    })
+    this.program.modifyState(state => {
+      state.stage = 'interior'
+      state.sprites.chef.position = SpritePosition.kitchen
+      state.sprites.etienne.position = null
+      state.sprites.marie.position = null
+      state.sprites.chef.hold = '📱'
+      state.sprites.chef.speak = '👨🏻‍🍳!'
+    })
+    this.program.modifyState(state => {
+      state.sprites.chef.speak = '💑?'
+    })
+    this.program.modifyState(state => {
       state.stage = 'exterior'
+      state.sprites.chef.position = null
+      state.sprites.marie.position = null
+      state.sprites.etienne.position = SpritePosition.outsideRight
+      state.sprites.etienne.hold = '📱'
+      state.sprites.etienne.speak = '🧔🏽!'
+    })
+    this.program.modifyState(state => {
+      state.stage = 'interior'
+      state.sprites.chef.position = SpritePosition.kitchen
+      state.sprites.etienne.position = null
+      state.sprites.marie.position = null
+      state.sprites.chef.hold = '📱'
+      state.sprites.chef.speak = '!'
+    })
+    this.program.modifyState(state => {
+      state.sprites.chef.speak = '👨‍❤️‍👨?'
+    })
+    this.program.modifyState(state => {
+      state.stage = 'exterior'
+      state.sprites.chef.position = null
+      state.sprites.marie.position = null
+      state.sprites.etienne.position = SpritePosition.outsideRight
+      state.sprites.etienne.hold = '📱'
+      state.sprites.etienne.speak = '👍'
+    })
+    this.program.modifyState(state => {
+      state.sprites.chef.position = SpritePosition.outsideDoor
+      state.sprites.chef.flipped = true
+      state.sprites.chef.hold = null
+      state.sprites.chef.speak = null
+      state.sprites.etienne.hold = null
+      state.sprites.etienne.speak = null
+    })
+    this.program.modifyState(state => {
+      state.sprites.chef.flipped = false
+      state.sprites.chef.position = SpritePosition.outsideCenter
+    })
+    this.program.modifyState(state => {
+      state.heart = 'static'
+    })
+    this.program.modifyState(state => {
+      state.heart = 'animating'
+    })
+    this.program.modifyState(state => {
+      state.theEnd = true
     })
   }
 

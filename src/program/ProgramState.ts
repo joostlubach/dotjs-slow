@@ -19,7 +19,9 @@ export enum SpritePosition {
   counterFront, // Where Etienne places order
   atTable,      // Etienne waiting at a table
 
+  outsideDoor,
   outsideLeft,
+  outsideCenter,
   outsideRight
 }
 
@@ -31,14 +33,14 @@ const defaultStoveState = {
   panContent: null
 }
 
-function defaultSpriteState(position: SpritePosition | null) {
+function defaultSpriteState(position: SpritePosition | null, flipped?: boolean) {
   return {
     position,
     speak:   null,
     face:    'happy',
     hold:    null,
-    flipped: false,
-    moving:   true
+    flipped: flipped || false,
+    moving:  true
   }
 }
 
@@ -53,9 +55,9 @@ export default class ProgramState {
       stage:   scenario.stage,
       stove:   defaultStoveState,
       sprites: {
-        etienne: defaultSpriteState(scenario.initialPositions.etienne),
-        marie:   defaultSpriteState(scenario.initialPositions.marie),
-        chef:    defaultSpriteState(scenario.initialPositions.chef),
+        etienne: defaultSpriteState(scenario.initialPositions.etienne, scenario.initialFlipped.etienne),
+        marie:   defaultSpriteState(scenario.initialPositions.marie, scenario.initialFlipped.marie),
+        chef:    defaultSpriteState(scenario.initialPositions.chef, scenario.initialFlipped.chef),
       }
     })
   }
@@ -68,5 +70,8 @@ export default class ProgramState {
   public stage:  Stage = 'interior'
   public stove!: StoveState
   public sprites!: {[key in Character]: SpriteState} 
+
+  public heart?: 'static' | 'animating'
+  public theEnd?: boolean
 
 }

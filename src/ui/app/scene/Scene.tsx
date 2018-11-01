@@ -1,33 +1,113 @@
 import React from 'react'
 import {observer} from 'mobx-react'
-import {jss, colors, layout} from '@ui/styles'
-import {SpritePosition, SpriteState} from '@src/program'
+import {jss, colors, layout, jssKeyframes} from '@ui/styles'
+import {SpritePosition, SpriteState, Character} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
 import Stove from './Stove'
 import {simulatorStore} from '@src/stores'
-import {SVG} from '@ui/components'
+import {SVG, Label} from '@ui/components'
 import BarStools from './BarStools'
 import Tables from './Tables'
-import sizeMe, {SizeMeProps} from 'react-sizeme';
+import sizeMe, {SizeMeProps} from 'react-sizeme'
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
+import {findDOMNode} from 'react-dom'
 
 export interface Props {
+  zoom?:       Character | null
   classNames?: React.ClassNamesProp
 }
 
 type AllProps = Props & SizeMeProps
 
+interface State {
+  zoomRect: Rect | null
+}
+
 @observer
-class Scene extends React.Component<AllProps> {
+class Scene extends React.Component<AllProps, State> {
+
+  public state: State = {
+    zoomRect: null
+  }
+
+  private sprites: Map<Character, HTMLElement> = new Map()
+  private spriteRef = (character: Character) => (el: any) => {
+    if (el) {
+      this.sprites.set(character, findDOMNode(el))
+    } else {
+      this.sprites.delete(character)
+    }
+  }
+
+  public componentDidMount() {
+    this.zoom()
+  }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.zoom !== this.props.zoom) {
+      this.zoom()
+    }
+  }
+
+  private getZoomedSprite() {
+    const {zoom} = this.props
+    if (zoom == null) { return null }
+
+    return this.sprites.get(zoom) || null 
+  }
+
+  private zoom() {
+    const sprite = this.getZoomedSprite()
+    if (sprite == null) {
+      this.setState({zoomRect: null})
+    } else {
+      const {x, y} = parseTransform(sprite.style.transform || '')
+      this.setState({zoomRect: {
+        left:   sprite.offsetLeft + x,
+        top:    sprite.offsetTop + y,
+        width:  sprite.offsetWidth,
+        height: sprite.offsetHeight
+      }})
+    }
+  }
+
+  private get zoomTransform(): string | undefined {
+    const {zoomRect} = this.state
+    if (zoomRect == null) { return undefined }
+
+    const width  = this.props.size.width!
+    const height = this.props.size.height!
+
+    const center = {
+      x: zoomRect.left + zoomRect.width / 2,
+      y: zoomRect.top + zoomRect.height / 2
+    }
+
+    const translate = {
+      x: width / 2 - center.x,
+      y: height / 2 - center.y
+    }
+    const scale = Math.min(width / zoomRect.width, height / zoomRect.height)
+
+    console.log(`translate(${translate.x}px ${translate.y}px) scale(${scale})`)
+
+    return `translate(${translate.x}px, ${translate.y}px) scale(${scale})`
+  }
 
   public render() {
     const {state} = simulatorStore
     if (state == null) { return null }
-    
+
     return (
       <div classNames={[$.scene, this.props.classNames]}>
-        {state.stage === 'interior' && this.renderInterior()}
-        {state.stage === 'exterior' && this.renderExterior()}
+        <div classNames={$.sceneZoom} style={{transform: this.zoomTransform}}>
+          <TransitionGroup>
+            {state.stage === 'interior' && this.renderInterior()}
+            {state.stage === 'exterior' && this.renderExterior()}
+          </TransitionGroup>
+          {this.renderHeart()}
+        </div>
       </div>
     )
   }
@@ -37,10 +117,12 @@ class Scene extends React.Component<AllProps> {
     if (state == null) { return null }
 
     return (
-      <div classNames={$.exterior}>
-        {this.renderSprite(sprites.ChefOutside, state.sprites.chef)}
-        {this.renderSprite(sprites.EtienneOutside, state.sprites.etienne)}
-      </div>
+      <CSSTransition timeout={layout.durations.long} classNames={$.exteriorTransition} enter exit>
+        <div classNames={$.exterior}>
+          {this.renderSprite('chef', sprites.ChefOutside, state.sprites.chef)}
+          {this.renderSprite('etienne', sprites.EtienneOutside, state.sprites.etienne)}
+        </div>
+      </CSSTransition>
     )
   }
 
@@ -49,14 +131,16 @@ class Scene extends React.Component<AllProps> {
     if (state == null) { return null }
 
     return (
-      <div classNames={$.interior}>
-        {this.renderKitchen()}
-        {this.renderSprite(sprites.Marie, state.sprites.marie)}
-        {this.renderSprite(sprites.Chef, state.sprites.chef)}
-        {this.renderBar()}
-        {this.renderSprite(sprites.Etienne, state.sprites.etienne)}
-        {this.renderTables()}
-      </div>
+      <CSSTransition timeout={layout.durations.long} classNames={$.interiorTransition} enter exit>
+        <div classNames={$.interior}>
+          {this.renderKitchen()}
+          {this.renderSprite('marie', sprites.Marie, state.sprites.marie)}
+          {this.renderSprite('chef', sprites.Chef, state.sprites.chef)}
+          {this.renderBar()}
+          {this.renderSprite('etienne', sprites.Etienne, state.sprites.etienne)}
+          {this.renderTables()}
+        </div>
+      </CSSTransition>
     )
   }
 
@@ -88,7 +172,7 @@ class Scene extends React.Component<AllProps> {
       )
   }
 
-  private renderSprite(Sprite: SpriteComponent, state: SpriteState) {
+  private renderSprite(character: Character, Sprite: SpriteComponent, state: SpriteState) {
     if (state.position == null) {
       return null 
     }
@@ -96,6 +180,7 @@ class Scene extends React.Component<AllProps> {
     const {x, y} = wellKnownPositions[state.position]
     return (
       <Sprite
+        spriteRef={this.spriteRef(character)}
         x={x}
         y={y}
         sceneSize={this.props.size as Size}
@@ -108,11 +193,44 @@ class Scene extends React.Component<AllProps> {
     )
   }
 
+  private renderHeart() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+
+    return (
+      <TransitionGroup>
+        {state.heart != null && (
+          <CSSTransition enter timeout={layout.durations.medium} classNames={$.heartEntry} mountOnEnter>
+            <div classNames={[$.heart, state.heart === 'animating' && $.heartAnim]}>
+              <SVG
+                classNames={state.heart === 'animating' && $.heartInnerAnim}
+                name='heart'
+                size={heartSize}
+              />
+            </div>
+          </CSSTransition>
+        )}
+        {state.theEnd && (
+          <CSSTransition timeout={layout.durations.short} classNames={$.theEndEntry} enter mountOnEnter>
+            <div classNames={$.theEnd}>
+              <Label>The end</Label>
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
+    )
+  }
+
 }
 
 const orderHereSize = {
   width:  109,
   height: 90
+}
+
+const heartSize = {
+  width:  74,
+  height: 65
 }
 
 const stoveWidth = 140
@@ -125,9 +243,32 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.counterFront]: {x: 20, y: 220},
   [SpritePosition.atTable]:      {x: 420, y: 270},
 
-  [SpritePosition.outsideLeft]:  {x: 120, y: -30},
-  [SpritePosition.outsideRight]: {x: -160, y: -30},
+  [SpritePosition.outsideDoor]:   {x: 240, y: -100},
+  [SpritePosition.outsideLeft]:   {x: 120, y: -30},
+  [SpritePosition.outsideCenter]: {x: 360, y: -30},
+  [SpritePosition.outsideRight]:  {x: 400, y: -30},
 }
+
+const heartExit = jssKeyframes('heartExit', {
+  '0%':  {
+    transform: 'rotate(0deg) translate(0px) rotate(0deg)',
+  },
+  '50%': {
+    transform: 'rotate(-180deg) translate(800px) rotate(180deg)',
+  },
+  '100%': {
+    transform: 'rotate(-360deg) translate(200px) rotate(360deg)',
+  }
+})
+
+const heartInnerExit = jssKeyframes('heartInnerExit', {
+  '0%':  {
+    transform: 'scale(1)',
+  },
+  '100%': {
+    transform: 'scale(50)',
+  }
+})
 
 const $ = jss({
   scene: {
@@ -138,6 +279,13 @@ const $ = jss({
       color: colors.lightBlue,
       image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
     }
+  },
+
+  sceneZoom: {
+    ...layout.overlay,
+
+    willChange: 'transform',
+    transition: layout.transitions.medium('transform')
   },
 
   exterior: {
@@ -232,7 +380,118 @@ const $ = jss({
     left:     180,
     top:      -orderHereSize.height / 2,
     ...orderHereSize
+  },
+
+  exteriorTransition: {
+    '&-enter': {
+      transform: 'scale(1.25)',
+      opacity:   0,
+
+    },
+
+    '&-enter-active': {
+      transition: layout.transitions.navigation(['transform', 'opacity'], 'cubic-bezier(0, 0.6, 0.6, 1)'),
+      transform:  'scale(1)',
+      opacity:    1
+    },
+
+    '&-exit': {
+      transform: 'scale(1)',
+      opacity:   1,
+    },
+
+    '&-exit-active': {
+      transition: layout.transitions.navigation(['transform', 'opacity'], 'cubic-bezier(0, 0.6, 0.6, 1)'),
+      transform:  'scale(1.25)',
+      opacity:    0
+    }
+  },
+
+  interiorTransition: {
+    '&-enter': {
+      transform: 'scale(0.8)',
+      opacity:   0,
+
+    },
+
+    '&-enter-active': {
+      transition: layout.transitions.navigation(['transform', 'opacity'], 'cubic-bezier(0, 0.6, 0.6, 1)'),
+      transform:  'scale(1)',
+      opacity:    1
+    },
+
+    '&-exit': {
+      transform: 'scale(1)',
+      opacity:   1,
+    },
+
+    '&-exit-active': {
+      transition: layout.transitions.navigation(['transform', 'opacity'], 'cubic-bezier(0, 0.6, 0.6, 1)'),
+      transform:  'scale(0.8)',
+      opacity:    0
+    }
+  },
+
+  heart: {
+    position: 'absolute',
+    left:     440,
+    bottom:   320
+  },
+
+  heartEntry: {
+    '&-enter': {
+      transform: 'scale(0.2)',
+      opacity:   0,
+
+    },
+
+    '&-enter-active': {
+      transition: layout.transitions.long(['transform', 'opacity'], 'cubic-bezier(0, 2, 1, 2)'),
+      transform:  'scale(1)',
+      opacity:    1
+    },
+  },
+
+  heartAnim: {
+    animation: `${heartExit} 5s linear 1 forwards`
+  },
+
+  heartInnerAnim: {
+    animation: `${heartInnerExit} 5s ease-in-out 1 forwards`
+  },
+
+  theEndEntry: {
+    '&-enter': {
+      opacity:   0,
+    },
+
+    '&-enter-active': {
+      transition: layout.transitions.long('opacity', 'ease-in-out'),
+      opacity:    1
+    },
+  },
+
+  theEnd: {
+    ...layout.overlay,
+    ...layout.flex.center,
+    fontSize: 200
   }
+
 })
+
+function parseTransform(transform: string): {x: number, y: number} {
+  if (!/translate(?:3d)?\((.*?)\)+/.test(transform)) { return {x: 0, y: 0} }
+
+  const args = RegExp.$1.split(', ')
+  
+  let x = parseFloat(args[0])
+  let y = parseFloat(args[1])
+
+  if (isNaN(x)) { x = 0 }
+  if (isNaN(y)) { y = 0 }
+
+  console.log(transform, x, y)
+  return {x, y}
+}
 
 export default sizeMe({monitorWidth: true, monitorHeight: true})(Scene)

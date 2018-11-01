@@ -7,7 +7,7 @@ const BACKGROUND_MUSIC: Record<string, Track> = {
   polling:     loadTrack('/music/polling.mp3', 0.2, 120),
   callback:    loadTrack('/music/callback.mp3', 0.2, 96),
   promise:     loadTrack('/music/promise.mp3', 0.3, 76),
-  ending:      loadTrack('/music/ending.mp3', 0.3, 42),
+  ending:      loadTrack('/music/ending.mp3', 0.3, 42, false),
 }
 
 export interface Track {
@@ -39,9 +39,9 @@ export class MusicStore {
 
 }
 
-function loadTrack(path: string, volume: number, bpm: number) {
+function loadTrack(path: string, volume: number, bpm: number, loop: boolean = true) {
   const audio = new Audio(path)
-  audio.loop = true
+  audio.loop = loop
   audio.volume = volume
   
   return {audio, bpm}

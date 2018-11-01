@@ -12,23 +12,36 @@ import i18n from 'i18next'
 import history from '@src/history'
 import {Location, UnregisterCallback} from 'history'
 import scenarios from '@src/scenarios'
+import {Character} from '@src/program'
 
 export interface Props {}
 
+interface State {
+  zoom: Character | null
+}
+
 @observer
-export default class App extends React.Component<Props> {
+export default class App extends React.Component<Props, State> {
+
+  public state: State = {
+    zoom: null
+  }
   
   private unlistenHistory: UnregisterCallback | null = null
 
   public componentWillMount() {
     this.unlistenHistory = history.listen(this.onHistoryChange)
     this.loadScenario()
+
+    window.addEventListener('keydown', this.onKeyDown)
   }
 
   public componentWillUnmount() {
     if (this.unlistenHistory) {
       this.unlistenHistory()
     }
+
+    window.removeEventListener('keydown', this.onKeyDown)
   }
 
   private onHistoryChange = (location: Location) => {
@@ -51,7 +64,7 @@ export default class App extends React.Component<Props> {
         <Panels
           classNames={$.panels}
           main={this.renderMain()}
-          right={<Scene/>}
+          right={<Scene zoom={this.state.zoom}/>}
           splitterSize={12}
           initialSizes={viewStateStore.panelSizes}
           minimumSizes={{left: 480}}
@@ -96,6 +109,14 @@ export default class App extends React.Component<Props> {
         />
       </CodePanels>
     )
+  }
+
+  private onKeyDown = (event: KeyboardEvent) => {
+    if (event.which === '1'.charCodeAt(0)) {
+      this.setState({zoom: 'etienne'})
+    } else {
+      this.setState({zoom: null})
+    }
   }
 
 }

@@ -13,6 +13,8 @@ export interface Props {
   y:         number
   sceneSize: Size
 
+  spriteRef: React.Ref<HTMLDivElement>
+
   speak?:   string | null
   hold?:    string | null
   moving?:   boolean
@@ -55,7 +57,7 @@ export default class Sprite extends React.Component<Props> {
     }
 
     return (
-      <div classNames={[$.sprite, this.props.classNames]} style={style}>
+      <div ref={this.props.spriteRef} classNames={[$.sprite, this.props.classNames]} style={style}>
         <div classNames={moving && $.moving} style={movingStyle}>
           <SVG name={image} size={size}/>
           {this.renderSpeak()}
