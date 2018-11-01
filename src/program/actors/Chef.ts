@@ -286,4 +286,13 @@ export default class Chef extends Actor {
     })
   }
 
+  //------
+  // Ending
+
+  public callForDate() {
+    this.program.modifyState(state => {
+      state.stage = 'exterior'
+    })
+  }
+
 }

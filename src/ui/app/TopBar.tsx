@@ -32,6 +32,7 @@ export default class TopBar extends React.Component<Props> {
       <div classNames={$.left}>
         <SVG name='logo' size={logoSize}/>
         <Label large>{i18n.t('title')}</Label>
+        {this.renderScenarioSelector()}
       </div>
     )
   }
@@ -39,7 +40,6 @@ export default class TopBar extends React.Component<Props> {
   private renderRight() {
     return (
       <div classNames={$.right}>
-        {this.renderScenarioSelect()}
         {this.renderPlayButton()}
         {this.renderPauseButton()}
         {this.renderBackwardButton()}
@@ -50,12 +50,11 @@ export default class TopBar extends React.Component<Props> {
     )
   }
 
-  private renderScenarioSelect() {
+  private renderScenarioSelector() {
     const currentScenarioName = programStore.scenario ? programStore.scenario.name : ''
 
     return (
       <div classNames={$.scenarioSelector}>
-        <Label small>{i18n.t('select_scenario')}</Label>
         <select value={currentScenarioName} onChange={this.onScenarioChange}>
           {Object.keys(scenarios).map(name => (
             <option
@@ -65,6 +64,11 @@ export default class TopBar extends React.Component<Props> {
             />
           ))}
         </select>
+        <ToolbarButton
+          icon='restart'
+          small
+          onTap={this.onResetTap}
+        />
       </div>
     )
   }
@@ -195,6 +199,10 @@ export default class TopBar extends React.Component<Props> {
 
   private onRestartTap = () => {
     simulatorStore.reset()
+  }
+
+  private onResetTap = () => {
+    programStore.resetScenario()
   }
 
   private onScenarioChange = (event: React.ChangeEvent<any>) => {

@@ -2,6 +2,8 @@ import {SourceLocation, Node} from 'estree'
 import ProgramState from './ProgramState'
 
 export type Source = 'etienne' | 'marie' | 'chef'
+export type Character = 'etienne' | 'marie' | 'chef'
+export type Stage = 'interior' | 'exterior'
 
 export interface Step {
   codeLocation: SourceLocation | null

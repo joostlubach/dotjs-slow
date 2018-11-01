@@ -4,9 +4,10 @@ import {Tappable, SVG} from '@ui/components'
 import {SVGName} from '@ui/components/SVG'
 
 export interface Props {
-  icon:      SVGName,
-  disabled?: boolean,
-  onTap:     () => void,
+  icon:      SVGName
+  small?:    boolean
+  disabled?: boolean
+  onTap:     () => void
 
   classNames?: React.ClassNamesProp
 }
@@ -14,20 +15,22 @@ export interface Props {
 export default class ToolbarButton extends React.Component<Props> {
 
   public render() {
-    const {icon, disabled = false, onTap} = this.props
+    const {icon, disabled = false, small, onTap} = this.props
     const classNames = [
       $.toolbarButton,
+      small && $.small,
       disabled && $.disabled,
       this.props.classNames
     ]
     const iconClassNames = [
       $.icon,
+      small && $.smallIcon,
       disabled && $.iconDisabled
     ]
 
     return (
       <Tappable classNames={classNames} onTap={disabled ? undefined : onTap}>
-        <SVG classNames={iconClassNames} name={icon} size={size}/>
+        <SVG classNames={iconClassNames} name={icon} size={small ? size.small : size.normal}/>
       </Tappable>
     )	
   }
@@ -35,15 +38,25 @@ export default class ToolbarButton extends React.Component<Props> {
 }
 
 const size = {
-  width:  40,
-  height: 40
+  normal: {
+    width:  40,
+    height: 40
+  },
+  small: {
+    width:  24,
+    height: 24
+  }
 }
 
 const $ = jss({
   toolbarButton: {
-    ...size,
+    ...size.normal,
     ...layout.flex.center,
     cursor: 'pointer'
+  },
+
+  small: {
+    ...size.small,
   },
 
   disabled: {

@@ -5,4 +5,5 @@ export default {
   polling:     Scenario.load(require('./polling.yml')),
   callback:    Scenario.load(require('./callback.yml')),
   promise:     Scenario.load(require('./promise.yml')),
+  ending:      Scenario.load(require('./ending.yml')),
 }

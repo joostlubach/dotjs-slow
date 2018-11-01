@@ -1,15 +1,14 @@
-import Program from './Program'
+import Scenario from './Scenario'
+import {Stage, Character} from './types'
 import {cloneDeep} from 'lodash'
 
-export type Sprite = 'etienne' | 'marie' | 'chef'
-
 export interface SpriteState {
-  position: SpritePosition
+  position: SpritePosition | null
   speak:    string | null
   face:     string
   hold:     string | null
   flipped:  boolean
-  moving:    boolean
+  moving:   boolean
 }
 
 export enum SpritePosition {
@@ -18,7 +17,10 @@ export enum SpritePosition {
   kitchen,      // Chef
   entrance,     // Starting point of Etienne
   counterFront, // Where Etienne places order
-  atTable       // Etienne waiting at a table
+  atTable,      // Etienne waiting at a table
+
+  outsideLeft,
+  outsideRight
 }
 
 export interface StoveState {
@@ -29,7 +31,7 @@ const defaultStoveState = {
   panContent: null
 }
 
-function defaultSpriteState(position: SpritePosition) {
+function defaultSpriteState(position: SpritePosition | null) {
   return {
     position,
     speak:   null,
@@ -46,13 +48,14 @@ export default class ProgramState {
     Object.assign(this, initialValues)
   }
 
-  public static get default() {
+  public static default(scenario: Scenario) {
     return new ProgramState({
+      stage:   scenario.stage,
       stove:   defaultStoveState,
       sprites: {
-        etienne: defaultSpriteState(SpritePosition.entrance),
-        marie:   defaultSpriteState(SpritePosition.counterLeft),
-        chef:    defaultSpriteState(SpritePosition.kitchen),
+        etienne: defaultSpriteState(scenario.initialPositions.etienne),
+        marie:   defaultSpriteState(scenario.initialPositions.marie),
+        chef:    defaultSpriteState(scenario.initialPositions.chef),
       }
     })
   }
@@ -62,7 +65,8 @@ export default class ProgramState {
     return new ProgramState(values)
   }
 
+  public stage:  Stage = 'interior'
   public stove!: StoveState
-  public sprites!: {[key in Sprite]: SpriteState} 
+  public sprites!: {[key in Character]: SpriteState} 
 
 }

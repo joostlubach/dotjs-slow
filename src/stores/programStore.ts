@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import {observable, action} from 'mobx'
+import {observable, action, computed} from 'mobx'
 import {Program, ProgramRecorder, CodeError, Scenario, Simulation, Source} from '../program'
 import simulatorStore from './simulatorStore'
 import scenarios from '@src/scenarios'
@@ -10,11 +10,7 @@ export class ProgramStore extends EventEmitter {
   public scenario: Scenario | null = null
 
   @observable
-  public codes: {[source in Source]: string} = {
-    etienne: '',
-    marie:   '',
-    chef:    ''
-  }
+  public codes: Record<string, string> = {}
 
   @observable
   public errors: CodeError[] = []
@@ -25,6 +21,18 @@ export class ProgramStore extends EventEmitter {
   @action
   public loadScenario(name: keyof typeof scenarios) {
     const scenario = scenarios[name]
+    this.installScenario(scenario)
+  }
+
+  @action
+  public resetScenario() {
+    if (this.scenario) {
+      this.installScenario(this.scenario)
+    }
+  }
+
+  @action
+  private installScenario(scenario: Scenario) {
     this.scenario = scenario
     this.codes = scenario.codes
 
@@ -35,8 +43,11 @@ export class ProgramStore extends EventEmitter {
 
   @action
   public buildSimulation() {
+    const {scenario} = this
+    if (scenario == null) { return }
+
     // Create a new program.
-    const program = new Program(this.codes)
+    const program = new Program(scenario, scenario.codes, {bootstrap: scenario.bootstrap})
     if (!program.compile()) {
       this.errors = program.errors
       return null

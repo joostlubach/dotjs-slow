@@ -6,7 +6,8 @@ const BACKGROUND_MUSIC: Record<string, Track> = {
   synchronous: loadTrack('/music/synchronous.mp3', 0.2, 68),
   polling:     loadTrack('/music/polling.mp3', 0.2, 120),
   callback:    loadTrack('/music/callback.mp3', 0.2, 96),
-  promise:     loadTrack('/music/promise.mp3', 0.3, 50),
+  promise:     loadTrack('/music/promise.mp3', 0.3, 76),
+  ending:      loadTrack('/music/ending.mp3', 0.3, 42),
 }
 
 export interface Track {

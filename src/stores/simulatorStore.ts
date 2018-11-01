@@ -42,7 +42,7 @@ export class SimulatorStore {
   }
 
   @computed
-  public get state(): ProgramState {
+  public get state(): ProgramState | null {
     if (this.currentStep != null) {
       return this.currentStep.endState
     } else if (
@@ -51,8 +51,10 @@ export class SimulatorStore {
       this.simulator.steps.length > 0
     ) {
       return this.simulator.steps[0].startState
+    } else if (programStore.scenario != null) {
+      return ProgramState.default(programStore.scenario)
     } else {
-      return ProgramState.default
+      return null
     }
   }
 

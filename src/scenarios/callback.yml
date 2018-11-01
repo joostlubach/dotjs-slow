@@ -1,6 +1,15 @@
 name: callback
 title: Callback
 
+stage: interior
+initial_positions:
+  marie: counter_left
+  etienne: entrance
+  chef: counter_right
+
+bootstrap: |-
+  etienne.hungry()
+
 codes:
   etienne: |-
     etienne.onHungry = function () {

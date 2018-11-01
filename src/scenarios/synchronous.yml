@@ -1,6 +1,15 @@
 name: synchronous
 title: Synchronous
 
+stage: exterior
+initial_positions:
+  marie: ~
+  etienne: outside_left
+  chef: ~
+
+bootstrap: |-
+  etienne.hungry()
+
 codes:
   etienne: |-
     etienne.onHungry = function () {

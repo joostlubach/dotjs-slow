@@ -1,0 +1,11 @@
+name: ending
+title: The End
+
+stage: exterior
+initial_positions:
+  marie: ~
+  etienne: outside_left
+  chef: ~
+
+bootstrap: |-
+  chef.callForDate()

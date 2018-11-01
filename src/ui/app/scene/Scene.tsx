@@ -1,6 +1,6 @@
 import React from 'react'
 import {observer} from 'mobx-react'
-import {jss, colors} from '@ui/styles'
+import {jss, colors, layout} from '@ui/styles'
 import {SpritePosition, SpriteState} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
@@ -21,22 +21,52 @@ type AllProps = Props & SizeMeProps
 class Scene extends React.Component<AllProps> {
 
   public render() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+    
     return (
       <div classNames={[$.scene, this.props.classNames]}>
+        {state.stage === 'interior' && this.renderInterior()}
+        {state.stage === 'exterior' && this.renderExterior()}
+      </div>
+    )
+  }
+
+  private renderExterior() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+
+    return (
+      <div classNames={$.exterior}>
+        {this.renderSprite(sprites.ChefOutside, state.sprites.chef)}
+        {this.renderSprite(sprites.EtienneOutside, state.sprites.etienne)}
+      </div>
+    )
+  }
+
+  private renderInterior() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+
+    return (
+      <div classNames={$.interior}>
         {this.renderKitchen()}
-        {this.renderSprite(sprites.Marie, simulatorStore.state.sprites.marie)}
-        {this.renderSprite(sprites.Chef, simulatorStore.state.sprites.chef)}
+        {this.renderSprite(sprites.Marie, state.sprites.marie)}
+        {this.renderSprite(sprites.Chef, state.sprites.chef)}
         {this.renderBar()}
-        {this.renderSprite(sprites.Etienne, simulatorStore.state.sprites.etienne)}
+        {this.renderSprite(sprites.Etienne, state.sprites.etienne)}
         {this.renderTables()}
       </div>
     )
   }
 
   private renderKitchen() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+
     return (
       <div classNames={$.kitchen}>
-        <Stove classNames={$.stove} panContent={simulatorStore.state.stove.panContent}/>
+        <Stove classNames={$.stove} panContent={state.stove.panContent}/>
       </div>
     )
   }
@@ -59,8 +89,11 @@ class Scene extends React.Component<AllProps> {
   }
 
   private renderSprite(Sprite: SpriteComponent, state: SpriteState) {
-    const {x, y} = wellKnownPositions[state.position]
+    if (state.position == null) {
+      return null 
+    }
 
+    const {x, y} = wellKnownPositions[state.position]
     return (
       <Sprite
         x={x}
@@ -91,6 +124,9 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.entrance]:     {x: 20, y: -20},
   [SpritePosition.counterFront]: {x: 20, y: 220},
   [SpritePosition.atTable]:      {x: 420, y: 270},
+
+  [SpritePosition.outsideLeft]:  {x: 120, y: -30},
+  [SpritePosition.outsideRight]: {x: -160, y: -30},
 }
 
 const $ = jss({
@@ -102,6 +138,28 @@ const $ = jss({
       color: colors.lightBlue,
       image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
     }
+  },
+
+  exterior: {
+    ...layout.overlay,
+
+    background: {
+      color:    colors.skyBlue,
+      image:    `url(/images/exterior.png)`,
+      repeat:   'no-repeat',
+      size:     [1500, 700],
+      position: 'bottom left'
+    }
+  },
+
+  interior: {
+    ...layout.overlay,
+  },
+
+  exteriorBG: {
+    ...layout.overlay,
+    width: '100% !important',
+    height: '100% !important',
   },
 
   kitchen: {

@@ -73,7 +73,10 @@ export default class CodePanels extends React.Component<Props, State> {
       if (!React.isValidElement(child)) { return }
       if (child.type !== CodePanel as any) { return }
 
-      values.push(callback(child as any, values.length))
+      const props = child.props as CodePanelProps
+      if (props.source in programStore.codes) {
+        values.push(callback(child as any, values.length))
+      }
     })
     return values
   }
@@ -86,9 +89,11 @@ export default class CodePanels extends React.Component<Props, State> {
 
   public render() {
     const _ = [simulatorStore.currentStep, programStore.errors]
+    const panels = Object.values(this.panels)
+    const minWidth = panels.length * panelBarWidth
 
     return (
-      <div classNames={[$.codePanels, this.props.classNames]}>
+      <div classNames={[$.codePanels, this.props.classNames]} style={{minWidth}}>
         {Object.values(this.panels)}
       </div>
     )

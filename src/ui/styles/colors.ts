@@ -9,6 +9,8 @@ export const brown = new Color('#AE7320')
 export const green = new Color('#2F992E')
 export const blue = new Color('#3467A2')
 export const lightBlue = new Color('#6694CA')
+export const skyBlue = new Color('#D1E6EE')
+export const sidewalkGreen = new Color('#87B9BA')
 
 export const bg = {
   normal: black,

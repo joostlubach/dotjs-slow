@@ -3,11 +3,16 @@ import * as nodes from 'estree'
 import {Program as ESTreeProgram, Node, SourceLocation} from 'estree'
 import {Runtime} from 'js-eval'
 import * as walk from 'acorn/dist/walk'
+import Scenario from './Scenario'
 import {CodeError, Recordable, RecordableNode, Source} from './types'
 import ProgramState from './ProgramState'
 import ActorClasses from './actors'
 import {flatten} from 'lodash'
 import FakePromise from './FakePromise'
+
+export interface Options {
+  bootstrap?: string
+}
 
 export interface Callbacks {
   node?:          (node: Node) => any
@@ -22,7 +27,9 @@ export interface Fork {
 export default class Program {
 
   constructor(
+    public readonly scenario: Scenario,
     public readonly codes: {[source in Source]: string},
+    public readonly options: Options
   ) {}
 
   public readonly errors: CodeError[]  = []
@@ -30,7 +37,8 @@ export default class Program {
   //------
   // Compile
 
-  public ast: ESTreeProgram | null = null
+  private ast: ESTreeProgram | null = null
+  private bootstrapAST: ESTreeProgram | null = null
 
   public compile() {
     if (this.ast != null) { return }
@@ -39,6 +47,12 @@ export default class Program {
       const ast = this.parseSources()
       markRecordableNodes(ast)
       this.ast = ast
+
+      if (this.options.bootstrap) {
+        this.bootstrapAST = acornParse(this.options.bootstrap)
+      } else {
+        this.bootstrapAST = null
+      }
 
       // Make sure that the program body nodes are not recordable. Do make the program itself recordable.
       for (const node of ast.body) {
@@ -105,8 +119,10 @@ export default class Program {
       // Evaluate the program.
       runtime.evaluate(this.ast)
 
-      // "Commit" by invoking Etienne's onHungry handler.
-      this.commit(runtime)
+      // Bootstrap the program.
+      if (this.bootstrapAST) {
+        runtime.evaluate(this.bootstrapAST)
+      }
 
       // Execute all forks.
       while (this.forks.length > 0) {
@@ -134,18 +150,13 @@ export default class Program {
   }
 
   private prepare(runtime: Runtime) {
-    this.states     = [ProgramState.default]
+    this.states     = [ProgramState.default(this.scenario)]
     this.stateIndex = 0
     this.forks      = []
     this.createActors()
 
     runtime.context.assign(this.actors)
     runtime.context.assign({console, Math, Promise: FakePromise})
-  }
-
-  private commit(runtime: Runtime) {
-    const {etienne} = this.actors
-    etienne.hungry()
   }
 
   private handleError(error: Error) {
@@ -182,7 +193,7 @@ export default class Program {
   //------
   // Program state & actors
 
-  private states: ProgramState[] = [ProgramState.default]
+  private states: ProgramState[] = [ProgramState.default(this.scenario)]
   private stateIndex: number = 0
 
   private actors!: {[name in keyof ActorClasses]: InstanceType<ActorClasses[name]>}
