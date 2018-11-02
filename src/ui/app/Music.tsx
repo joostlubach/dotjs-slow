@@ -25,10 +25,14 @@ export default class Music extends React.Component {
 
   private playingTrack: Track | null = null
 
-  private playTrack(music: Track) {
-    music.audio.currentTime = 0
-    music.audio.play()
-    this.playingTrack = music
+  private async playTrack(music: Track) {
+    try {
+      this.playingTrack = music
+      music.audio.currentTime = 0
+      await music.audio.play()
+    } catch (error) {
+      console.warn("Cannot play music", error)
+    }
   }
 
   private stopTrack() {
