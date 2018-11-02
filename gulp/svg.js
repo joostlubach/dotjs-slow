@@ -16,9 +16,17 @@ function stripFill($) {
 		}
 	})
 
-	$('[id^="!"]').each(function () {
-		const id = $(this).attr('id')
-		$(this).attr('id', id.replace(/^![-\s]+/, ''))
+	// Remove all IDs, except the symbols and except elements that start with #.
+	$('[id]').each(function () {
+		const $this = $(this)
+		const id = $this.attr('id')
+		if (id == null || $this.name === 'symbol') { return }
+
+		if (id.startsWith('#')) {
+			$this.attr('id', id.slice(1))
+		} else {
+			$this.removeAttr('id')
+		}
 	})
 }
 

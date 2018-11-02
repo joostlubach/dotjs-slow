@@ -8,6 +8,7 @@ import Scene from './scene/Scene'
 import CodePanels from './code/CodePanels'
 import CodePanel from './code/CodePanel'
 import TopBar from './TopBar'
+import Keyboard, {KeyAction} from './Keyboard'
 import i18n from 'i18next'
 import history from '@src/history'
 import {Location, UnregisterCallback} from 'history'
@@ -32,16 +33,26 @@ export default class App extends React.Component<Props, State> {
   public componentWillMount() {
     this.unlistenHistory = history.listen(this.onHistoryChange)
     this.loadScenario()
-
-    window.addEventListener('keydown', this.onKeyDown)
   }
 
   public componentWillUnmount() {
     if (this.unlistenHistory) {
       this.unlistenHistory()
     }
+  }
 
-    window.removeEventListener('keydown', this.onKeyDown)
+  private performKeyAction(action: KeyAction) {
+    if (action.type === 'zoom') {
+      this.toggleZoom(action.character)
+    }
+  }
+
+  private toggleZoom(character: Character | null) {
+    if (this.state.zoom === character) {
+      this.setState({zoom: null})
+    } else {
+      this.setState({zoom: character})
+    }
   }
 
   private onHistoryChange = (location: Location) => {
@@ -74,6 +85,7 @@ export default class App extends React.Component<Props, State> {
           panelClassNames={$.panel}
         />
         <Music/>
+        <Keyboard onAction={action => this.performKeyAction(action)}/>
       </div>
     )
   }
@@ -109,14 +121,6 @@ export default class App extends React.Component<Props, State> {
         />
       </CodePanels>
     )
-  }
-
-  private onKeyDown = (event: KeyboardEvent) => {
-    if (event.which === '1'.charCodeAt(0)) {
-      this.setState({zoom: 'etienne'})
-    } else {
-      this.setState({zoom: null})
-    }
   }
 
 }

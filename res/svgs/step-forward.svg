@@ -4,9 +4,9 @@
     <title>step-forward</title>
     <desc>Created with sketchtool.</desc>
     <defs/>
-    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="step-forward" fill-rule="nonzero">
-            <path d="M2,4 L2,36 L8.9375,36 L8.9375,4 M13.5625,4 L13.5625,36 L39,20" id="Shape"/>
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g fill-rule="nonzero">
+            <path d="M2,4 L2,36 L8.9375,36 L8.9375,4 M13.5625,4 L13.5625,36 L39,20"/>
         </g>
     </g>
 </svg>

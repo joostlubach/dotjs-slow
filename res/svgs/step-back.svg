@@ -4,9 +4,9 @@
     <title>step-back</title>
     <desc>Created with sketchtool.</desc>
     <defs/>
-    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="step-back" fill-rule="nonzero">
-            <path d="M39,4 L39,36 L32.0625,36 L32.0625,4 L39,4 Z M27.4375,4 L27.4375,36 L2,20 L27.4375,4 Z" id="Shape-Copy"/>
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g fill-rule="nonzero">
+            <path d="M39,4 L39,36 L32.0625,36 L32.0625,4 L39,4 Z M27.4375,4 L27.4375,36 L2,20 L27.4375,4 Z"/>
         </g>
     </g>
 </svg>

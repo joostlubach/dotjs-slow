@@ -4,29 +4,29 @@
     <title>table</title>
     <desc>Created with sketchtool.</desc>
     <defs>
-        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%">
             <stop stop-color="#585858" offset="0%"/>
             <stop stop-color="#000000" offset="100%"/>
         </linearGradient>
-        <linearGradient x1="50%" y1="0%" x2="50%" y2="66.5078577%" id="linearGradient-2">
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="66.5078577%">
             <stop stop-color="#FFFFFF" offset="0%"/>
             <stop stop-color="#000000" offset="100%"/>
         </linearGradient>
-        <linearGradient x1="50%" y1="0%" x2="50%" y2="97.4485188%" id="linearGradient-3">
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="97.4485188%">
             <stop stop-color="#D5A17A" offset="0%"/>
             <stop stop-color="#975E30" offset="100%"/>
         </linearGradient>
     </defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="table">
-            <g id="!table" transform="translate(1.000000, 0.000000)">
-                <path d="M52.8345764,121 L105.189871,121 C105.662185,121 106.070098,121.330462 106.168105,121.792496 L112.743863,152.792496 C112.858464,153.33276 112.513397,153.863633 111.973133,153.978234 C111.904913,153.992705 111.835366,154 111.765629,154 L47.1982127,154 C46.645928,154 46.1982127,153.552285 46.1982127,153 C46.1982127,152.940008 46.2036112,152.880138 46.2143428,152.821115 L51.8507064,121.821115 C51.9371593,121.345624 52.3512902,121 52.8345764,121 Z" id="Rectangle-5" fill="url(#linearGradient-1)"/>
-                <rect id="Rectangle-4" fill="#000000" x="46" y="153" width="67" height="3" rx="1"/>
-                <path d="M113,155 C113,154.447715 112.552285,154 112,154 L47,154 C46.4477153,154 46,154.447715 46,155 L46,154 C46,153.447715 46.4477153,153 47,153 L112,153 C112.552285,153 113,153.447715 113,154 L113,155 Z" id="Combined-Shape" fill-opacity="0.439999998" fill="url(#linearGradient-2)"/>
-                <polygon id="Path-3" fill="#AD751D" points="0 33.5 22 0 139 0 159 33.5"/>
-                <rect id="Rectangle" fill="#975E30" x="0" y="35" width="159" height="7"/>
-                <rect id="Rectangle-2" fill="url(#linearGradient-3)" x="0" y="33.5" width="159" height="1.5"/>
-                <path d="M72,42 L87,42 L87,138 C87,139.104569 86.1045695,140 85,140 L74,140 C72.8954305,140 72,139.104569 72,138 L72,42 Z" id="Rectangle-3" fill="#000000"/>
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g>
+            <g transform="translate(1.000000, 0.000000)">
+                <path d="M52.8345764,121 L105.189871,121 C105.662185,121 106.070098,121.330462 106.168105,121.792496 L112.743863,152.792496 C112.858464,153.33276 112.513397,153.863633 111.973133,153.978234 C111.904913,153.992705 111.835366,154 111.765629,154 L47.1982127,154 C46.645928,154 46.1982127,153.552285 46.1982127,153 C46.1982127,152.940008 46.2036112,152.880138 46.2143428,152.821115 L51.8507064,121.821115 C51.9371593,121.345624 52.3512902,121 52.8345764,121 Z" fill="url(#linearGradient-1)"/>
+                <rect fill="#000000" x="46" y="153" width="67" height="3" rx="1"/>
+                <path d="M113,155 C113,154.447715 112.552285,154 112,154 L47,154 C46.4477153,154 46,154.447715 46,155 L46,154 C46,153.447715 46.4477153,153 47,153 L112,153 C112.552285,153 113,153.447715 113,154 L113,155 Z" fill-opacity="0.439999998" fill="url(#linearGradient-2)"/>
+                <polygon fill="#AD751D" points="0 33.5 22 0 139 0 159 33.5"/>
+                <rect fill="#975E30" x="0" y="35" width="159" height="7"/>
+                <rect fill="url(#linearGradient-3)" x="0" y="33.5" width="159" height="1.5"/>
+                <path d="M72,42 L87,42 L87,138 C87,139.104569 86.1045695,140 85,140 L74,140 C72.8954305,140 72,139.104569 72,138 L72,42 Z" fill="#000000"/>
             </g>
         </g>
     </g>

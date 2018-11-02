@@ -2,6 +2,7 @@ import * as React from 'react'
 import {jss, layout} from '@ui/styles'
 import {range, times, throttle} from 'lodash'
 import sizeMe, {SizeMeProps} from 'react-sizeme'
+import {findDOMNode} from 'react-dom'
 
 export interface Props {
   rows?:    number | Range
@@ -34,6 +35,27 @@ type AllProps = Props & SizeMeProps
 
 class ResponsiveGrid extends React.Component<AllProps> {
 
+  private self: HTMLElement | null = null
+
+  public componentDidMount() {
+    this.self = findDOMNode(this)
+  }
+
+  public componentDidUpdate() {
+    this.self = findDOMNode(this)
+  }
+
+  private get size(): Size {
+    if (this.self != null) {
+      return {
+        width:  this.self.offsetWidth,
+        height: this.self.offsetHeight
+      }
+    } else {
+      return this.props.size as Size
+    }
+  }
+
   private get horizontalGap() {
     const {gap = 0} = this.props
     if (typeof gap === 'number') { return gap }
@@ -49,13 +71,13 @@ class ResponsiveGrid extends React.Component<AllProps> {
   }
 
   private calculateColumns() {
-    const {columns = {}, size, minWidth} = this.props
+    const {columns = {}, minWidth} = this.props
     if (typeof columns === 'number') { return columns }
     if (minWidth == null) { return 1 }
 
     const gap = this.horizontalGap
 
-    let calculatedColumns = Math.floor((size.width! + gap) / (minWidth + gap))
+    let calculatedColumns = Math.floor((this.size.width! + gap) / (minWidth + gap))
     if (columns.min != null) {
       calculatedColumns = Math.max(calculatedColumns, columns.min)
     }
@@ -66,12 +88,12 @@ class ResponsiveGrid extends React.Component<AllProps> {
   }
 
   private calculateRows() {
-    const {rows = {}, size, minHeight} = this.props
+    const {rows = {}, minHeight} = this.props
     if (typeof rows === 'number') { return rows }
     if (minHeight == null) { return 1 }
 
     const gap = this.verticalGap
-    let calculatedRows = Math.floor((size.height! + gap) / (minHeight + gap))
+    let calculatedRows = Math.floor((this.size.height! + gap) / (minHeight + gap))
     if (rows.min != null) {
       calculatedRows = Math.max(calculatedRows, rows.min)
     }

@@ -54,7 +54,10 @@ class Scene extends React.Component<AllProps, State> {
     const {zoom} = this.props
     if (zoom == null) { return null }
 
-    return this.sprites.get(zoom) || null 
+    const sprite = this.sprites.get(zoom)
+    if (sprite == null) { return null }
+
+    return sprite
   }
 
   private zoom() {
@@ -90,9 +93,7 @@ class Scene extends React.Component<AllProps, State> {
     }
     const scale = Math.min(width / zoomRect.width, height / zoomRect.height)
 
-    console.log(`translate(${translate.x}px ${translate.y}px) scale(${scale})`)
-
-    return `translate(${translate.x}px, ${translate.y}px) scale(${scale})`
+    return `scale(${scale}) translate(${translate.x}px, ${translate.y}px)`
   }
 
   public render() {
@@ -107,6 +108,7 @@ class Scene extends React.Component<AllProps, State> {
             {state.stage === 'exterior' && this.renderExterior()}
           </TransitionGroup>
           {this.renderHeart()}
+          <div classNames={$.zoomBox} style={{...this.state.zoomRect}} />
         </div>
       </div>
     )
@@ -475,6 +477,11 @@ const $ = jss({
     ...layout.overlay,
     ...layout.flex.center,
     fontSize: 200
+  },
+
+  zoomBox: {
+    position: 'absolute',
+    border: [2, 'solid', 'red']
   }
 
 })
@@ -490,7 +497,6 @@ function parseTransform(transform: string): {x: number, y: number} {
   if (isNaN(x)) { x = 0 }
   if (isNaN(y)) { y = 0 }
 
-  console.log(transform, x, y)
   return {x, y}
 }
 

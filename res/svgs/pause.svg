@@ -4,9 +4,9 @@
     <title>pause</title>
     <desc>Created with sketchtool.</desc>
     <defs/>
-    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g id="pause">
-            <path d="M10,36 L10,4 L17.1666667,4 L17.1666667,36 L10,36 Z M22,4 L29.1666667,4 L29.1666667,36 L22,36 L22,4 Z" id="Combined-Shape"/>
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g>
+            <path d="M10,36 L10,4 L17.1666667,4 L17.1666667,36 L10,36 Z M22,4 L29.1666667,4 L29.1666667,36 L22,36 L22,4 Z"/>
         </g>
     </g>
 </svg>
