@@ -84,7 +84,7 @@ export default class App extends React.Component<Props, State> {
       break
     
     case 'loadScenario':
-      this.loadScenario(action.scenario)
+      this.goToScenario(action.scenario)
       break
     }
   }
@@ -103,7 +103,7 @@ export default class App extends React.Component<Props, State> {
     if (index === scenarios.length - 1) { return false }
 
     const scenario = scenarios[index + 1] || scenarios[0]
-    this.loadScenario(scenario.name as ScenarioName)
+    this.goToScenario(scenario.name)
     return true
   }
 
@@ -113,6 +113,10 @@ export default class App extends React.Component<Props, State> {
     } else {
       this.setState({zoom: character})
     }
+  }
+
+  private goToScenario(name: string) {
+    history.push(`/${name}`)
   }
 
   private onHistoryChange = () => {
@@ -238,6 +242,10 @@ const $ = jss({
 
   code: {
     ...layout.overlay
+  },
+
+  panel: {
+    overflow: 'hidden'
   }
 
 })

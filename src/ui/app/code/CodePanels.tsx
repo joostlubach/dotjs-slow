@@ -73,10 +73,7 @@ export default class CodePanels extends React.Component<Props, State> {
       if (!React.isValidElement(child)) { return }
       if (child.type !== CodePanel as any) { return }
 
-      const props = child.props as CodePanelProps
-      if (props.source in programStore.codes) {
-        values.push(callback(child as any, values.length))
-      }
+      values.push(callback(child as any, values.length))
     })
     return values
   }
