@@ -108,7 +108,6 @@ class Scene extends React.Component<AllProps, State> {
             {state.stage === 'exterior' && this.renderExterior()}
           </TransitionGroup>
           {this.renderHeart()}
-          <div classNames={$.zoomBox} style={{...this.state.zoomRect}} />
         </div>
       </div>
     )

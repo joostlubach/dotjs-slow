@@ -2,7 +2,7 @@ import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, colors, layout} from '@ui/styles'
 import {Panels} from '@ui/components'
-import {viewStateStore, programStore} from '@src/stores'
+import {viewStateStore, programStore, simulatorStore} from '@src/stores'
 import Music from './Music'
 import Scene from './scene/Scene'
 import CodePanels from './code/CodePanels'
@@ -42,8 +42,30 @@ export default class App extends React.Component<Props, State> {
   }
 
   private performKeyAction(action: KeyAction) {
-    if (action.type === 'zoom') {
+    switch (action.type) {
+    case 'zoom':
       this.toggleZoom(action.character)
+      break
+
+    case 'simulator':
+      switch (action.action) {
+        case 'playPause':
+          if (simulatorStore.running) {
+            simulatorStore.pause()
+          } else {
+            simulatorStore.resume()
+          }
+          break
+        case 'forward':
+          simulatorStore.forward()
+          break
+        case 'backward':
+          simulatorStore.backward()
+          break
+        case 'reset':
+          simulatorStore.reset()
+          break
+      }
     }
   }
 
