@@ -13,6 +13,8 @@ export interface Props {
   main:      React.ReactNode
   splitter?: React.ReactNode | ((side: Side) => React.ReactNode)
 
+  fullScreen?: boolean
+
   splitterSize:     number
   initialSizes?:    Sizes
   minimumSizes?:    Sizes
@@ -20,6 +22,7 @@ export interface Props {
   onPanelResize?:   (sizes: Sizes) => void
 
   classNames?:         React.ClassNamesProp
+  mainClassNames?:     React.ClassNamesProp
   panelClassNames?:    React.ClassNamesProp | ((side: Side) => React.ClassNamesProp)
   splitterClassNames?: React.ClassNamesProp | ((side: Side) => React.ClassNamesProp)
 }
@@ -70,6 +73,8 @@ export default class Panels extends React.Component<Props, State> {
   }
 
   public render() {
+    const {fullScreen = false} = this.props
+
     return (
       <div classNames={[$.panels, this.props.classNames]}>
         {this.renderMain()}
@@ -83,21 +88,23 @@ export default class Panels extends React.Component<Props, State> {
 
   private renderMain() {
     const style: React.CSSProperties = {}
-    for (const side of Object.keys(Side)) {
-      if (this.props[side] != null) {
-        style[Side[side]] = this.state.sizes[side]
+    if (!this.props.fullScreen) {
+      for (const side of Object.keys(Side)) {
+        if (this.props[side] != null) {
+          style[Side[side]] = this.state.sizes[side]
+        }
       }
     }
 
     return (
-      <div classNames={$.main} style={style}>
+      <div classNames={[$.main, this.props.mainClassNames]} style={style}>
         {this.props.main}
       </div>
     )
   }
 
   private renderPanel(side: Side) {
-    const {splitterSize, horizontalFirst, panelClassNames} = this.props
+    const {splitterSize, horizontalFirst, panelClassNames, fullScreen} = this.props
 
     const style: React.CSSProperties = {}
     if (side === Side.left || side === Side.right) {
@@ -105,13 +112,25 @@ export default class Panels extends React.Component<Props, State> {
         style.top = this.state.sizes.top
         style.bottom = this.state.sizes.bottom
       }
-      style.width = (this.state.sizes[side] || 0) - splitterSize
+      if (fullScreen) {
+        style.width = 0
+        style.transform = side === Side.left ? `translateX(-${splitterSize}px)` : `translateX(${splitterSize}px)`
+      } else {
+        style.width = (this.state.sizes[side] || 0) - splitterSize
+        style.transform = ''
+      }
     } else {
       if (horizontalFirst) {
         style.left = this.state.sizes.left
         style.right = this.state.sizes.right
       }
-      style.height = (this.state.sizes[side] || 0) - splitterSize
+      if (fullScreen) {
+        style.height = 0
+        style.transform = side === Side.top ? `translateX(-${splitterSize}px)` : `translateX(${splitterSize}px)`
+      } else {
+        style.height = (this.state.sizes[side] || 0) - splitterSize
+        style.transform = ''
+      }
     }
 
     const classNames = [
@@ -219,7 +238,10 @@ const $ = jss({
   },
 
   main: {
-    ...layout.overlay
+    ...layout.overlay,
+
+    willChange: ['left', 'right', 'top', 'bottom'],
+    transition: layout.transitions.short(['left', 'right', 'top', 'bottom'])
   },
 
   panel: {
@@ -232,26 +254,36 @@ const $ = jss({
 
   panel_left: {
     left:   0,
-    top:    0,
-    bottom: 0
+    extend: 'panelHorizontal'
   },
 
   panel_right: {
     right:  0,
-    top:    0,
-    bottom: 0
+    extend: 'panelHorizontal'
   },
 
   panel_top: {
-    left:  0,
-    right: 0,
-    top:   0
+    top:   0,
+    extend: 'panelVertical'
   },
 
   panel_bottom: {
-    left:   0,
-    right:  0,
-    bottom: 0
+    bottom: 0,
+    extend: 'panelVertical'
+  },
+
+  panelHorizontal: {
+    top:        0,
+    bottom:     0,
+    willChange: ['width', 'transform'],
+    transition: layout.transitions.short(['width', 'transform'])
+  },
+
+  panelVertical: {
+    left:       0,
+    right:      0,
+    willChange: ['height', 'transform'],
+    transition: layout.transitions.short(['height', 'transform'])
   },
 
   splitter: {

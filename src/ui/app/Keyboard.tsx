@@ -12,10 +12,12 @@ const ACTIONS: {[key: number]: KeyAction} = {
   ['3'.charCodeAt(0)]: {type: 'zoom', character: 'chef'},
   ['0'.charCodeAt(0)]: {type: 'zoom', character: null},
 
-  [32]: {type: 'simulator', action: 'playPause'},
+  [32]: {type: 'next'},
+
   [37]: {type: 'simulator', action: 'backward'},
   [39]: {type: 'simulator', action: 'forward'},
   [38]: {type: 'simulator', action: 'reset'},
+  [40]: {type: 'simulator', action: 'playPause'},
 
   ['Z'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'introduction'},
   ['X'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'synchronous'},
@@ -25,7 +27,11 @@ const ACTIONS: {[key: number]: KeyAction} = {
   ['N'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'ending'},
 }
 
-export type KeyAction = ZoomAction | SimulatorAction | LoadScenarioAction
+export type KeyAction = NextAction | ZoomAction | SimulatorAction | LoadScenarioAction
+
+export interface NextAction {
+  type: 'next'
+}
 
 export interface ZoomAction {
   type:      'zoom'

@@ -2,38 +2,47 @@ import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, colors, layout} from '@ui/styles'
 import {Panels} from '@ui/components'
-import {viewStateStore, programStore, simulatorStore} from '@src/stores'
+import {viewStateStore, programStore, simulatorStore, musicStore} from '@src/stores'
 import Music from './Music'
 import Scene from './scene/Scene'
-import CodePanels from './code/CodePanels'
+import CodePanels, {panelBarWidth as codePanelBarWidth} from './code/CodePanels'
 import CodePanel from './code/CodePanel'
 import TopBar from './TopBar'
 import Keyboard, {KeyAction} from './Keyboard'
 import i18n from 'i18next'
 import history from '@src/history'
 import {Location, UnregisterCallback} from 'history'
-import scenarios from '@src/scenarios'
+import scenarioMap from '@src/scenarios'
 import {Character} from '@src/program'
+import ComponentTimer from '../../../pkg/react-component-timer/src/ComponentTimer'
 
 export interface Props {}
 
 interface State {
-  zoom: Character | null
+  zoom:       Character | null
+  fullScreen: boolean
 }
+
+type ScenarioName = keyof typeof scenarioMap
 
 @observer
 export default class App extends React.Component<Props, State> {
 
   public state: State = {
-    zoom: null
+    zoom:       null,
+    fullScreen: false
   }
   
+  private timer = new ComponentTimer(this)
+
   private unlistenHistory: UnregisterCallback | null = null
 
   public componentWillMount() {
     this.unlistenHistory = history.listen(this.onHistoryChange)
     simulatorStore.addListener('step', this.onStep) 
-    this.loadScenario()
+    
+    const scenario = this.loadScenarioFromLocation()
+    this.setState({fullScreen: scenario == null ? true : scenario.fullScreen})
   }
 
   public componentWillUnmount() {
@@ -45,6 +54,10 @@ export default class App extends React.Component<Props, State> {
 
   private performKeyAction(action: KeyAction) {
     switch (action.type) {
+    case 'next':
+      this.next()
+      break
+
     case 'zoom':
       this.toggleZoom(action.character)
       break
@@ -71,9 +84,27 @@ export default class App extends React.Component<Props, State> {
       break
     
     case 'loadScenario':
-      programStore.loadScenario(action.scenario)
+      this.loadScenario(action.scenario)
       break
     }
+  }
+
+  private next() {
+    if (!simulatorStore.atEnd) {
+      simulatorStore.forward()
+    } else if (!this.loadNextScenario()) {
+      musicStore.backgroundTrack = null
+    }
+  }
+
+  private loadNextScenario() {
+    const scenarios = Object.values(scenarioMap)
+    const index = programStore.scenario ? scenarios.indexOf(programStore.scenario) : -1
+    if (index === scenarios.length - 1) { return false }
+
+    const scenario = scenarios[index + 1] || scenarios[0]
+    this.loadScenario(scenario.name as ScenarioName)
+    return true
   }
 
   private toggleZoom(character: Character | null) {
@@ -84,17 +115,34 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
-  private onHistoryChange = (location: Location) => {
-    this.loadScenario()
+  private onHistoryChange = () => {
+    this.loadScenarioFromLocation()
   }
 
-  private loadScenario() {
+  private loadScenarioFromLocation() {
     const scenario = location.pathname.slice(1)
-    if (scenario in scenarios) {
-      programStore.loadScenario(scenario as keyof typeof scenarios)
+    if (scenario in scenarioMap) {
+      return this.loadScenario(scenario as ScenarioName)      
     } else {
       history.replace('/introduction')
     }
+  }
+
+  private loadScenario(scenarioName: ScenarioName) {
+    const scenario = scenarioMap[scenarioName]
+    if (scenario == null) { return }
+
+    const fullScreen = scenario && scenario.fullScreen
+    if (fullScreen !== this.state.fullScreen) {
+      this.setState({fullScreen})
+      this.timer.setTimeout(() => {
+        programStore.loadScenario(scenario)
+      }, layout.durations.short)
+    } else {
+      programStore.loadScenario(scenario)
+    }
+
+    return scenario
   }
 
   public render() {
@@ -103,15 +151,17 @@ export default class App extends React.Component<Props, State> {
         <TopBar classNames={$.topBar}/>
         <Panels
           classNames={$.panels}
-          main={this.renderMain()}
-          right={<Scene zoom={this.state.zoom}/>}
+          fullScreen={this.state.fullScreen}
+          left={this.renderMain()}
+          main={<Scene zoom={this.state.zoom}/>}
           splitterSize={12}
           initialSizes={viewStateStore.panelSizes}
-          minimumSizes={{left: 480}}
+          minimumSizes={{left: 3 * codePanelBarWidth + 12}}
           onPanelResize={sizes => { viewStateStore.panelSizes = sizes }}
 
           splitterClassNames={$.splitter}
           panelClassNames={$.panel}
+          mainClassNames={$.main}
         />
         <Music/>
         <Keyboard onAction={action => this.performKeyAction(action)}/>
@@ -179,7 +229,7 @@ const $ = jss({
     background: colors.horizontalBevel(colors.primary)
   },
 
-  panel: {
+  main: {
     overflow: 'hidden',
     '& > *': {
       ...layout.overlay,

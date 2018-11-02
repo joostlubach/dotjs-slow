@@ -10,6 +10,13 @@ export default class Music extends React.Component {
     if (musicStore.backgroundTrack != null) {
       this.playTrack(musicStore.backgroundTrack)
     }
+
+    window.addEventListener('keydown', this.onKeyDown)
+    ;(window as any).Music = this
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('keydown', this.onKeyDown)
   }
 
   public componentWillReact() {
@@ -24,14 +31,18 @@ export default class Music extends React.Component {
   }
 
   private playingTrack: Track | null = null
+  private autoplayPrevented: boolean = false
 
-  private async playTrack(music: Track) {
+  private async playTrack(track: Track) {
     try {
-      this.playingTrack = music
-      music.audio.currentTime = 0
-      await music.audio.play()
+      this.playingTrack = track
+      track.audio.currentTime = 0
+      await track.audio.play()
+      this.autoplayPrevented = false
     } catch (error) {
+      // tslint:disable-next-line no-console
       console.warn("Cannot play music", error)
+      this.autoplayPrevented = true
     }
   }
 
@@ -46,6 +57,12 @@ export default class Music extends React.Component {
   public render() {
     const _ = musicStore.backgroundTrack
     return null
+  }
+
+  private onKeyDown = () => {
+    if (this.playingTrack != null && this.autoplayPrevented) {
+      this.playTrack(this.playingTrack)
+    }
   }
 
 }

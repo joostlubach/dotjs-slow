@@ -32,7 +32,7 @@ export class MusicStore {
     return this.backgroundTrack.bpm
   }
 
-  private loadBackgroundTrack(scenario: Scenario | null) {
+  public loadBackgroundTrack(scenario: Scenario | null) {
     const scenarioName = scenario == null ? null : scenario.name
     this.backgroundTrack = scenarioName && BACKGROUND_MUSIC[scenarioName] || null
   }

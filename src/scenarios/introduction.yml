@@ -1,6 +1,8 @@
 name: introduction
 title: Introduction
 
+full_screen: true
+
 stage: empty
 initial_positions:
   marie: ~

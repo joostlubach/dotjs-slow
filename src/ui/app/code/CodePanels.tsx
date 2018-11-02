@@ -105,7 +105,7 @@ export default class CodePanels extends React.Component<Props, State> {
 
 }
 
-const panelBarWidth = layout.barHeight.normal
+export const panelBarWidth = layout.barHeight.normal
 
 const $ = jss({
   codePanels: {

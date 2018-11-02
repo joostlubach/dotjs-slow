@@ -1,6 +1,8 @@
 name: ending
 title: The End
 
+full_screen: true
+
 stage: exterior
 initial_positions:
   marie: ~

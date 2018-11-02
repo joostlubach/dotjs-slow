@@ -9,10 +9,11 @@ export default class Scenario {
   ) {}
 
   public static load(yaml: any) {
-    const {name, title, stage, initial_positions: initialPositions, bootstrap, codes} = yaml
+    const {name, title, full_screen: fullScreen = false, stage, initial_positions: initialPositions, bootstrap, codes} = yaml
 
     const scenario = new Scenario(name)
     scenario.title = title
+    scenario.fullScreen = fullScreen
     scenario.stage = stage
     scenario.initialFlipped = {}
     scenario.initialPositions = mapValues(initialPositions, (val: string, key: Character) => {
@@ -29,6 +30,7 @@ export default class Scenario {
   }
 
   public title!: string
+  public fullScreen: boolean = false
 
   public bootstrap?: string
   public initialPositions!: Record<Character, SpritePosition | null>

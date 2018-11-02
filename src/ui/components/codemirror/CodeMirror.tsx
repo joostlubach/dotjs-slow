@@ -4,6 +4,7 @@ import CodeMirrorClass, {EditorFromTextArea} from 'codemirror'
 import {Editor as CMEditor, EditorChangeLinkedList, Doc as CMDoc} from 'codemirror'
 import {Provider} from './context'
 import Gutter from './Gutter'
+import sizeMe, {SizeMeProps} from 'react-sizeme'
 
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/monokai.css'
@@ -31,11 +32,13 @@ export const defaultOptions = {
   lineNumbers: true
 }
 
+type AllProps = Props & SizeMeProps
+
 interface State {
   codeMirror: EditorFromTextArea | null
 }
 
-export default class CodeMirror extends React.Component<Props, State> {
+class CodeMirror extends React.Component<AllProps, State> {
 
   //------
   // Properties
@@ -70,6 +73,13 @@ export default class CodeMirror extends React.Component<Props, State> {
       gutters.push(gutterProps.name)
     })
     return gutters
+  }
+
+  public componentDidUpdate(prevProps: AllProps) {
+    if (prevProps.size.width === 0 && this.props.size.width !== 0) {
+      this.destroyCodeMirror()
+      this.setupCodeMirror()
+    }
   }
 
   //------
@@ -177,3 +187,5 @@ const $ = jss({
     }
   }
 })
+
+export default sizeMe({monitorWidth: true, monitorHeight: true})(CodeMirror)
