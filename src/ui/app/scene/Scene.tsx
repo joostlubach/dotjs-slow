@@ -70,7 +70,7 @@ class Scene extends React.Component<AllProps, State> {
         left:   sprite.offsetLeft + x,
         top:    sprite.offsetTop + y,
         width:  sprite.offsetWidth,
-        height: sprite.offsetHeight
+        height: sprite.offsetHeight / 2
       }})
     }
   }
@@ -104,12 +104,26 @@ class Scene extends React.Component<AllProps, State> {
       <div classNames={[$.scene, this.props.classNames]}>
         <div classNames={$.sceneZoom} style={{transform: this.zoomTransform}}>
           <TransitionGroup>
+            {state.stage === 'empty' && this.renderEmpty()}
             {state.stage === 'interior' && this.renderInterior()}
             {state.stage === 'exterior' && this.renderExterior()}
           </TransitionGroup>
           {this.renderHeart()}
         </div>
       </div>
+    )
+  }
+
+  private renderEmpty() {
+    const {state} = simulatorStore
+    if (state == null) { return null }
+
+    return (
+      <CSSTransition timeout={layout.durations.long} classNames={$.exteriorTransition} enter exit>
+        <div classNames={$.empty}>
+          {this.renderSprite('etienne', sprites.EtienneBig, state.sprites.etienne)}
+        </div>
+      </CSSTransition>
     )
   }
 
@@ -151,6 +165,7 @@ class Scene extends React.Component<AllProps, State> {
 
     return (
       <div classNames={$.kitchen}>
+        <div classNames={$.kitchenBG}/>
         <Stove classNames={$.stove} panContent={state.stove.panContent}/>
       </div>
     )
@@ -248,6 +263,8 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.outsideLeft]:   {x: 120, y: -30},
   [SpritePosition.outsideCenter]: {x: 360, y: -30},
   [SpritePosition.outsideRight]:  {x: 400, y: -30},
+
+  [SpritePosition.center]: {x: 320, y: 320}
 }
 
 const heartExit = jssKeyframes('heartExit', {
@@ -289,6 +306,13 @@ const $ = jss({
     transition: layout.transitions.medium('transform')
   },
 
+  empty: {
+    ...layout.overlay,
+    background: {
+      color: colors.sidewalkGreen,
+    }
+  },
+
   exterior: {
     ...layout.overlay,
 
@@ -296,7 +320,7 @@ const $ = jss({
       color:    colors.skyBlue,
       image:    `url(/images/exterior.png)`,
       repeat:   'no-repeat',
-      size:     [1500, 700],
+      size:     [1500, 1124],
       position: 'bottom left'
     }
   },
@@ -314,6 +338,11 @@ const $ = jss({
   kitchen: {
     position: 'relative',
     height:   280,
+    background: 'white'
+  },
+
+  kitchenBG: {
+    ...layout.overlay,
 
     background: {
       image:    'url(/images/kitchen-floor.png)',

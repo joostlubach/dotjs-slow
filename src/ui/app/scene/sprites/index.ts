@@ -18,6 +18,7 @@ export interface SpriteProps {
 export {default as Chef} from './Chef'
 export {default as ChefOutside} from './ChefOutside'
 export {default as Etienne} from './Etienne'
+export {default as EtienneBig} from './EtienneBig'
 export {default as EtienneOutside} from './EtienneOutside'
 export {default as Marie} from './Marie'
 // /index

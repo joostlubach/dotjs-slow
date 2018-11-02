@@ -1,0 +1,11 @@
+name: introduction
+title: Introduction
+
+stage: empty
+initial_positions:
+  marie: ~
+  etienne: center
+  chef: ~
+
+bootstrap: |-
+  etienne.introduce()

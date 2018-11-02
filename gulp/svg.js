@@ -7,9 +7,7 @@ const FS = require('fs-extra')
 function stripFill($) {
 	$('[fill]').each(function () {
 		const id = $(this).attr('id') || ''
-		let shouldSkip =
-			id.startsWith('!') ||
-			$(this).closest('[id^="!"]').length > 0
+		let shouldSkip = id.startsWith('!') || $(this).closest('[id^="!"]').length > 0
 
 		if (!shouldSkip) {
 			$(this).removeAttr('fill')
@@ -17,17 +15,17 @@ function stripFill($) {
 	})
 
 	// Remove all IDs, except the symbols and except elements that start with #.
-	$('[id]').each(function () {
-		const $this = $(this)
-		const id = $this.attr('id')
-		if (id == null || $this.name === 'symbol') { return }
+	// $('[id]').each(function () {
+	// 	const $this = $(this)
+	// 	const id = $this.attr('id')
+	// 	if (id == null || $this.name === 'symbol') { return }
 
-		if (id.startsWith('#')) {
-			$this.attr('id', id.slice(1))
-		} else {
-			$this.removeAttr('id')
-		}
-	})
+	// 	if (id.startsWith('#')) {
+	// 		$this.attr('id', id.slice(1))
+	// 	} else {
+	// 		$this.removeAttr('id')
+	// 	}
+	// })
 }
 
 function writeManifest(files) {

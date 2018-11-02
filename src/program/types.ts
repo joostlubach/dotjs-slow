@@ -3,7 +3,7 @@ import ProgramState from './ProgramState'
 
 export type Source = 'etienne' | 'marie' | 'chef'
 export type Character = 'etienne' | 'marie' | 'chef'
-export type Stage = 'interior' | 'exterior'
+export type Stage = 'interior' | 'exterior' | 'empty'
 
 export interface Step {
   codeLocation: SourceLocation | null

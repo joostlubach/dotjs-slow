@@ -40,8 +40,8 @@ export default class Sprite extends React.Component<Props> {
   }
 
   public render() {
-    const {image, size, sceneSize, flipped, moving = true} = this.props
-    const currentBPM = musicStore.currentBPM || 120
+    const currentBPM = musicStore.currentBPM
+    const {image, size, sceneSize, flipped, moving = currentBPM != null} = this.props
 
     let {x, y} = this.props
     if (x < 0) { x += sceneSize.width - size.width }
@@ -53,7 +53,7 @@ export default class Sprite extends React.Component<Props> {
     }
 
     const movingStyle: React.CSSProperties = {
-      animationDuration: `${60 / (currentBPM / 2)}s`
+      animationDuration: currentBPM ? `${60 / (currentBPM / 2)}s` : undefined
     }
 
     return (
@@ -85,7 +85,7 @@ export default class Sprite extends React.Component<Props> {
         <div classNames={$.balloonBackground}/>
         <SVG classNames={$.balloonHook} name='balloon-hook' size={{width: 24, height: 16}} color={colors.white}/>
         <div style={labelStyle}>
-          <Label>{speak}</Label>
+          <Label classNames={$.balloonLabel}>{speak}</Label>
         </div>
       </div>
     )
@@ -152,6 +152,10 @@ const $ = jss({
 
     transition: layout.transition('transform'),
     willChange: 'transform'
+  },
+
+  balloonLabel: {
+    fontSize:   48,
   },
 
   balloonBackground: {

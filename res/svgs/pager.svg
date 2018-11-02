@@ -4,16 +4,16 @@
     <title>pager</title>
     <desc>Created with sketchtool.</desc>
     <defs/>
-    <g stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g>
-            <g>
-                <circle fill="#611C1C" cx="51" cy="51" r="51"/>
-                <circle fill="#EAE078" cx="51" cy="51" r="38"/>
-                <circle fill="#000000" cx="51" cy="51" r="35"/>
-                <circle fill="#A5A5A5" cx="21" cy="18" r="3"/>
-                <circle fill="#5F5F5F" cx="21" cy="18" r="2"/>
-                <circle fill="#A5A5A5" cx="82" cy="19" r="3"/>
-                <circle fill="#5F5F5F" cx="82" cy="19" r="2"/>
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="pager">
+            <g id="!pager">
+                <circle id="Oval-5-Copy-2" fill="#611C1C" cx="51" cy="51" r="51"/>
+                <circle id="Oval-5-Copy" fill="#EAE078" cx="51" cy="51" r="38"/>
+                <circle id="Oval-5" fill="#000000" cx="51" cy="51" r="35"/>
+                <circle id="Oval-6" fill="#A5A5A5" cx="21" cy="18" r="3"/>
+                <circle id="Oval-6-Copy-2" fill="#5F5F5F" cx="21" cy="18" r="2"/>
+                <circle id="Oval-6-Copy" fill="#A5A5A5" cx="82" cy="19" r="3"/>
+                <circle id="Oval-6-Copy-3" fill="#5F5F5F" cx="82" cy="19" r="2"/>
             </g>
         </g>
     </g>

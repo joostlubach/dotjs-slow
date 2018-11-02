@@ -22,7 +22,9 @@ export enum SpritePosition {
   outsideDoor,
   outsideLeft,
   outsideCenter,
-  outsideRight
+  outsideRight,
+
+  center
 }
 
 export interface StoveState {

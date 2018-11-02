@@ -1,10 +1,13 @@
+import EventEmitter from 'events'
 import {observable, computed, action, autorun} from 'mobx'
 import {Simulator, Simulation, Step, ProgramState} from '@src/program'
 import programStore from './programStore'
 
-export class SimulatorStore {
+export class SimulatorStore extends EventEmitter {
 
   constructor() {
+    super()
+    
     autorun(() => {
       localStorage.verbose = JSON.stringify(this.verbose)
       this.reset()
@@ -165,11 +168,14 @@ export class SimulatorStore {
   private onSimulatorStep = (index: number, step: Step | null) => {
     this.currentStepIndex = index
     this.currentStep = step
+
+    this.emit('step', index, step)
   }
 
   @action
   private onSimulatorDone = () => {
     this.running = false
+    this.emit('done')
   }
 
 }

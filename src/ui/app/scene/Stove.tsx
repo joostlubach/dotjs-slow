@@ -78,6 +78,7 @@ const $ = jss({
 
   hob: {
     position: 'relative',
+    ...hobSize
   },
 
   pan: {

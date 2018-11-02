@@ -64,7 +64,6 @@ export default class Label extends React.Component<Props> {
 const $ = jss({
   label: {
     fontFamily: fonts.normal.family,
-    lineHeight: '24px',
 
     '& a[href]': {
       color: colors.fg.link,

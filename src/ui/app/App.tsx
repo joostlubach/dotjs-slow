@@ -32,10 +32,12 @@ export default class App extends React.Component<Props, State> {
 
   public componentWillMount() {
     this.unlistenHistory = history.listen(this.onHistoryChange)
+    simulatorStore.addListener('step', this.onStep) 
     this.loadScenario()
   }
 
   public componentWillUnmount() {
+    simulatorStore.removeListener('step', this.onStep) 
     if (this.unlistenHistory) {
       this.unlistenHistory()
     }
@@ -66,6 +68,11 @@ export default class App extends React.Component<Props, State> {
           simulatorStore.reset()
           break
       }
+      break
+    
+    case 'loadScenario':
+      programStore.loadScenario(action.scenario)
+      break
     }
   }
 
@@ -86,7 +93,7 @@ export default class App extends React.Component<Props, State> {
     if (scenario in scenarios) {
       programStore.loadScenario(scenario as keyof typeof scenarios)
     } else {
-      history.replace('/synchronous')
+      history.replace('/introduction')
     }
   }
 
@@ -143,6 +150,10 @@ export default class App extends React.Component<Props, State> {
         />
       </CodePanels>
     )
+  }
+
+  private onStep = () => {
+    this.setState({zoom: null})
   }
 
 }

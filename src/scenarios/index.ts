@@ -1,9 +1,10 @@
 import {Scenario} from '../program'
 
 export default {
-  synchronous: Scenario.load(require('./synchronous.yml')),
-  polling:     Scenario.load(require('./polling.yml')),
-  callback:    Scenario.load(require('./callback.yml')),
-  promise:     Scenario.load(require('./promise.yml')),
-  ending:      Scenario.load(require('./ending.yml')),
+  introduction: Scenario.load(require('./introduction.yml')),
+  synchronous:  Scenario.load(require('./synchronous.yml')),
+  polling:      Scenario.load(require('./polling.yml')),
+  callback:     Scenario.load(require('./callback.yml')),
+  promise:      Scenario.load(require('./promise.yml')),
+  ending:       Scenario.load(require('./ending.yml')),
 }

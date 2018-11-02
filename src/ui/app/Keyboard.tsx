@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {Character} from '@src/program'
+import scenarios from '@src/scenarios'
 
 export interface Props {
   onAction: (action: KeyAction) => any
@@ -14,9 +15,17 @@ const ACTIONS: {[key: number]: KeyAction} = {
   [32]: {type: 'simulator', action: 'playPause'},
   [37]: {type: 'simulator', action: 'backward'},
   [39]: {type: 'simulator', action: 'forward'},
+  [38]: {type: 'simulator', action: 'reset'},
+
+  ['Z'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'introduction'},
+  ['X'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'synchronous'},
+  ['C'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'polling'},
+  ['V'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'callback'},
+  ['B'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'promise'},
+  ['N'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'ending'},
 }
 
-export type KeyAction = ZoomAction | SimulatorAction
+export type KeyAction = ZoomAction | SimulatorAction | LoadScenarioAction
 
 export interface ZoomAction {
   type:      'zoom'
@@ -26,6 +35,11 @@ export interface ZoomAction {
 export interface SimulatorAction {
   type:   'simulator'
   action: 'playPause' | 'forward' | 'backward' | 'reset'
+}
+
+export interface LoadScenarioAction {
+  type:     'loadScenario'
+  scenario: keyof typeof scenarios
 }
 
 export default class Keyboard extends React.Component<Props> {

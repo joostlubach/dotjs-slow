@@ -4,17 +4,17 @@
     <title>order-here</title>
     <desc>Created with sketchtool.</desc>
     <defs>
-        <filter x="-5.8%" y="-7.1%" width="111.7%" height="114.1%" filterUnits="objectBoundingBox">
+        <filter x="-5.8%" y="-7.1%" width="111.7%" height="114.1%" filterUnits="objectBoundingBox" id="filter-1">
             <feGaussianBlur stdDeviation="1" in="SourceGraphic"/>
         </filter>
     </defs>
-    <g stroke="none" stroke-width="1" fill-rule="evenodd">
-        <g>
-            <g>
-                <path d="M9,0 L100,0 C104.970563,-9.13077564e-16 109,4.02943725 109,9 L109,29 C109,33.9705627 104.970563,38 100,38 L9,38 C4.02943725,38 6.08718376e-16,33.9705627 0,29 L0,9 C-6.08718376e-16,4.02943725 4.02943725,-8.63279275e-16 9,-1.77635684e-15 Z" fill="#FFFFFF"/>
-                <polygon fill="#000000" opacity="0.468303595" filter="url(#filter-1)" points="86.5 45 61 77.5 45 82 42 87.5 67 87.5 70 82 68 77.5 93.5 45"/>
-                <path d="M9,4 C6.23857625,4 4,6.23857625 4,9 L4,29 C4,31.7614237 6.23857625,34 9,34 L100,34 C102.761424,34 105,31.7614237 105,29 L105,9 C105,6.23857625 102.761424,4 100,4 L9,4 Z M58,38 L58,78.5 L67,83 L67,88.5 L42,88.5 L42,83 L51,78.5 L51,38 L9,38 C4.02943725,38 0,33.9705627 0,29 L0,9 C0,4.02943725 4.02943725,0 9,0 L100,0 C104.970563,0 109,4.02943725 109,9 L109,29 C109,33.9705627 104.970563,38 100,38 L58,38 Z" fill="#CF3C3C" fill-rule="nonzero"/>
-                <text font-family="Barbieri-Bold, Barbieri" font-size="14" font-weight="bold" fill="#CF3C3C">
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="order-here">
+            <g id="!order-here">
+                <path d="M9,0 L100,0 C104.970563,-9.13077564e-16 109,4.02943725 109,9 L109,29 C109,33.9705627 104.970563,38 100,38 L9,38 C4.02943725,38 6.08718376e-16,33.9705627 0,29 L0,9 C-6.08718376e-16,4.02943725 4.02943725,-8.63279275e-16 9,-1.77635684e-15 Z" id="Rectangle-4" fill="#FFFFFF"/>
+                <polygon id="Path-2" fill="#000000" opacity="0.468303595" filter="url(#filter-1)" points="86.5 45 61 77.5 45 82 42 87.5 67 87.5 70 82 68 77.5 93.5 45"/>
+                <path d="M9,4 C6.23857625,4 4,6.23857625 4,9 L4,29 C4,31.7614237 6.23857625,34 9,34 L100,34 C102.761424,34 105,31.7614237 105,29 L105,9 C105,6.23857625 102.761424,4 100,4 L9,4 Z M58,38 L58,78.5 L67,83 L67,88.5 L42,88.5 L42,83 L51,78.5 L51,38 L9,38 C4.02943725,38 0,33.9705627 0,29 L0,9 C0,4.02943725 4.02943725,0 9,0 L100,0 C104.970563,0 109,4.02943725 109,9 L109,29 C109,33.9705627 104.970563,38 100,38 L58,38 Z" id="Combined-Shape" fill="#CF3C3C" fill-rule="nonzero"/>
+                <text id="Order-here" font-family="Barbieri-Bold, Barbieri" font-size="14" font-weight="bold" fill="#CF3C3C">
                     <tspan x="19" y="24">Order here</tspan>
                 </text>
             </g>

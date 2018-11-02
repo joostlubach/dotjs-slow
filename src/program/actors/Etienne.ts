@@ -59,4 +59,16 @@ export default class Etienne extends Actor {
     })
   }
 
+  //------
+  // Introduce
+
+  public introduce() {
+    this.program.modifyState(state => {
+      state.sprites.etienne.speak = "Bonjour"
+    })
+    this.program.modifyState(state => {
+      state.sprites.etienne.speak = "J'ai faim"
+    })
+  }
+
 }
