@@ -11,6 +11,7 @@ export default {
   "etienne-outside": require("./etienne-outside.svg"),
   "etienne-pee": require("./etienne-pee.svg"),
   "etienne": require("./etienne.svg"),
+  "favicon": require("./favicon.svg"),
   "heart": require("./heart.svg"),
   "hob": require("./hob.svg"),
   "logo": require("./logo.svg"),
