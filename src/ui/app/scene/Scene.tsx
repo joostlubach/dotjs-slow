@@ -134,9 +134,9 @@ class Scene extends React.Component<AllProps, State> {
     return (
       <CSSTransition timeout={layout.durations.long} classNames={$.exteriorTransition} enter exit>
         <div classNames={$.exterior}>
+          {state.prepTimesShown && <SVG name='prep-times' size={prepTimesSize} classNames={$.prepTimes}/>}
           {this.renderSprite('chef', sprites.ChefOutside, state.sprites.chef)}
           {this.renderSprite('etienne', sprites.EtienneOutside, state.sprites.etienne)}
-          {state.prepTimesShown && <SVG name='prep-times' size={prepTimesSize} classNames={$.prepTimes}/>}
         </div>
       </CSSTransition>
     )
@@ -326,7 +326,7 @@ const $ = jss({
       color:    colors.skyBlue,
       image:    `url(/images/exterior.png)`,
       repeat:   'no-repeat',
-      size:     [1500, 1124],
+      size:     [1610, 1124],
       position: 'bottom left'
     }
   },

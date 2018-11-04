@@ -59,6 +59,8 @@ export default class Keyboard extends React.Component<Props> {
   }
 
   private onKeyDown = (event: KeyboardEvent) => {
+    if (event.metaKey || event.altKey || event.ctrlKey) { return }
+
     const action = ACTIONS[event.keyCode]
     if (action) {
       event.preventDefault()
