@@ -21,10 +21,9 @@ const ACTIONS: {[key: number]: KeyAction} = {
 
   ['Z'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'introduction'},
   ['X'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'synchronous'},
-  ['C'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'polling'},
-  ['V'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'callback'},
-  ['B'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'promise'},
-  ['N'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'ending'},
+  ['C'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'callback'},
+  ['V'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'promise'},
+  ['B'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'ending'},
 }
 
 export type KeyAction = NextAction | ZoomAction | SimulatorAction | LoadScenarioAction

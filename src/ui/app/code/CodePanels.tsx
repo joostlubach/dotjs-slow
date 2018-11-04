@@ -3,7 +3,7 @@ import {observer} from 'mobx-react'
 import {jss, layout} from '@ui/styles'
 import CodePanel, {Props as CodePanelProps} from './CodePanel'
 import {clamp} from 'lodash'
-import {Source} from '@src/program'
+import {Source, Step} from '@src/program'
 import {programStore, simulatorStore} from '@src/stores'
 
 export interface Props {
@@ -24,16 +24,35 @@ export default class CodePanels extends React.Component<Props, State> {
 
   private previousVisibleSource: Source | null = null
 
-  public componentWillReact() {
-    const step = simulatorStore.currentStep
-    const firstError = programStore.errors.length > 0 ? programStore.errors[0] : null
-    const codeLocation =
-      firstError != null ? firstError.loc :
-      step != null ? step.codeLocation :
-      null
+  public componentDidMount() {
+    simulatorStore.addListener('step', this.onStep)
+  }
 
-    const source = codeLocation == null ? null : codeLocation.source    
-    if (source != null && source !== this.previousVisibleSource) {
+  public componentWillUnmount() {
+    simulatorStore.removeListener('step', this.onStep)
+  }
+
+  private onStep = (step: Step | null) => {
+    if (step == null) { return }
+
+    const {codeLocation} = step
+    if (codeLocation == null || codeLocation.source == null) { return }
+
+    this.ensureSourceVisible(codeLocation.source as Source)
+  }
+
+  public componentWillReact() {
+    if (programStore.errors.length === 0) { return }
+
+    const firstError = programStore.errors[0]
+    const codeLocation = firstError.loc
+    if (codeLocation == null || codeLocation.source == null) { return }
+
+    this.ensureSourceVisible(codeLocation.source as Source)
+  }
+
+  private ensureSourceVisible(source: Source) {
+    if (source !== this.previousVisibleSource) {
       this.setState({visibleSource: source as Source})
       this.previousVisibleSource = source as Source
     }

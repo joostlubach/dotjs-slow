@@ -3,11 +3,10 @@ import programStore from './programStore'
 import {Scenario} from '@src/program'
 
 const BACKGROUND_MUSIC: Record<string, Track> = {
-  synchronous: loadTrack('/music/synchronous.mp3', 0.2, 68),
-  polling:     loadTrack('/music/polling.mp3', 0.2, 120),
-  callback:    loadTrack('/music/callback.mp3', 0.2, 96),
-  promise:     loadTrack('/music/promise.mp3', 0.3, 76),
-  ending:      loadTrack('/music/ending.mp3', 0.3, 42, false),
+  synchronous: loadTrack('/music/synchronous.mp3', 0.1, 68),
+  callback:    loadTrack('/music/callback.mp3', 0.1, 96),
+  promise:     loadTrack('/music/promise.mp3', 0.15, 76),
+  ending:      loadTrack('/music/ending.mp3', 0.15, 42, false),
 }
 
 export interface Track {

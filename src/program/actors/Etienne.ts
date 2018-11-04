@@ -41,7 +41,7 @@ export default class Etienne extends Actor {
   }
 
   private peeFork() {
-    times(20, () => { this.program.modifyState(() => undefined) })
+    times(17, () => { this.program.modifyState(() => undefined) })
     times(4, () => {
       this.program.modifyState(state => {
         state.sprites.etienne.face = 'pee'

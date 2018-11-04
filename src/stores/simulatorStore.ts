@@ -169,7 +169,7 @@ export class SimulatorStore extends EventEmitter {
     this.currentStepIndex = index
     this.currentStep = step
 
-    this.emit('step', index, step)
+    this.emit('step', step, index)
   }
 
   @action
