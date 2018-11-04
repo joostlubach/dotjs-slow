@@ -1,5 +1,6 @@
 import Actor, {Variant} from '../Actor'
 import {SpritePosition} from '../ProgramState'
+import {times} from 'lodash'
 
 export default class Etienne extends Actor {
 
@@ -32,6 +33,20 @@ export default class Etienne extends Actor {
     if (this.onHungry) {
       this.onHungry()
     }
+  }
+
+  public hungrySync() {
+    this.program.fork(this.peeFork.bind(this))
+    this.hungry()
+  }
+
+  private peeFork() {
+    times(20, () => { this.program.modifyState(() => undefined) })
+    times(4, () => {
+      this.program.modifyState(state => {
+        state.sprites.etienne.face = 'pee'
+      })
+    })
   }
 
   //------

@@ -9,6 +9,7 @@ export default {
   "etienne-blush": require("./etienne-blush.svg"),
   "etienne-head": require("./etienne-head.svg"),
   "etienne-outside": require("./etienne-outside.svg"),
+  "etienne-pee": require("./etienne-pee.svg"),
   "etienne": require("./etienne.svg"),
   "heart": require("./heart.svg"),
   "hob": require("./hob.svg"),

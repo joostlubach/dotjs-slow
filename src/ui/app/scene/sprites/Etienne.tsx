@@ -8,6 +8,7 @@ export default function Etienne(props: SpriteProps) {
   const image = select<SVGName>(props.face, {
     blush:   'etienne-blush',
     angry:   'etienne-angry',
+    pee:     'etienne-pee',
     default: 'etienne'
   })
 

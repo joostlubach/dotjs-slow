@@ -195,6 +195,7 @@ export default class Chef extends Actor {
 
   public takePatty() {
     this.program.modifyState(state => {
+      state.sprites.chef.speak = null
       state.sprites.chef.hold = '🥩'
     })
     return {type: 'patty'}

@@ -8,7 +8,7 @@ initial_positions:
   chef: ~
 
 bootstrap: |-
-  etienne.hungry()
+  etienne.hungrySync()
 
 codes:
   etienne: |-
