@@ -55,6 +55,7 @@ export default class ProgramState {
   public static default(scenario: Scenario) {
     return new ProgramState({
       stage:   scenario.stage,
+      prepTimesShown: true,
       stove:   defaultStoveState,
       sprites: {
         etienne: defaultSpriteState(scenario.initialPositions.etienne, scenario.initialFlipped.etienne),
@@ -70,6 +71,7 @@ export default class ProgramState {
   }
 
   public stage:  Stage = 'interior'
+  public prepTimesShown?: boolean
   public stove!: StoveState
   public sprites!: {[key in Character]: SpriteState} 
 

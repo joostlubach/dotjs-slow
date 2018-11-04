@@ -3,6 +3,7 @@ import * as cn from 'classnames'
 import {jss, layout} from '../styles'
 import DragHandle, {DragHandleState} from 'drag-handle'
 import {isFunction} from 'lodash'
+import ComponentTimer from 'react-component-timer'
 
 export interface Props {
   left?:   React.ReactNode
@@ -44,7 +45,8 @@ export type Sizes = {
 }
 
 interface State {
-  sizes: Sizes
+  sizes:    Sizes
+  animated: boolean
 }
 
 export default class Panels extends React.Component<Props, State> {
@@ -59,7 +61,8 @@ export default class Panels extends React.Component<Props, State> {
         top:    0,
         bottom: 0,
         ...props.initialSizes
-      }
+      },
+      animated: false
     }
   }
 
@@ -72,9 +75,18 @@ export default class Panels extends React.Component<Props, State> {
     }
   }
 
-  public render() {
-    const {fullScreen = false} = this.props
+  private timer = new ComponentTimer(this)
 
+  public componentWillReceiveProps(props: Props) {
+    if (props.fullScreen !== this.props.fullScreen) {
+      this.setState({animated: true})
+      this.timer.setTimeout(() => {
+        this.setState({animated: false})
+      }, layout.durations.medium)
+    }
+  }
+
+  public render() {
     return (
       <div classNames={[$.panels, this.props.classNames]}>
         {this.renderMain()}
@@ -97,7 +109,7 @@ export default class Panels extends React.Component<Props, State> {
     }
 
     return (
-      <div classNames={[$.main, this.props.mainClassNames]} style={style}>
+      <div classNames={[$.main, this.state.animated && 'animated', this.props.mainClassNames]} style={style}>
         {this.props.main}
       </div>
     )
@@ -136,6 +148,7 @@ export default class Panels extends React.Component<Props, State> {
     const classNames = [
       $.panel,
       $[`panel_${side}`],
+      this.state.animated && 'animated'
     ]
     const contentClassNames = [
       $.panelContent,
@@ -241,7 +254,9 @@ const $ = jss({
     ...layout.overlay,
 
     willChange: ['left', 'right', 'top', 'bottom'],
-    transition: layout.transitions.short(['left', 'right', 'top', 'bottom'])
+    '&.animated': {
+      transition: layout.transitions.short(['left', 'right', 'top', 'bottom'])
+    }
   },
 
   panel: {
@@ -276,14 +291,20 @@ const $ = jss({
     top:        0,
     bottom:     0,
     willChange: ['width', 'transform'],
-    transition: layout.transitions.short(['width', 'transform'])
+
+    '&.animated': {
+      transition: layout.transitions.short(['width', 'transform'])
+    }
   },
 
   panelVertical: {
     left:       0,
     right:      0,
     willChange: ['height', 'transform'],
-    transition: layout.transitions.short(['height', 'transform'])
+
+    '&.animated': {
+      transition: layout.transitions.short(['height', 'transform'])
+    }
   },
 
   splitter: {

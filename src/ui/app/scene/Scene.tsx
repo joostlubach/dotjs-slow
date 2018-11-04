@@ -136,6 +136,7 @@ class Scene extends React.Component<AllProps, State> {
         <div classNames={$.exterior}>
           {this.renderSprite('chef', sprites.ChefOutside, state.sprites.chef)}
           {this.renderSprite('etienne', sprites.EtienneOutside, state.sprites.etienne)}
+          {state.prepTimesShown && <SVG name='prep-times' size={prepTimesSize} classNames={$.prepTimes}/>}
         </div>
       </CSSTransition>
     )
@@ -249,6 +250,11 @@ const heartSize = {
   height: 65
 }
 
+const prepTimesSize = {
+  width:  190,
+  height: 37
+}
+
 const stoveWidth = 140
 
 const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
@@ -264,7 +270,7 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.outsideCenter]: {x: 360, y: -30},
   [SpritePosition.outsideRight]:  {x: 400, y: -30},
 
-  [SpritePosition.center]: {x: 320, y: 320}
+  [SpritePosition.center]: {x: 540, y: 320}
 }
 
 const heartExit = jssKeyframes('heartExit', {
@@ -323,6 +329,13 @@ const $ = jss({
       size:     [1500, 1124],
       position: 'bottom left'
     }
+  },
+
+  prepTimes: {
+    position: 'absolute',
+    bottom:   223,
+    left:     464,
+    ...prepTimesSize,
   },
 
   interior: {

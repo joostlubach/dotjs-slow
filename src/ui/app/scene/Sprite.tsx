@@ -4,6 +4,7 @@ import {jss, layout, jssKeyframes, colors, shadows} from '@ui/styles'
 import {SVG, Label} from '@ui/components'
 import {SVGName} from '@ui/components/SVG'
 import {musicStore} from '@src/stores'
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
 
 export interface Props {
   image:   SVGName
@@ -69,25 +70,31 @@ export default class Sprite extends React.Component<Props> {
 
   private renderSpeak() {
     const {speak, balloonOffset, flipped} = this.props
-    if (speak == null) { return null }
 
     const style: React.CSSProperties = {
       ...balloonOffset
     }
 
     const labelStyle: React.CSSProperties = {
+      willChange:        'transform',
       transform:         `scaleX(${flipped ? -1 : 1})`,
       transitionDuration: this.animateNext ? `${layout.durations.medium}ms` : '0ms',
     }
-
+    
     return (
-      <div classNames={$.balloon} style={style}>
-        <div classNames={$.balloonBackground}/>
-        <SVG classNames={$.balloonHook} name='balloon-hook' size={{width: 24, height: 16}} color={colors.white}/>
-        <div style={labelStyle}>
-          <Label classNames={$.balloonLabel}>{speak}</Label>
-        </div>
-      </div>
+      <TransitionGroup>
+        {speak != null && (
+          <CSSTransition key={speak} classNames={$.balloonTransition} timeout={layout.durations.short} enter exit>
+            <div classNames={$.balloon} style={style}>
+              <div classNames={$.balloonBackground}/>
+              <SVG classNames={$.balloonHook} name='balloon-hook' size={{width: 24, height: 16}} color={colors.white}/>
+              <div style={labelStyle}>
+                <Label classNames={$.balloonLabel}>{speak}</Label>
+              </div>
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     )
   }
 
@@ -150,8 +157,8 @@ const $ = jss({
     padding:      layout.padding.xs,
     whiteSpace:   'nowrap',
 
-    transition: layout.transition('transform'),
-    willChange: 'transform'
+    willChange:      ['transform', 'opacity'],
+    transformOrigin: 'bottom left'
   },
 
   balloonLabel: {
@@ -167,7 +174,8 @@ const $ = jss({
   balloonHook: {
     position: 'absolute',
     bottom:   -6,
-    left:     -18
+    left:     -18,
+    zIndex:   2
   },
 
   hold: {
@@ -179,5 +187,27 @@ const $ = jss({
     fontFamily:  'sans-serif',
     fontSize:    28,
     lineHeight:  '32px'
+  },
+
+  balloonTransition: {
+    '&-enter': {
+      zIndex:    5,
+      opacity:   0,
+      transform: 'scale(0.6)'
+    },
+
+    '&-enter-active, &-exit': {
+      opacity:   1,
+      transform: 'scale(1)'
+    },
+
+    '&-exit-active': {
+      opacity:   0,
+      transform: 'scale(0.6)'
+    },
+
+    '&-enter-active, &-exit-active': {
+      transition: layout.transitions.short(['opacity', 'transform'], 'cubic-bezier(0, 0.6, 0.6, 1)')
+    }
   }
 })

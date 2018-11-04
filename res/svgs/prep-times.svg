@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="197px" height="38px" viewBox="0 0 197 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>prep-times</title>
+    <desc>Created with sketchtool.</desc>
+    <defs/>
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="prep-times">
+            <g id="!preptimes">
+                <path d="M9,1 C4.581722,1 1,4.581722 1,9 L1,29 C1,33.418278 4.581722,37 9,37 L188,37 C192.418278,37 196,33.418278 196,29 L196,9 C196,4.581722 192.418278,1 188,1 L9,1 Z" id="Rectangle-4" stroke="#FFFFFF" stroke-width="2" fill="#ED1B2D"/>
+                <text id="Prep-times:-200---50" font-family="Barbieri-Bold, Barbieri" font-size="14" font-weight="bold" fill="#FFFFFF">
+                    <tspan x="21" y="24">Prep times: 200 - 500ms</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

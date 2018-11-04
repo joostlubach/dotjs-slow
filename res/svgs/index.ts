@@ -24,6 +24,8 @@ export default {
   "pan": require("./pan.svg"),
   "pause": require("./pause.svg"),
   "play": require("./play.svg"),
+  "prep-times": require("./prep-times.svg"),
+  "quick-logo": require("./quick-logo.svg"),
   "restart": require("./restart.svg"),
   "step-back": require("./step-back.svg"),
   "step-forward": require("./step-forward.svg"),

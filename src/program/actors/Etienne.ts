@@ -84,6 +84,17 @@ export default class Etienne extends Actor {
     this.program.modifyState(state => {
       state.sprites.etienne.speak = "J'ai faim"
     })
+    this.program.modifyState(state => {
+      state.stage = 'exterior'
+      state.sprites.etienne.speak = null
+      state.sprites.etienne.position = SpritePosition.outsideLeft
+      state.sprites.marie.position = null
+      state.sprites.chef.position = null
+      state.prepTimesShown = false
+    })
+    this.program.modifyState(state => {
+      state.prepTimesShown = true
+    })
   }
 
 }
