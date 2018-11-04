@@ -2,7 +2,7 @@ import {SourceLocation, Node} from 'estree'
 import ProgramState from './ProgramState'
 
 export type Source = 'etienne' | 'marie' | 'chef'
-export type Character = 'etienne' | 'marie' | 'chef'
+export type Character = 'etienne' | 'marie' | 'chef' | 'randomDude'
 export type Stage = 'interior' | 'exterior' | 'empty'
 
 export interface Step {

@@ -21,4 +21,5 @@ export {default as Etienne} from './Etienne'
 export {default as EtienneBig} from './EtienneBig'
 export {default as EtienneOutside} from './EtienneOutside'
 export {default as Marie} from './Marie'
+export {default as RandomDude} from './RandomDude'
 // /index

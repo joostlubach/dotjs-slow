@@ -41,11 +41,41 @@ export default class Etienne extends Actor {
   }
 
   private peeFork() {
-    times(17, () => { this.program.modifyState(() => undefined) })
-    times(4, () => {
+    times(11, () => { this.program.modifyState(() => undefined) })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.position = SpritePosition.entrance
+    })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.position = SpritePosition.inLine
+      state.sprites.randomDude.moving = false
+    })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.position = SpritePosition.inLine
+      state.sprites.randomDude.face = 'angry'
+      state.sprites.randomDude.moving = false
+    })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.position = SpritePosition.inLine
+      state.sprites.randomDude.face = 'angry'
+      state.sprites.randomDude.moving = false
+    })
+
+    times(6, () => {
       this.program.modifyState(state => {
         state.sprites.etienne.face = 'pee'
+        state.sprites.etienne.moving = false
+        state.sprites.randomDude.moving = false
+        state.sprites.randomDude.face = 'angry'
+        state.sprites.randomDude.position = SpritePosition.inLine
       })
+    })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.moving = false
+      state.sprites.randomDude.face = 'angry'
+      state.sprites.randomDude.position = SpritePosition.inLine
+    })
+    this.program.modifyState(state => {
+      state.sprites.randomDude.position = SpritePosition.inLine
     })
   }
 

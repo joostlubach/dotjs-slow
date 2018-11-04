@@ -70,7 +70,7 @@ class Scene extends React.Component<AllProps, State> {
         left:   sprite.offsetLeft + x,
         top:    sprite.offsetTop + y,
         width:  sprite.offsetWidth,
-        height: sprite.offsetHeight / 2
+        height: sprite.offsetHeight * 2 / 3
       }})
     }
   }
@@ -154,6 +154,7 @@ class Scene extends React.Component<AllProps, State> {
           {this.renderSprite('chef', sprites.Chef, state.sprites.chef)}
           {this.renderBar()}
           {this.renderSprite('etienne', sprites.Etienne, state.sprites.etienne)}
+          {this.renderSprite('randomDude', sprites.RandomDude, state.sprites.randomDude)}
           {this.renderTables()}
         </div>
       </CSSTransition>
@@ -263,6 +264,7 @@ const wellKnownPositions: {[key in SpritePosition]: {x: number, y: number}} = {
   [SpritePosition.kitchen]:      {x: -150, y: 80},
   [SpritePosition.entrance]:     {x: 20, y: -20},
   [SpritePosition.counterFront]: {x: 20, y: 220},
+  [SpritePosition.inLine]:       {x: 70, y: 280},
   [SpritePosition.atTable]:      {x: 420, y: 270},
 
   [SpritePosition.outsideDoor]:   {x: 240, y: -100},

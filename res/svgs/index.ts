@@ -27,6 +27,8 @@ export default {
   "play": require("./play.svg"),
   "prep-times": require("./prep-times.svg"),
   "quick-logo": require("./quick-logo.svg"),
+  "random-dude-angry": require("./random-dude-angry.svg"),
+  "random-dude": require("./random-dude.svg"),
   "restart": require("./restart.svg"),
   "step-back": require("./step-back.svg"),
   "step-forward": require("./step-forward.svg"),

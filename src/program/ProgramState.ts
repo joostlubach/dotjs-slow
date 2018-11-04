@@ -17,6 +17,7 @@ export enum SpritePosition {
   kitchen,      // Chef
   entrance,     // Starting point of Etienne
   counterFront, // Where Etienne places order
+  inLine,       // Behind Etienne in line.
   atTable,      // Etienne waiting at a table
 
   outsideDoor,
@@ -58,9 +59,10 @@ export default class ProgramState {
       prepTimesShown: true,
       stove:   defaultStoveState,
       sprites: {
-        etienne: defaultSpriteState(scenario.initialPositions.etienne, scenario.initialFlipped.etienne),
-        marie:   defaultSpriteState(scenario.initialPositions.marie, scenario.initialFlipped.marie),
-        chef:    defaultSpriteState(scenario.initialPositions.chef, scenario.initialFlipped.chef),
+        etienne:    defaultSpriteState(scenario.initialPositions.etienne, scenario.initialFlipped.etienne),
+        marie:      defaultSpriteState(scenario.initialPositions.marie, scenario.initialFlipped.marie),
+        chef:       defaultSpriteState(scenario.initialPositions.chef, scenario.initialFlipped.chef),
+        randomDude: defaultSpriteState(scenario.initialPositions.randomDude, scenario.initialFlipped.randomDude),
       }
     })
   }
