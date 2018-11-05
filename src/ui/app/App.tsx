@@ -139,9 +139,7 @@ export default class App extends React.Component<Props, State> {
     const fullScreen = scenario && scenario.fullScreen
     if (fullScreen !== this.state.fullScreen) {
       this.setState({fullScreen})
-      this.timer.setTimeout(() => {
-        programStore.loadScenario(scenario)
-      }, layout.durations.short)
+      programStore.loadScenario(scenario)
     } else {
       programStore.loadScenario(scenario)
     }

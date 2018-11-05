@@ -10,8 +10,9 @@ const BACKGROUND_MUSIC: Record<string, Track> = {
 }
 
 export interface Track {
-  audio: HTMLAudioElement
-  bpm:   number
+  audio:  HTMLAudioElement
+  volume: number
+  bpm:    number
 }
 
 export class MusicStore {
@@ -41,9 +42,8 @@ export class MusicStore {
 function loadTrack(path: string, volume: number, bpm: number, loop: boolean = true) {
   const audio = new Audio(path)
   audio.loop = loop
-  audio.volume = volume
   
-  return {audio, bpm}
+  return {audio, volume, bpm}
 }
 
 export default new MusicStore()

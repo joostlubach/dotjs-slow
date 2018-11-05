@@ -5,7 +5,7 @@ import {SpritePosition, SpriteState, Character} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
 import Stove from './Stove'
-import {simulatorStore} from '@src/stores'
+import {simulatorStore, programStore} from '@src/stores'
 import {SVG, Label} from '@ui/components'
 import BarStools from './BarStools'
 import Tables from './Tables'
@@ -98,19 +98,22 @@ class Scene extends React.Component<AllProps, State> {
 
   public render() {
     const {state} = simulatorStore
-    if (state == null) { return null }
+    const {scenario} = programStore
+    if (state == null || scenario == null) { return null }
 
     return (
-      <div classNames={[$.scene, this.props.classNames]}>
-        <div classNames={$.sceneZoom} style={{transform: this.zoomTransform}}>
-          <TransitionGroup>
-            {state.stage === 'empty' && this.renderEmpty()}
-            {state.stage === 'interior' && this.renderInterior()}
-            {state.stage === 'exterior' && this.renderExterior()}
-          </TransitionGroup>
-          {this.renderHeart()}
-        </div>
-      </div>
+      <TransitionGroup classNames={[$.scene, this.props.classNames]}>
+        <CSSTransition key={scenario.name} timeout={layout.durations.long * 2} classNames={$.scenarioTransition} exit enter>
+          <div classNames={$.sceneZoom} style={{transform: this.zoomTransform}}>
+            <TransitionGroup>
+              {state.stage === 'empty' && this.renderEmpty()}
+              {state.stage === 'interior' && this.renderInterior()}
+              {state.stage === 'exterior' && this.renderExterior()}
+            </TransitionGroup>
+            {this.renderHeart()}
+          </div>
+        </CSSTransition>
+      </TransitionGroup>
     )
   }
 
@@ -298,13 +301,9 @@ const heartInnerExit = jssKeyframes('heartInnerExit', {
 
 const $ = jss({
   scene: {
-    minWidth:  640,
-    minHeight: 750,
-
-    background: {
-      color: colors.lightBlue,
-      image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
-    }
+    minWidth:   640,
+    minHeight:  750,
+    background: 'black'
   },
 
   sceneZoom: {
@@ -342,6 +341,11 @@ const $ = jss({
 
   interior: {
     ...layout.overlay,
+
+    background: {
+      color: colors.lightBlue,
+      image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
+    }
   },
 
   exteriorBG: {
@@ -525,6 +529,27 @@ const $ = jss({
   zoomBox: {
     position: 'absolute',
     border: [2, 'solid', 'red']
+  },
+
+  scenarioTransition: {
+    '&-enter': {
+      opacity: 0,
+    },
+
+    '&-enter-active': {
+      transition:      layout.transitions.long('opacity', 'ease-in-out'),
+      transitionDelay: layout.durations.long,
+      opacity:    1
+    },
+
+    '&-exit': {
+      opacity: 1,
+    },
+
+    '&-exit-active': {
+      transition: layout.transitions.long('opacity', 'ease-in-out'),
+      opacity:    0
+    },
   }
 
 })
