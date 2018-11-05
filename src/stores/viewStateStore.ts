@@ -10,7 +10,7 @@ export class ViewStateStore {
 
   @observable
   public panelSizes: PanelSizes = {
-    right: window.innerWidth * 0.4,
+    left: 680,
   }
 
   public load() {
