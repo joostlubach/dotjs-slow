@@ -80,6 +80,7 @@ export default class ProgramState {
       }
     })
     state.sprites.marie.face = 'angry'
+    state.sprites.marie.speak = '😐'
     state.sprites.marie.moving = false
 
     return state

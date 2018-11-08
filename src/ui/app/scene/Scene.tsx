@@ -70,7 +70,7 @@ class Scene extends React.Component<AllProps, State> {
       this.theEndTimer = new ComponentTimer(this)
       this.theEndTimer.setTimeout(() => {
         this.setState({finalState: ProgramState.final})
-      }, 20_000)
+      }, 10_000)
     }
     if (this.theEndTimer != null && !theEnd) {
       this.theEndTimer.clearAllTimeouts()
