@@ -1,6 +1,7 @@
 import Actor, {Variant} from '../Actor'
 import {SpritePosition} from '@src/program'
 import Promise from '../FakePromise'
+import {musicStore} from '@src/stores'
 
 export default class Chef extends Actor {
 

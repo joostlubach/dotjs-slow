@@ -1,7 +1,7 @@
 import React from 'react'
 import {observer} from 'mobx-react'
 import {jss, colors, layout, jssKeyframes} from '@ui/styles'
-import {SpritePosition, SpriteState, Character} from '@src/program'
+import {SpritePosition, SpriteState, Character, ProgramState} from '@src/program'
 import * as sprites from './sprites'
 import {SpriteComponent} from './sprites'
 import Stove from './Stove'
@@ -12,6 +12,7 @@ import Tables from './Tables'
 import sizeMe, {SizeMeProps} from 'react-sizeme'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {findDOMNode} from 'react-dom'
+import ComponentTimer from 'react-component-timer'
 
 export interface Props {
   zoom?:       Character | null
@@ -21,14 +22,24 @@ export interface Props {
 type AllProps = Props & SizeMeProps
 
 interface State {
-  zoomRect: Rect | null
+  zoomRect:   Rect | null
+  finalState: ProgramState | null
 }
 
 @observer
 class Scene extends React.Component<AllProps, State> {
 
   public state: State = {
-    zoomRect: null
+    zoomRect:   null,
+    finalState: null
+  }
+
+  private get currentState(): ProgramState | null {
+    if (this.state.finalState) {
+      return this.state.finalState
+    } else {
+      return simulatorStore.state
+    }
   }
 
   private sprites: Map<Character, HTMLElement> = new Map()
@@ -40,6 +51,8 @@ class Scene extends React.Component<AllProps, State> {
     }
   }
 
+  private theEndTimer: ComponentTimer | null = null
+
   public componentDidMount() {
     this.zoom()
   }
@@ -47,6 +60,22 @@ class Scene extends React.Component<AllProps, State> {
   public componentDidUpdate(prevProps: Props) {
     if (prevProps.zoom !== this.props.zoom) {
       this.zoom()
+    }
+    this.handleTheEnd()
+  }
+
+  public handleTheEnd() {
+    const theEnd = simulatorStore.state != null && simulatorStore.state.theEnd
+    if (theEnd && this.theEndTimer == null) {
+      this.theEndTimer = new ComponentTimer(this)
+      this.theEndTimer.setTimeout(() => {
+        this.setState({finalState: ProgramState.final})
+      }, 20_000)
+    }
+    if (this.theEndTimer != null && !theEnd) {
+      this.theEndTimer.clearAllTimeouts()
+      this.theEndTimer = null
+      this.setState({finalState: null})
     }
   }
 
@@ -97,7 +126,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   public render() {
-    const {state} = simulatorStore
+    const state = this.currentState
     const {scenario} = programStore
     if (state == null || scenario == null) { return null }
 
@@ -118,7 +147,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   private renderEmpty() {
-    const {state} = simulatorStore
+    const state = this.currentState
     if (state == null) { return null }
 
     return (
@@ -131,7 +160,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   private renderExterior() {
-    const {state} = simulatorStore
+    const state = this.currentState
     if (state == null) { return null }
 
     return (
@@ -146,7 +175,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   private renderInterior() {
-    const {state} = simulatorStore
+    const state = this.currentState
     if (state == null) { return null }
 
     return (
@@ -165,7 +194,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   private renderKitchen() {
-    const {state} = simulatorStore
+    const state = this.currentState
     if (state == null) { return null }
 
     return (
@@ -215,7 +244,7 @@ class Scene extends React.Component<AllProps, State> {
   }
 
   private renderHeart() {
-    const {state} = simulatorStore
+    const state = this.currentState
     if (state == null) { return null }
 
     return (
