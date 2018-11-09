@@ -13,6 +13,7 @@ const ACTIONS: {[key: number]: KeyAction} = {
   ['0'.charCodeAt(0)]: {type: 'zoom', character: null},
 
   [32]: {type: 'next'},
+  ['P'.charCodeAt(0)]: {type: 'previous'},
 
   [33]: {type: 'previous'},
   [34]: {type: 'next'},
