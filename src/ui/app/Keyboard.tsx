@@ -14,6 +14,9 @@ const ACTIONS: {[key: number]: KeyAction} = {
 
   [32]: {type: 'next'},
 
+  [33]: {type: 'previous'},
+  [34]: {type: 'next'},
+
   [37]: {type: 'simulator', action: 'backward'},
   [39]: {type: 'simulator', action: 'forward'},
   [38]: {type: 'simulator', action: 'reset'},
@@ -26,7 +29,11 @@ const ACTIONS: {[key: number]: KeyAction} = {
   ['B'.charCodeAt(0)]: {type: 'loadScenario', 'scenario': 'ending'},
 }
 
-export type KeyAction = NextAction | ZoomAction | SimulatorAction | LoadScenarioAction
+export type KeyAction = PreviousAction | NextAction | ZoomAction | SimulatorAction | LoadScenarioAction
+
+export interface PreviousAction {
+  type: 'previous'
+}
 
 export interface NextAction {
   type: 'next'

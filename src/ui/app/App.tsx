@@ -54,6 +54,10 @@ export default class App extends React.Component<Props, State> {
 
   private performKeyAction(action: KeyAction) {
     switch (action.type) {
+    case 'previous':
+      this.previous()
+      break
+
     case 'next':
       this.next()
       break
@@ -89,12 +93,30 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
+  private previous() {
+    if (!simulatorStore.atStart) {
+      simulatorStore.backward()
+    } else {
+      this.loadPreviousScenario()
+    }
+  }
+
   private next() {
     if (!simulatorStore.atEnd) {
       simulatorStore.forward()
-    } else if (!this.loadNextScenario()) {
-      musicStore.backgroundTrack = null
+    } else {
+      this.loadNextScenario()
     }
+  }
+
+  private loadPreviousScenario() {
+    const scenarios = Object.values(scenarioMap)
+    const index = programStore.scenario ? scenarios.indexOf(programStore.scenario) : -1
+    if (index === 0) { return false }
+
+    const scenario = scenarios[index - 1]
+    this.goToScenario(scenario.name)
+    return true
   }
 
   private loadNextScenario() {
