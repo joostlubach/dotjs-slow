@@ -30,8 +30,10 @@ export default class TopBar extends React.Component<Props> {
   private renderLeft() {
     return (
       <div classNames={$.left}>
-        <SVG name='logo' size={logoSize}/>
-        <Label large>{i18n.t('title')}</Label>
+        <a classNames={$.logo} href="/" onClick={e => { history.push('/'); e.preventDefault() }}>
+          <SVG name='logo' size={logoSize}/>
+          <Label large>{i18n.t('title')}</Label>
+        </a>
         {this.renderCreditsButton()}
         {this.renderScenarioSelector()}
       </div>
@@ -228,6 +230,11 @@ const $ = jss({
 
   section: {
     ...layout.row(layout.padding.s)
+  },
+
+  logo: {
+    ...layout.row(layout.padding.s),
+    textDecoration: 'none'
   },
 
   left: {

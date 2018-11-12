@@ -119,7 +119,7 @@ class Scene extends React.Component<AllProps, State> {
             <TransitionGroup>
               {state.stage === 'empty' && this.renderEmpty()}
               {state.stage === 'interior' && this.renderInterior()}
-              {state.stage === 'exterior' && this.renderExterior()}
+              {(state.stage === 'exterior' || state.stage === 'credits') && this.renderExterior()}
             </TransitionGroup>
             {this.renderHeart()}
           </div>
@@ -145,16 +145,18 @@ class Scene extends React.Component<AllProps, State> {
     const state = this.currentState
     if (state == null) { return null }
 
+    const credits = state.stage === 'credits'
+
     return (
       <CSSTransition timeout={layout.durations.long} classNames={$.exteriorTransition} enter exit>
         <div classNames={$.exteriorContainer}>
-          <div classNames={[$.exteriorBG, state.showCredits && $.exteriorBGCredits]}/>
-          <div classNames={[$.exterior, state.showCredits && $.exteriorCredits]}/>
+          <div classNames={[$.exteriorBG, credits && $.exteriorBGCredits, state.showCredits && $.exteriorBGCreditsShown]}/>
+          <div classNames={[$.exterior, credits && $.exteriorCredits, state.showCredits && $.exteriorCreditsShown]}/>
           {state.prepTimesShown && <SVG name='prep-times' size={prepTimesSize} classNames={$.prepTimes}/>}
           {this.renderSprite('chef', sprites.ChefOutside, state.sprites.chef)}
           {this.renderSprite('etienne', sprites.EtienneOutside, state.sprites.etienne)}
 
-          <Credits classNames={[$.credits, state.showCredits && $.creditsShown]}/>
+          {credits && <Credits classNames={[$.credits, state.showCredits && $.creditsShown]}/>}
         </div>
       </CSSTransition>
     )
@@ -386,14 +388,20 @@ const $ = jss({
   
   exteriorBGCredits: {
     left:      'auto',
-    width:     1564 + 640,
+    width:     3768,
     right:     -640,
+  },
+
+  exteriorBGCreditsShown: {
     transform: `translateX(-640px)`
   },
 
   exteriorCredits: {
     left:      'auto',
     right:     0,
+  },
+
+  exteriorCreditsShown: {
     transform: `translateX(-640px)`
   },
 

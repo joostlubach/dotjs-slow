@@ -27,13 +27,13 @@ export class ProgramStore extends EventEmitter {
 
   @action
   public loadScenario(scenario: Scenario) {
-    this.scenario = scenario
-    this.codes = scenario.codes
-
     if (this.creditsComposition != null) {
       this.creditsComposition.stop()
       this.creditsComposition = null
     }
+
+    this.scenario = scenario
+    this.codes = scenario.codes
 
     simulatorStore.reset()
     this.errors = []

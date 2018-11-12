@@ -8,16 +8,20 @@ export default class CreditsComposition {
 
   private previousScenario: Scenario | null = null
 
-  private state: ProgramState = ProgramState.default(creditsScenario)
+  private state: ProgramState = (() => {
+    const state = ProgramState.default(creditsScenario)
+    state.prepTimesShown = false
+    return state
+  })()
 
   public start() {
     this.previousScenario = programStore.scenario
     programStore.scenario = creditsScenario
+    simulatorStore.stateOverride = this.state
 
-    this.after(200, () => {
+    this.after(2000, () => {
       this.state = this.state.clone()
       this.state.showCredits = true
-      this.state.prepTimesShown = false
       simulatorStore.stateOverride = this.state
     })
   }
@@ -38,6 +42,7 @@ export default class CreditsComposition {
       this.timeouts.delete(timeout)
       callback()
     }, ms)
+    this.timeouts.add(timeout)
   }
 
   private clearAllTimeouts() {
@@ -54,5 +59,5 @@ const creditsScenario = Scenario.load({
   title: "Credits",
 
   full_screen: true,
-  stage:      'exterior'
+  stage:      'credits'
 })

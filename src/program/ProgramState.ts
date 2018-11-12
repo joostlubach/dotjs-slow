@@ -57,7 +57,7 @@ export default class ProgramState {
     return new ProgramState({
       stage:   scenario.stage,
       prepTimesShown: true,
-      stove:   defaultStoveState,
+      stove:   defaultStoveState,      
       sprites: {
         etienne:    defaultSpriteState(scenario.initialPositions.etienne, scenario.initialFlipped.etienne),
         marie:      defaultSpriteState(scenario.initialPositions.marie, scenario.initialFlipped.marie),
