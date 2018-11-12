@@ -32,6 +32,7 @@ export default class TopBar extends React.Component<Props> {
       <div classNames={$.left}>
         <SVG name='logo' size={logoSize}/>
         <Label large>{i18n.t('title')}</Label>
+        {this.renderCreditsButton()}
         {this.renderScenarioSelector()}
       </div>
     )
@@ -55,7 +56,7 @@ export default class TopBar extends React.Component<Props> {
 
     return (
       <div classNames={$.scenarioSelector}>
-        <select value={currentScenarioName} onChange={this.onScenarioChange}>
+        <select value={currentScenarioName} onChange={this.onScenarioChange} disabled={programStore.creditsComposition != null}>
           {Object.keys(scenarios).map(name => (
             <option
               key={name}
@@ -63,20 +64,33 @@ export default class TopBar extends React.Component<Props> {
               children={name}
             />
           ))}
+          {programStore.creditsComposition != null && (
+            <option key='credits' value='credits' children='credits'/>
+          )}
         </select>
         <ToolbarButton
           icon='restart'
           small
+          disabled={programStore.creditsComposition != null}
           onTap={this.onResetTap}
         />
       </div>
     )
   }
 
+  private renderCreditsButton() {
+    return (
+      <ToolbarButton
+        icon='info'
+        onTap={this.onCreditsTap}
+      />
+    )
+  }
+
   private renderPlayButton() {
     if (simulatorStore.running) { return }
 
-    const enabled = !simulatorStore.atEnd
+    const enabled = !simulatorStore.atEnd && programStore.creditsComposition == null
     return (
       <ToolbarButton
         icon='play'
@@ -92,13 +106,14 @@ export default class TopBar extends React.Component<Props> {
     return (
       <ToolbarButton
         icon='pause'
+        disabled={programStore.creditsComposition != null}
         onTap={this.onPauseTap}
       />
     )
   }
 
   private renderBackwardButton() {
-    const enabled = simulatorStore.active && !simulatorStore.running && !simulatorStore.atStart
+    const enabled = simulatorStore.active && !simulatorStore.running && !simulatorStore.atStart && programStore.creditsComposition == null
 
     return (
       <ToolbarButton
@@ -110,7 +125,7 @@ export default class TopBar extends React.Component<Props> {
   }
 
   private renderForwardButton() {
-    const enabled = !simulatorStore.running && !simulatorStore.atEnd
+    const enabled = !simulatorStore.running && !simulatorStore.atEnd && programStore.creditsComposition == null
 
     return (
       <ToolbarButton
@@ -122,7 +137,7 @@ export default class TopBar extends React.Component<Props> {
   }
 
   private renderRestartButton() {
-    const enabled = !simulatorStore.running && simulatorStore.active
+    const enabled = !simulatorStore.running && simulatorStore.active && programStore.creditsComposition == null
 
     return (
       <ToolbarButton
@@ -145,38 +160,6 @@ export default class TopBar extends React.Component<Props> {
       </div>
     )
   }
-
-  // private renderVerboseSwitch() {
-  //   return (
-  //     <div classNames={$.verboseSwitchContainer}>
-  //       <Switch
-  //         classNames={$.verboseSwitch}
-  //         isOn={simulatorStore.verbose}
-  //         onChange={on => { simulatorStore.verbose = on }}
-  //       />
-  //       <div>Verbose</div>
-  //     </div>
-  //   )
-  // }
-
-  // private run() {
-  //   simulatorStore.run()
-
-  //   if (simulatorStore.hasInfiniteLoop) {
-  //     MessageBox.show({
-  //       title:   "Infinite loop",
-  //       message: "Your program probably contains an infinite loop.",
-
-  //       body: (
-  //         <div classNames={$.infiniteLoop}>
-  //           <SpinningRover/>,
-  //           <Markdown>{i18n.t('infinite_loop')}</Markdown>
-  //         </div>
-  //       ),
-  //       buttons: [{label: "Oops!"}]
-  //     })
-  //   }
-  // }
 
   //------
   // Event handlers
@@ -208,6 +191,14 @@ export default class TopBar extends React.Component<Props> {
   private onScenarioChange = (event: React.ChangeEvent<any>) => {
     const name = event.target.value
     history.push(`/${name}`)
+  }
+
+  private onCreditsTap = () => {
+    if (programStore.creditsComposition == null) {
+      programStore.showCredits()
+    } else {
+      programStore.hideCredits()
+    }
   }
 
 }

@@ -134,6 +134,26 @@ export function breakpointSpec(config: BreakpointConfig) {
   return `(${parts.join(' and ')})`
 }
 
+export function retina(styles: AnyObject | {[scale: number]: AnyObject}) {
+  const keys = Object.keys(styles)
+  if (keys.length === 0) { return {} }
+
+  if (typeof keys[0] === 'string') {
+    styles = {2: styles}
+  }
+  
+  const result: {[breakpoint: string]: AnyObject} = {}
+  for (const [scale, style] of Object.entries(styles as {[scale: number]: AnyObject})) {
+    const mediaQueries = [
+      `(-webkit-min-device-pixel-ratio: ${scale})`,
+      `(min-resolution: ${96 * scale}dpi)`
+    ]
+    result[`@media ${mediaQueries.join(', ')}`] = style
+  }
+
+  return result
+}
+
 //------
 // Transitions
 

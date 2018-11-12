@@ -19,8 +19,7 @@ import ComponentTimer from '../../../pkg/react-component-timer/src/ComponentTime
 export interface Props {}
 
 interface State {
-  zoom:       Character | null
-  fullScreen: boolean
+  zoom: Character | null
 }
 
 type ScenarioName = keyof typeof scenarioMap
@@ -29,8 +28,7 @@ type ScenarioName = keyof typeof scenarioMap
 export default class App extends React.Component<Props, State> {
 
   public state: State = {
-    zoom:       null,
-    fullScreen: false
+    zoom: null
   }
   
   private timer = new ComponentTimer(this)
@@ -40,9 +38,8 @@ export default class App extends React.Component<Props, State> {
   public componentWillMount() {
     this.unlistenHistory = history.listen(this.onHistoryChange)
     simulatorStore.addListener('step', this.onStep) 
-    
-    const scenario = this.loadScenarioFromLocation()
-    this.setState({fullScreen: scenario == null ? true : scenario.fullScreen})
+
+    this.loadScenarioFromLocation()
   }
 
   public componentWillUnmount() {
@@ -158,24 +155,18 @@ export default class App extends React.Component<Props, State> {
     const scenario = scenarioMap[scenarioName]
     if (scenario == null) { return }
 
-    const fullScreen = scenario && scenario.fullScreen
-    if (fullScreen !== this.state.fullScreen) {
-      this.setState({fullScreen})
-      programStore.loadScenario(scenario)
-    } else {
-      programStore.loadScenario(scenario)
-    }
-
+    programStore.loadScenario(scenario)
     return scenario
   }
 
   public render() {
+    const fullScreen = programStore.scenario == null || programStore.scenario.fullScreen
     return (
       <div classNames={$.app}>
         <TopBar classNames={$.topBar}/>
         <Panels
           classNames={$.panels}
-          fullScreen={this.state.fullScreen}
+          fullScreen={fullScreen}
           left={this.renderMain()}
           main={<Scene zoom={this.state.zoom}/>}
           splitterSize={12}

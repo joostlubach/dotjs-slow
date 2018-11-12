@@ -14,6 +14,7 @@ export default {
   "favicon": require("./favicon.svg"),
   "heart": require("./heart.svg"),
   "hob": require("./hob.svg"),
+  "info": require("./info.svg"),
   "logo": require("./logo.svg"),
   "marie-angry": require("./marie-angry.svg"),
   "marie-blush": require("./marie-blush.svg"),

@@ -7,6 +7,7 @@ const BACKGROUND_MUSIC: Record<string, Track> = {
   callback:    loadTrack('/music/callback.mp3', 0.1, 96),
   promise:     loadTrack('/music/promise.mp3', 0.15, 76),
   ending:      loadTrack('/music/ending.mp3', 0.15, 42, false),
+  credits:     loadTrack('/music/callback.mp3', 0.1, 96),
 }
 
 export interface Track {

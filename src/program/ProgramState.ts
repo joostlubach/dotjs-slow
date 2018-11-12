@@ -67,36 +67,18 @@ export default class ProgramState {
     })
   }
 
-  public static get final() {
-    const state = new ProgramState({
-      stage:  'interior',
-      theEnd: false,
-      stove:  defaultStoveState,
-      sprites: {
-        etienne:    defaultSpriteState(null, false),
-        marie:      defaultSpriteState(SpritePosition.counterLeft, false),
-        chef:       defaultSpriteState(null, false),
-        randomDude: defaultSpriteState(null, false),
-      }
-    })
-    state.sprites.marie.face = 'angry'
-    state.sprites.marie.speak = '😐'
-    state.sprites.marie.moving = false
-
-    return state
-  }
-
   public clone(): ProgramState {
     const values = cloneDeep(this)
     return new ProgramState(values)
   }
 
-  public stage:  Stage = 'interior'
+  public stage:  Stage = 'empty'
   public prepTimesShown?: boolean
   public stove!: StoveState
   public sprites!: {[key in Character]: SpriteState} 
 
   public heart?: 'static' | 'animating' | null
   public theEnd?: boolean
+  public showCredits?: boolean
 
 }

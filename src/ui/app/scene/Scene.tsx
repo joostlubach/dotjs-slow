@@ -12,7 +12,7 @@ import Tables from './Tables'
 import sizeMe, {SizeMeProps} from 'react-sizeme'
 import {TransitionGroup, CSSTransition} from 'react-transition-group'
 import {findDOMNode} from 'react-dom'
-import ComponentTimer from 'react-component-timer'
+import Credits from './Credits'
 
 export interface Props {
   zoom?:       Character | null
@@ -51,8 +51,6 @@ class Scene extends React.Component<AllProps, State> {
     }
   }
 
-  private theEndTimer: ComponentTimer | null = null
-
   public componentDidMount() {
     this.zoom()
   }
@@ -60,22 +58,6 @@ class Scene extends React.Component<AllProps, State> {
   public componentDidUpdate(prevProps: Props) {
     if (prevProps.zoom !== this.props.zoom) {
       this.zoom()
-    }
-    this.handleTheEnd()
-  }
-
-  public handleTheEnd() {
-    const theEnd = simulatorStore.state != null && simulatorStore.state.theEnd
-    if (theEnd && this.theEndTimer == null) {
-      this.theEndTimer = new ComponentTimer(this)
-      this.theEndTimer.setTimeout(() => {
-        this.setState({finalState: ProgramState.final})
-      }, 10_000)
-    }
-    if (this.theEndTimer != null && !theEnd) {
-      this.theEndTimer.clearAllTimeouts()
-      this.theEndTimer = null
-      this.setState({finalState: null})
     }
   }
 
@@ -165,10 +147,14 @@ class Scene extends React.Component<AllProps, State> {
 
     return (
       <CSSTransition timeout={layout.durations.long} classNames={$.exteriorTransition} enter exit>
-        <div classNames={$.exterior}>
+        <div classNames={$.exteriorContainer}>
+          <div classNames={[$.exteriorBG, state.showCredits && $.exteriorBGCredits]}/>
+          <div classNames={[$.exterior, state.showCredits && $.exteriorCredits]}/>
           {state.prepTimesShown && <SVG name='prep-times' size={prepTimesSize} classNames={$.prepTimes}/>}
           {this.renderSprite('chef', sprites.ChefOutside, state.sprites.chef)}
           {this.renderSprite('etienne', sprites.EtienneOutside, state.sprites.etienne)}
+
+          <Credits classNames={[$.credits, state.showCredits && $.creditsShown]}/>
         </div>
       </CSSTransition>
     )
@@ -349,16 +335,84 @@ const $ = jss({
     }
   },
 
-  exterior: {
+  exteriorContainer: {
     ...layout.overlay,
+  },
+  
+  exteriorBG: {
+    position: 'absolute',
+    top:      0,
+    bottom:   0,
+    left:     0,
+    width:    1564,
 
     background: {
       color:    colors.skyBlue,
-      image:    `url(/images/exterior.png)`,
+      repeat:   'repeat-x',
+      size:     [1564, 1124],
+      position: 'bottom left',
+    },
+
+    backgroundImage: `url(/images/exterior-bg.png)`,
+    ...layout.retina({
+      2: {backgroundImage: `url(/images/exterior-bg@2x.png)`},
+    }),
+
+    willChange: 'transform',
+    transition: layout.transition('transform', 3000)
+  },
+
+  exterior: {
+    position: 'absolute',
+    top:      0,
+    bottom:   0,
+    left:     0,
+    width:    1564,
+
+    background: {
       repeat:   'no-repeat',
-      size:     [1610, 1124],
-      position: 'bottom left'
-    }
+      size:     [1564, 1124],
+      position: 'bottom left',
+    },
+
+    backgroundImage: `url(/images/exterior.png)`,
+    ...layout.retina({
+      2: {backgroundImage: `url(/images/exterior@2x.png)`},
+    }),
+
+    willChange: 'transform',
+    transition: layout.transition('transform', 3000)
+  },
+  
+  exteriorBGCredits: {
+    left:      'auto',
+    width:     1564 + 640,
+    right:     -640,
+    transform: `translateX(-640px)`
+  },
+
+  exteriorCredits: {
+    left:      'auto',
+    right:     0,
+    transform: `translateX(-640px)`
+  },
+
+  credits: {
+    position: 'absolute',
+    right:    0,
+    bottom:   120,
+    width:    680,
+    height:   500,
+    
+    willChange: ['opacity', 'transform'],
+    transition: layout.transition(['opacity', 'transform'], 3000),
+    transform:  `translateX(640px)`,
+    opacity:    0
+  },
+
+  creditsShown: {
+    transform: `translateX(0)`,
+    opacity:    1
   },
 
   prepTimes: {
@@ -375,12 +429,6 @@ const $ = jss({
       color: colors.lightBlue,
       image: colors.spotlightGradient([colors.white.alpha(0.5), colors.white.alpha(0)])
     }
-  },
-
-  exteriorBG: {
-    ...layout.overlay,
-    width: '100% !important',
-    height: '100% !important',
   },
 
   kitchen: {

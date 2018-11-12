@@ -33,6 +33,9 @@ export class SimulatorStore extends EventEmitter {
   @observable
   public currentStep: Step | null = null
 
+  @observable
+  public stateOverride: ProgramState | null = null
+
   @computed
   public get atStart(): boolean {
     return this.currentStepIndex === -1
@@ -46,6 +49,10 @@ export class SimulatorStore extends EventEmitter {
 
   @computed
   public get state(): ProgramState | null {
+    if (this.stateOverride != null) {
+      return this.stateOverride
+    }
+
     if (this.currentStep != null) {
       return this.currentStep.endState
     } else if (
@@ -93,6 +100,7 @@ export class SimulatorStore extends EventEmitter {
 
     this.simulator = null
     this.running   = false
+    this.stateOverride = null
   }
 
   /** Starts simulating a simulation. If a current simulation was in progress, it is terminated. */

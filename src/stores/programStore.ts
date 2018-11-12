@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import {observable, action, computed} from 'mobx'
 import {Program, ProgramRecorder, CodeError, Scenario, Simulation, Source} from '../program'
 import simulatorStore from './simulatorStore'
+import CreditsComposition from './CreditsComposition'
 
 export class ProgramStore extends EventEmitter {
 
@@ -15,7 +16,7 @@ export class ProgramStore extends EventEmitter {
   public errors: CodeError[] = []
 
   @observable
-  public hasInfiniteLoop: boolean = false
+  public creditsComposition: CreditsComposition | null = null
 
   @action
   public resetScenario() {
@@ -29,9 +30,13 @@ export class ProgramStore extends EventEmitter {
     this.scenario = scenario
     this.codes = scenario.codes
 
+    if (this.creditsComposition != null) {
+      this.creditsComposition.stop()
+      this.creditsComposition = null
+    }
+
     simulatorStore.reset()
     this.errors = []
-    this.hasInfiniteLoop = false
   }
 
   @action
@@ -55,20 +60,27 @@ export class ProgramStore extends EventEmitter {
     // Use the students code to build the program.
     const recorder = new ProgramRecorder(program)
 
-    try {
-      const success = recorder.record()
-      this.hasInfiniteLoop = false
-      this.errors = program.errors
+    const success = recorder.record()
+    this.errors = program.errors
 
-      return success ? recorder.simulation : null
-    } catch (error) {
-      if (error.name === 'InfiniteLoopException') {
-        this.hasInfiniteLoop = true
-        return null
-      } else {
-        throw error
-      }
-    }
+    return success ? recorder.simulation : null
+  }
+
+  @action
+  public showCredits() {
+    simulatorStore.pause()
+
+    this.creditsComposition = new CreditsComposition()
+    this.creditsComposition.start()
+  }
+
+  @action
+  public hideCredits() {
+    if (this.creditsComposition == null) { return }
+
+    this.creditsComposition.stop()
+    this.creditsComposition = null
+    simulatorStore.reset()
   }
 
 }
