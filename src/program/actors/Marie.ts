@@ -97,7 +97,7 @@ export default class Marie extends Actor {
 
       // Etienne blushes
       this.program.modifyState(state => {
-        state.sprites.etienne.speak = '😊 06-ETIENNE'
+        state.sprites.etienne.speak = '😊 0475-ETIENNE'
         state.sprites.etienne.face = 'blush'
         state.sprites.marie.speak = null
       })

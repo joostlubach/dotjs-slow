@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <!-- Generator: sketchtool 59.1 (101010) - https://sketch.com -->
     <title>restart</title>
     <desc>Created with sketchtool.</desc>
-    <defs/>
     <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd">
         <g id="restart" fill-rule="nonzero">
-            <path d="M28,20 L25,20 L31,14 L37,20 L34,20 C34,28.2842712 27.2842712,35 19,35 C10.7157288,35 4,28.2842712 4,20 C4,11.7157288 10.7157288,5 19,5 L19,11 C14.0294373,11 10,15.0294373 10,20 C10,24.9705627 14.0294373,29 19,29 C23.9705627,29 28,24.9705627 28,20 Z" id="Combined-Shape" transform="translate(20.500000, 20.000000) scale(-1, 1) rotate(-90.000000) translate(-20.500000, -20.000000) "/>
+            <path d="M25,20 L31,14 L37,20 L34,20 C34,28.2842712 27.2842712,35 19,35 C10.7157288,35 4,28.2842712 4,20 C4,11.7157288 10.7157288,5 19,5 L19,11 C14.0294373,11 10,15.0294373 10,20 C10,24.9705627 14.0294373,29 19,29 C23.9705627,29 28,24.9705627 28,20 L25,20 Z" id="Combined-Shape" transform="translate(20.500000, 20.000000) scale(-1, 1) rotate(-90.000000) translate(-20.500000, -20.000000) "/>
         </g>
     </g>
 </svg>

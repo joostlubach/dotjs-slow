@@ -14,7 +14,7 @@ export default class Etienne extends Actor {
 
   public hungry() {
     this.program.modifyState(state => {
-      state.sprites.etienne.speak = "J'ai faim"
+      state.sprites.etienne.speak = "Ik heb goesting in 🍔"
     })
 
     if (this.program.getState().stage === 'exterior') {
@@ -112,7 +112,10 @@ export default class Etienne extends Actor {
       state.sprites.etienne.speak = "Bonjour"
     })
     this.program.modifyState(state => {
-      state.sprites.etienne.speak = "J'ai faim"
+      state.sprites.etienne.speak = "Zeg salukes he!"
+    })
+    this.program.modifyState(state => {
+      state.sprites.etienne.speak = "'k Heb goesting in 🍔"
     })
     this.program.modifyState(state => {
       state.stage = 'exterior'

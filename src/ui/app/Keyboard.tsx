@@ -10,6 +10,7 @@ const ACTIONS: {[key: number]: KeyAction} = {
   ['1'.charCodeAt(0)]: {type: 'zoom', character: 'etienne'},
   ['2'.charCodeAt(0)]: {type: 'zoom', character: 'marie'},
   ['3'.charCodeAt(0)]: {type: 'zoom', character: 'chef'},
+  ['4'.charCodeAt(0)]: {type: 'zoom', character: 'randomDude'},
   ['0'.charCodeAt(0)]: {type: 'zoom', character: null},
 
   [32]: {type: 'next'},

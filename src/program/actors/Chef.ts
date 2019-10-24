@@ -99,7 +99,7 @@ export default class Chef extends Actor {
 
       // Marie blushes
       this.program.modifyState(state => {
-        state.sprites.marie.speak = '😊 06-MARIE'
+        state.sprites.marie.speak = '😊 0494-MARIE'
         state.sprites.marie.face = 'blush'
         state.sprites.chef.speak = null
       })
